@@ -19,3 +19,11 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/*  */
+
+@keyframes scrollLeft {
+  to {
+    left: -200px;
+  }
+}
