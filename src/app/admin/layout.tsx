@@ -15,7 +15,7 @@ export default function AdminLayout({
   const [isNotificationSidebarOpen, setIsNotificationSidebarOpen] = useState(false)
 
   return (
-    <div className="flex h-screen bg-[#f9f9fa]">
+    <div className="flex min-h-screen bg-[#f9f9fa]">
       <Sidebar />
       <main className="flex-1 overflow-auto relative">
         <div className="absolute top-4 right-4 z-10">
@@ -32,4 +32,3 @@ export default function AdminLayout({
     </div>
   )
 }
-
