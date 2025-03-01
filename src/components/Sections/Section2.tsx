@@ -2,7 +2,6 @@ import React from "react";
 import StrokeMarquee from "../StrokeMarquee";
 import GridBackground from "../GridBackground";
 import BrushStroke from "../BrushStroke";
-import TextReveal from "../TextReveal";
 
 const Section2 = () => {
   return (
