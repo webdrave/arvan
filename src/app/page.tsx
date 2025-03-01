@@ -5,6 +5,7 @@ import WhoWeAre from "@/components/Sections/WhoWeAre";
 import Testimonials from "@/components/Sections/Testimonials";
 import Navbar from "@/components/Navbar";
 import LandingPage from "@/components/Sections/LandingPage";
+import Footer from "@/components/Footer";
 
 
 export default function Home() {
@@ -18,6 +19,7 @@ export default function Home() {
     <ShopNowAt></ShopNowAt>
     <Testimonials></Testimonials>
     <ContactForm></ContactForm>
+    <Footer></Footer>
     </>
   );
 }
