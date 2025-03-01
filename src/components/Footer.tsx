@@ -16,7 +16,7 @@ export default function Footer() {
               </svg>
             </Link>
             <p className="text-[#999999] text-sm leading-relaxed">
-              At The Arvan, we combine comfort and style. Our slippers elevate your day—whether you're relaxing, running
+              At The Arvan, we combine comfort and style. Our slippers elevate your day—whether you&apos;re relaxing, running
               errands, or just enjoying life—with the perfect balance of coziness and flair.
             </p>
             <div className="flex gap-4">
