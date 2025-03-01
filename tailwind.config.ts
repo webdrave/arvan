@@ -19,7 +19,11 @@ import type { Config } from "tailwindcss";
 
 // /** @type {import('tailwindcss').Config} */
 export default {
+
   darkMode: ["class"],
+
+  darkMode: 'class', 
+
   content: [
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
@@ -82,6 +86,10 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+      },
+      fontFamily: {
+        montserrat: ['Montserrat', 'sans-serif'],
+        coluna: ['Coluna', 'sans-serif'],
       },
     },
   },
