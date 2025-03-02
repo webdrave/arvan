@@ -14,7 +14,9 @@ export default function Home() {
   return (
     
     <div className="overflow-x-hidden">
-    <LandingPage></LandingPage>
+      <div className="px-2 pt-2">
+      <LandingPage></LandingPage>
+      </div>
     <Navbar></Navbar>
     <Section2></Section2>
     <NewArrivals></NewArrivals>
