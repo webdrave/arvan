@@ -13,9 +13,9 @@ const LandingPage = () => {
     '/bgslides/bg-3.png',
   ];
   const slidestext = [
-    'johnny walker',
-    'leather black',
-    'haunted skull',
+    'JUNGLE WALKER',
+    'LIFE IS GOOD',
+    'A4 BLACK',
   ];
 
   return (
@@ -58,7 +58,7 @@ We’ve got the perfect pair waiting for you.</p>
         <button className='px-2 py-1 top-6 left-10 absolute border-2 border-white cursor-pointer w-40 z-50'>
         
             
-              <span className="text-center font-montserrat text-white text-md transition-all ">{slidestext[activeIndex]}</span>
+              <span className="text-center font-montserrat text-white text-md transition-all">{slidestext[activeIndex]}</span>
          
         </button>
     </main>
