@@ -20,84 +20,54 @@ interface EditProductFormProps {
 
 
 // Simulate an API call to fetch product data
-const fetchProduct = async (id: string): Promise<Product> => {
-  return {
-    id,
-    name: "Sample Product",
-    description: "This is a sample product description.",
-    price: 99.99,
-    categories: ["Electronics"],
-    stock: 100,
-    images: ["/placeholder.svg?height=200&width=200&text=Product+Image+1"],
-    status: "draft",
-  };
-};
+
 
 export function EditProductForm({ productId }: EditProductFormProps) {
-  const [product, setProduct] = useState<Product>({
-    id: "",
-    name: "",
-    description: "",
-    price: 0,
-    categories: [],
-    stock: 0,
-    images: [],
-    status: "draft",
-  });
+  const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+ 
+ 
 
   // Fetch product data on component mount
   useEffect(() => {
-    const loadProduct = async () => {
+    const fetchProduct = async () => {
       try {
-        const data = await fetchProduct(productId);
+        const response = await fetch(`/api/products/${productId}`);
+        if (!response.ok) throw new Error("Failed to fetch product");
+        const data = await response.json();
         setProduct(data);
-        setIsLoading(false);
       } catch (error) {
-        setError("Failed to load product.");
+        setError(error instanceof Error ? error.message : "Unknown error");
+      } finally {
         setIsLoading(false);
       }
     };
-    loadProduct();
+
+    fetchProduct();
   }, [productId]);
 
-  // List of available categories
-  const categories = [
-    "Electronics",
-    "Clothing",
-    "Home & Garden",
-    "Beauty",
-    "Sports",
-    "Toys",
-    "Books",
-    "Automotive",
-  ];
+
+
 
   // Add a new image to the product
   const handleAddImage = () => {
     const newImage = prompt("Enter image URL:");
     if (newImage && /^https?:\/\/.+\.(jpg|jpeg|png|gif|svg)$/.test(newImage)) {
-      setProduct((prevProduct) => {
-        if (!prevProduct) return prevProduct; // Return null if prevProduct is null
-        return {
-          ...prevProduct,
-          images: [...prevProduct.images, newImage],
-        };
-      });
+      setProduct(prev => prev ? { 
+        ...prev, 
+        images: [...prev.images, newImage] 
+      } : null);
     } else {
       alert("Please enter a valid image URL.");
     }
   };
-  
+
   const handleRemoveImage = (index: number) => {
-    setProduct((prevProduct) => {
-      if (!prevProduct) return prevProduct; // Return null if prevProduct is null
-      return {
-        ...prevProduct,
-        images: prevProduct.images.filter((_, i) => i !== index),
-      };
-    });
+    setProduct(prev => prev ? {
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index)
+    } : null);
   };
   
   const toggleCategory = (category: string) => {
@@ -127,30 +97,22 @@ export function EditProductForm({ productId }: EditProductFormProps) {
     if (!product) return;
 
     try {
-      // Simulate API call to update product
       const response = await fetch(`/api/products/${productId}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(product),
       });
-      if (!response.ok) throw new Error("Failed to update product");
+      
+      if (!response.ok) throw new Error("Update failed");
+      const result = await response.json();
       alert("Product updated successfully!");
     } catch (error) {
-      console.error("Error updating product:", error);
-      alert("Failed to update product.");
-    }
-  };
-
+      alert(error instanceof Error ? error.message : "Update failed");
+    }}
   // Loading state
   if (isLoading) return <div>Loading...</div>;
-
-  // Error state
-  if (error) return <div>{error}</div>;
-
-  // Product not found
-  if (!product) return <div>Product not found.</div>;
+  if (error) return <div>Error: {error}</div>;
+  if (!product) return <div>Product not found</div>;
 
   return (
     <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -244,7 +206,7 @@ export function EditProductForm({ productId }: EditProductFormProps) {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Categories</label>
               <div className="space-y-2">
-                {categories.map((category) => (
+                {product.categories.map((category) => (
                   <div
                     key={category}
                     onClick={() => toggleCategory(category)}
