@@ -90,6 +90,7 @@ export default {
       fontFamily: {
         montserrat: ['Montserrat', 'sans-serif'],
         coluna: ['Coluna', 'sans-serif'],
+        general_sans:['General Sans','sans-serif']
       },
     },
   },
