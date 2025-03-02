@@ -73,11 +73,16 @@ const HorizontalScroll = () => {
 
   // Desktop horizontal scroll animation
   useGSAP(() => {
+    // Early return if mobile or refs are not initialized
     if (isMobile || !innerDivRef.current || !wrapperRef.current) return;
-
+  
     ctx.add(() => {
-      const totalWidth = innerDivRef.current?.offsetWidth - window.innerWidth;
-
+      // Ensure innerDivRef.current exists
+      if (!innerDivRef.current) return;
+  
+      // Calculate totalWidth safely
+      const totalWidth = innerDivRef.current.offsetWidth - window.innerWidth;
+  
       // Main horizontal scroll timeline
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -89,21 +94,21 @@ const HorizontalScroll = () => {
           invalidateOnRefresh: true,
         },
       });
-
+  
+      // Animate the inner div horizontally
       tl.to(innerDivRef.current, {
         x: -totalWidth,
         ease: "none",
       });
-
+  
       // Heading animations
-      const headings: Array<HTMLDivElement> =
-        gsap.utils.toArray(".heading-item");
+      const headings: Array<HTMLDivElement> = gsap.utils.toArray(".heading-item");
       const headingHeight = 200;
-
+  
       // Para animation setup
       const paras: Array<HTMLDivElement> = gsap.utils.toArray(".para-item");
       const paraHeight = 150;
-
+  
       // Set initial positions for paras
       paras.forEach((para, i) => {
         gsap.set(para, {
@@ -111,7 +116,7 @@ const HorizontalScroll = () => {
           opacity: i === 0 ? 1 : 0,
         });
       });
-
+  
       // Set initial positions for headings
       headings.forEach((heading, i) => {
         gsap.set(heading, {
@@ -119,13 +124,13 @@ const HorizontalScroll = () => {
           opacity: i === 0 ? 1 : 0,
         });
       });
-
-      // Create scroll-triggered animations
+  
+      // Create scroll-triggered animations for headings
       headings.forEach((heading, i) => {
         if (i < headings.length - 1) {
           const sectionWidth = totalWidth / (headings.length - 1);
           const startPoint = i * sectionWidth;
-
+  
           gsap.timeline({
             scrollTrigger: {
               trigger: wrapperRef.current,
@@ -136,7 +141,7 @@ const HorizontalScroll = () => {
                 const progress = self.progress;
                 const sectionProgress =
                   (progress * totalWidth - startPoint) / sectionWidth;
-
+  
                 if (sectionProgress >= 0 && sectionProgress <= 1) {
                   // Current heading moves up and fades
                   gsap.to(heading, {
@@ -156,13 +161,13 @@ const HorizontalScroll = () => {
           });
         }
       });
-
+  
       // Update para animations
       paras.forEach((para, i) => {
         if (i < paras.length - 1) {
           const sectionWidth = totalWidth / (paras.length - 1);
           const startPoint = i * sectionWidth;
-
+  
           gsap.timeline({
             scrollTrigger: {
               trigger: wrapperRef.current,
@@ -173,7 +178,7 @@ const HorizontalScroll = () => {
                 const progress = self.progress;
                 const sectionProgress =
                   (progress * totalWidth - startPoint) / sectionWidth;
-
+  
                 if (sectionProgress >= 0 && sectionProgress <= 1) {
                   // Current para moves up
                   gsap.to(para, {
@@ -193,18 +198,21 @@ const HorizontalScroll = () => {
           });
         }
       });
-
+  
+      // Handle window resize
       const resizeHandler = () => {
         ScrollTrigger.refresh(true);
       };
       window.addEventListener("resize", resizeHandler);
-
+  
+      // Cleanup
       return () => {
         window.removeEventListener("resize", resizeHandler);
         ScrollTrigger.getAll().forEach((st) => st.kill());
       };
     });
-
+  
+    // Revert GSAP context on unmount
     return () => ctx.revert();
   }, [isMobile]);
 
