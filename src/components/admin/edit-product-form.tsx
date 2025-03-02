@@ -14,9 +14,10 @@ type Product = {
   status: "draft" | "published";
 };
 
-interface ProductFormProps {
+interface EditProductFormProps {
   productId: string;
 }
+
 
 // Simulate an API call to fetch product data
 const fetchProduct = async (id: string): Promise<Product> => {
@@ -32,7 +33,7 @@ const fetchProduct = async (id: string): Promise<Product> => {
   };
 };
 
-export function EditProductForm({ productId }: ProductFormProps) {
+export function EditProductForm({ productId }: EditProductFormProps) {
   const [product, setProduct] = useState<Product>({
     id: "",
     name: "",
