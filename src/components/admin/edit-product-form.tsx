@@ -1,87 +1,163 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Upload, X, Check } from "lucide-react"
+import { useState, useEffect } from "react";
+import { Upload, X, Check } from "lucide-react";
 
 type Product = {
-  id:string;
+  id: string;
   name: string;
   description: string;
   price: number;
-  category: string;
+  categories: string[];
   stock: number;
   images: string[];
-  status: "draft" | "published"; // Assuming status can be a string like "draft", "published", etc.
+  status: "draft" | "published";
 };
-// This would typically come from an API call
-const fetchProduct = async (id: string):Promise<Product> => {
-  // Simulating API call
+
+interface ProductFormProps {
+  productId: string;
+}
+
+// Simulate an API call to fetch product data
+const fetchProduct = async (id: string): Promise<Product> => {
   return {
     id,
     name: "Sample Product",
     description: "This is a sample product description.",
     price: 99.99,
-    category: "Electronics",
+    categories: ["Electronics"],
     stock: 100,
     images: ["/placeholder.svg?height=200&width=200&text=Product+Image+1"],
     status: "draft",
-  }
-}
+  };
+};
 
-export function EditProductForm({ productId }: { productId: string }) {
-  const [product, setProduct] = useState<Product | null>(null)
-  const [images, setImages] = useState<string[]>([])
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+export function EditProductForm({ productId }: ProductFormProps) {
+  const [product, setProduct] = useState<Product>({
+    id: "",
+    name: "",
+    description: "",
+    price: 0,
+    categories: [],
+    stock: 0,
+    images: [],
+    status: "draft",
+  });
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
+  // Fetch product data on component mount
   useEffect(() => {
     const loadProduct = async () => {
-      const data = await fetchProduct(productId)
-      setProduct(data)
-      setImages(data.images)
-      setSelectedCategories([data.category])
-    }
-    loadProduct()
-  }, [productId])
+      try {
+        const data = await fetchProduct(productId);
+        setProduct(data);
+        setIsLoading(false);
+      } catch (error) {
+        setError("Failed to load product.");
+        setIsLoading(false);
+      }
+    };
+    loadProduct();
+  }, [productId]);
 
-  const categories = ["Electronics", "Clothing", "Home & Garden", "Beauty", "Sports", "Toys", "Books", "Automotive"]
+  // List of available categories
+  const categories = [
+    "Electronics",
+    "Clothing",
+    "Home & Garden",
+    "Beauty",
+    "Sports",
+    "Toys",
+    "Books",
+    "Automotive",
+  ];
 
+  // Add a new image to the product
   const handleAddImage = () => {
-    const newImage = `/placeholder.svg?height=200&width=200&text=Product+Image+${images.length + 1}`
-    setImages([...images, newImage])
-  }
-
+    const newImage = prompt("Enter image URL:");
+    if (newImage && /^https?:\/\/.+\.(jpg|jpeg|png|gif|svg)$/.test(newImage)) {
+      setProduct((prevProduct) => {
+        if (!prevProduct) return prevProduct; // Return null if prevProduct is null
+        return {
+          ...prevProduct,
+          images: [...prevProduct.images, newImage],
+        };
+      });
+    } else {
+      alert("Please enter a valid image URL.");
+    }
+  };
+  
   const handleRemoveImage = (index: number) => {
-    const newImages = [...images]
-    newImages.splice(index, 1)
-    setImages(newImages)
-  }
-
+    setProduct((prevProduct) => {
+      if (!prevProduct) return prevProduct; // Return null if prevProduct is null
+      return {
+        ...prevProduct,
+        images: prevProduct.images.filter((_, i) => i !== index),
+      };
+    });
+  };
+  
   const toggleCategory = (category: string) => {
-    if (selectedCategories.includes(category)) {
-      setSelectedCategories(selectedCategories.filter((c) => c !== category))
-    } else {
-      setSelectedCategories([...selectedCategories, category])
-    }
-  }
-
+    setProduct((prevProduct) => {
+      if (!prevProduct) return prevProduct; // Return null if prevProduct is null
+      return {
+        ...prevProduct,
+        categories: prevProduct.categories.includes(category)
+          ? prevProduct.categories.filter((c) => c !== category) // Remove category
+          : [...prevProduct.categories, category], // Add category
+      };
+    });
+  };
+  
   const handleStatusChange = (status: "draft" | "published") => {
-    if (product) {
-      setProduct({ ...product, status });
-    } else {
-      console.error("Product is null");
-    }
-  }
+    setProduct((prevProduct) => {
+      if (!prevProduct) return prevProduct; // Return null if prevProduct is null
+      return {
+        ...prevProduct,
+        status,
+      };
+    });
+  };
+  // Handle form submission
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!product) return;
 
-  if (!product) {
-    return <div>Loading...</div>
-  }
+    try {
+      // Simulate API call to update product
+      const response = await fetch(`/api/products/${productId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(product),
+      });
+      if (!response.ok) throw new Error("Failed to update product");
+      alert("Product updated successfully!");
+    } catch (error) {
+      console.error("Error updating product:", error);
+      alert("Failed to update product.");
+    }
+  };
+
+  // Loading state
+  if (isLoading) return <div>Loading...</div>;
+
+  // Error state
+  if (error) return <div>{error}</div>;
+
+  // Product not found
+  if (!product) return <div>Product not found.</div>;
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* Left Column: Product Information and Media */}
       <div className="lg:col-span-2 space-y-6">
+        {/* Product Information */}
         <div className="bg-white rounded-lg p-6 shadow-sm">
           <h2 className="text-lg font-medium mb-4 text-[#4f507f]">Product Information</h2>
-
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Product Name</label>
@@ -126,11 +202,11 @@ export function EditProductForm({ productId }: { productId: string }) {
           </div>
         </div>
 
+        {/* Media */}
         <div className="bg-white rounded-lg p-6 shadow-sm">
           <h2 className="text-lg font-medium mb-4 text-[#4f507f]">Media</h2>
-
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {images.map((image, index) => (
+            {product.images.map((image, index) => (
               <div key={index} className="relative group">
                 <img
                   src={image || "/placeholder.svg"}
@@ -147,6 +223,7 @@ export function EditProductForm({ productId }: { productId: string }) {
             ))}
 
             <button
+              type="button"
               onClick={handleAddImage}
               className="w-full h-32 border-2 border-dashed border-gray-300 rounded-md flex flex-col items-center justify-center text-gray-500 hover:text-[#4f507f] hover:border-[#4f507f] transition-colors"
             >
@@ -157,10 +234,11 @@ export function EditProductForm({ productId }: { productId: string }) {
         </div>
       </div>
 
+      {/* Right Column: Organization and Actions */}
       <div className="space-y-6">
+        {/* Organization */}
         <div className="bg-white rounded-lg p-6 shadow-sm">
           <h2 className="text-lg font-medium mb-4 text-[#4f507f]">Organization</h2>
-
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Categories</label>
@@ -170,15 +248,15 @@ export function EditProductForm({ productId }: { productId: string }) {
                     key={category}
                     onClick={() => toggleCategory(category)}
                     className={`flex items-center gap-2 p-2 rounded-md cursor-pointer ${
-                      selectedCategories.includes(category) ? "bg-[#edeefc] text-[#4f507f]" : "hover:bg-gray-100"
+                      product.categories.includes(category) ? "bg-[#edeefc] text-[#4f507f]" : "hover:bg-gray-100"
                     }`}
                   >
                     <div
                       className={`w-5 h-5 rounded-md flex items-center justify-center ${
-                        selectedCategories.includes(category) ? "bg-[#4f507f] text-white" : "border border-gray-300"
+                        product.categories.includes(category) ? "bg-[#4f507f] text-white" : "border border-gray-300"
                       }`}
                     >
-                      {selectedCategories.includes(category) && <Check size={14} />}
+                      {product.categories.includes(category) && <Check size={14} />}
                     </div>
                     <span>{category}</span>
                   </div>
@@ -188,28 +266,19 @@ export function EditProductForm({ productId }: { productId: string }) {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-              <div className="flex space-x-4">
-                <button
-                  onClick={() => handleStatusChange("draft")}
-                  className={`px-4 py-2 rounded-md ${
-                    product.status === "draft" ? "bg-yellow-100 text-yellow-800" : "bg-gray-100 text-gray-800"
-                  }`}
-                >
-                  Draft
-                </button>
-                <button
-                  onClick={() => handleStatusChange("published")}
-                  className={`px-4 py-2 rounded-md ${
-                    product.status === "published" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
-                  }`}
-                >
-                  Published
-                </button>
-              </div>
+              <select
+                value={product.status}
+                onChange={(e) => handleStatusChange(e.target.value as "draft" | "published")}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4f507f]"
+              >
+                <option value="draft">Draft</option>
+                <option value="published">Published</option>
+              </select>
             </div>
           </div>
         </div>
 
+        {/* Actions */}
         <div className="flex gap-3">
           <button
             type="submit"
@@ -225,7 +294,6 @@ export function EditProductForm({ productId }: { productId: string }) {
           </button>
         </div>
       </div>
-    </div>
-  )
+    </form>
+  );
 }
-

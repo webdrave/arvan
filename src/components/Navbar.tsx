@@ -13,7 +13,7 @@ const Navbar = () => {
     ]
   return (
     <nav className='fixed top-0 flex p-6 w-full z-30'>
-<div className='w-full hidden md:flex  bg-transparent justify-end  gap-6 uppercase p-6 z-30'>
+<div className='w-full hidden md:flex  bg-transparent justify-end  gap-6 uppercase  z-30'>
         {navitems.map((item,i)=>(
             <a key={i} href="" className='hover:underline underline-offset-1 font-montserrat font-normal text-md hover:text-[#CCFF00]'>{item}</a>
         ))}

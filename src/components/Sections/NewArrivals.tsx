@@ -4,6 +4,7 @@ import { Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import Slidebox from '../Slidebox';
 import { ArrowLeft } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 type Slide = {
     img: string;
@@ -65,7 +66,25 @@ type Slide = {
         discount: 0,
       },
     ];
+    const [autoplayDelay, setAutoplayDelay] = useState(3000) // Default delay
+
+    useEffect(() => {
+      const updateAutoplay = () => {
+        const screenWidth = window.innerWidth
+        if (screenWidth <= 450) {
+          setAutoplayDelay(1000) // 1s delay for small screens
+        } else {
+          setAutoplayDelay(3000) // 3s delay for others
+        }
+      }
   
+      updateAutoplay() // Initial run
+      window.addEventListener("resize", updateAutoplay) // Listen for resize
+  
+      return () => {
+        window.removeEventListener("resize", updateAutoplay)
+      }
+    }, [])
 
   return (
     <div className="w-full min-h-[500px] mt-24">
@@ -93,6 +112,10 @@ type Slide = {
           modules={[Autoplay]}
           spaceBetween={10}
           slidesPerView={1}
+          autoplay={{
+            delay: autoplayDelay, // Delay between slides in milliseconds
+            disableOnInteraction: true, // Continue autoplay even after user interaction
+          }}
           centeredSlides={true}
           loop={true}
           speed={1000}
@@ -100,6 +123,10 @@ type Slide = {
             450: {
               slidesPerView: 1,
               spaceBetween: 10,
+              autoplay:{
+                delay:1000
+              }
+              
             },
             451: {
               slidesPerView: 2,
