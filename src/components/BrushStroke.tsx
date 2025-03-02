@@ -3,7 +3,8 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
+import { useGSAPContext } from "@/context/GSAPContext";
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
@@ -11,42 +12,36 @@ gsap.registerPlugin(ScrollTrigger);
 const BrushStroke = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const clipPathRef = useRef<HTMLImageElement>(null);
+  const ctx = useGSAPContext();
 
   useGSAP(() => {
     if (!clipPathRef.current || !containerRef.current) return;
 
-    // Set initial state
-    gsap.set(clipPathRef.current, {
-      opacity: 0,
-      clipPath: "inset(0 100% 0 0)",
+    ctx.add(() => {
+      gsap.set(clipPathRef.current, {
+        opacity: 0,
+        clipPath: "inset(0 100% 0 0)",
+      });
+
+      gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top 75%",
+          toggleActions: "play none none none",
+        },
+      })
+      .to(clipPathRef.current, {
+        opacity: 1,
+        duration: 0.3,
+      })
+      .to(clipPathRef.current, {
+        clipPath: "inset(0 0% 0 0)",
+        duration: 1.5,
+        ease: "power2.out",
+      });
     });
 
-    // Create timeline that will be triggered when element enters viewport
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top 75%", // Start animation when top of element is 75% from top of viewport
-        toggleActions: "play none none none",
-      },
-    });
-
-    // Add animations to timeline
-    tl.to(clipPathRef.current, {
-      opacity: 1,
-      duration: 0.3,
-    }).to(clipPathRef.current, {
-      clipPath: "inset(0 0% 0 0)",
-      duration: 1.5,
-      ease: "power2.out",
-    });
-  }, []);
-
-  // Clean up ScrollTrigger instances on unmount
-  useEffect(() => {
-    return () => {
-      // Kill all ScrollTrigger instances to prevent memory leaks
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-    };
+    return () => ctx.revert();
   }, []);
 
   return (
