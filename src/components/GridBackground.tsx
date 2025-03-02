@@ -110,20 +110,52 @@ const GridBackground: React.FC<InteractiveGridPatternProps> = ({
 
   return (
     <>
-      <div className="absolute w-full h-[120dvh] overflow-hidden">
+      <div className="absolute w-full h-[120dvh] overflow-visible">
         <svg
           width={width * horizontal}
           height={height * vertical}
           className="h-auto w-full"
         >
-          <defs>
-            <radialGradient id="fadeMask" cx="45%" cy="31%" r="40%">
-              <stop offset="60%" stopColor="white" />
-              <stop offset="100%" stopColor="transparent" />
+            <defs>
+            {/* Center gradient for visibility */}
+            <radialGradient id="centerGradient" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="white" />
+              <stop offset="80%" stopColor="transparent" />
             </radialGradient>
 
+            {/* Edge gradients for shadows */}
+            <linearGradient id="topGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="black" />
+              <stop offset="60%" stopColor="transparent" />
+            </linearGradient>
+
+            <linearGradient id="bottomGradient" x1="0%" y1="100%" x2="0%" y2="0%">
+              <stop offset="0%" stopColor="black" />
+              <stop offset="60%" stopColor="transparent" />
+            </linearGradient>
+
+            <linearGradient id="leftGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="black" />
+              <stop offset="60%" stopColor="transparent" />
+            </linearGradient>
+
+            <linearGradient id="rightGradient" x1="100%" y1="0%" x2="0%" y2="0%">
+              <stop offset="0%" stopColor="black" />
+              <stop offset="60%" stopColor="transparent" />
+            </linearGradient>
+
             <mask id="gridMask">
-              <rect width="110%" height="110%" fill="url(#fadeMask)" />
+              {/* Base white background */}
+              <rect width="100%" height="100%" fill="white" />
+              
+              {/* Center visible area */}
+              <rect width="100%" height="100%" fill="url(#centerGradient)" />
+              
+              {/* Edge shadows */}
+              <rect width="100%" height="20%" fill="url(#topGradient)" />
+              <rect width="100%" height="20%" y="80%" fill="url(#bottomGradient)" />
+              <rect width="20%" height="100%" fill="url(#leftGradient)" />
+              <rect width="20%" height="100%" x="80%" fill="url(#rightGradient)" />
             </mask>
           </defs>
 
@@ -143,25 +175,6 @@ const GridBackground: React.FC<InteractiveGridPatternProps> = ({
             );
           })}
         </svg>
-      </div>
-
-      <div className="relative flex flex-col py-5 gap-10 md:gap-48 overflow-hidden">
-        <div className="w-full h-full flex justify-end pt-10 text-end mb-20 ">
-          <div className="pr-[8vw] pl-[0vw] w-[60%] md:w-1/2">
-            <TextReveal />
-          </div>
-        </div>
-        <div
-          ref={ImageContainerRef}
-          className="image-container absolute  left-1/2 top-1/2 object-cover overflow-hidden -translate-x-1/2 -translate-y-1/2 "
-        >
-          <Image src="/slideImg.svg" alt="My SVG" width={1000} height={500} />
-        </div>
-        <div className="w-full h-full  flex items-end mt-20">
-          <div className="pl-[8vw] pr-[0vw] w-[60%] md:w-1/2">
-            <TextReveal />
-          </div>
-        </div>
       </div>
     </>
   );

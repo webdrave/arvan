@@ -1,8 +1,7 @@
 import React from "react";
 import StrokeMarquee from "../StrokeMarquee";
-import GridBackground from "../GridBackground";
 import BrushStroke from "../BrushStroke";
-import TextReveal from "../TextReveal";
+import HorizontalScroll from "../HorizontalScroll";
 
 const Section2 = () => {
   return (
@@ -28,14 +27,8 @@ const Section2 = () => {
           </p>
         </div>
 
-        <div className="relative -z-10 ">
-          <GridBackground />
-        </div>
-
-        <div className=" text-center mt-10">
-          <button className=" text-sm md:text-xl font-semibold p-5 bg-gradient-to-r from-[#c3e53a8a] to-[#b3d2343e] text-white uppercase shadow-[0px_0px_15px_#c3e53a] hover:shadow-[0px_0px_25px_#c3e53a] transition-all duration-300">
-            BUY NOW
-          </button>
+        <div className="relative  overflow-x-hidden ">
+          <HorizontalScroll />
         </div>
       </div>
     </div>
