@@ -1,6 +1,5 @@
 import Link from "next/link"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+import { Input, Button } from "@radix-ui/themes";
 import { Twitter, Instagram, Youtube } from "lucide-react"
 
 export default function Footer() {
