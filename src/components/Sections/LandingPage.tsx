@@ -18,7 +18,7 @@ const LandingPage = () => {
     <div className="relative h-screen overflow-hidden ">
       {/* Top ClipPath with logo */}
       <div
-        className="absolute -top-1 left-0  z-[20] bg-[#121212] w-full h-full  justify-center items-start  object-cover hidden lg:flex "
+        className="absolute max-sm:hidden -top-1 left-0  z-[20] bg-[#121212] w-full h-full  justify-center items-start  object-cover hidden lg:flex "
         style={{
           clipPath:
             "polygon(0px 0px, 40% 0px, 45% 7%, 55% 7%, 60% 0px, 100% 0px)",
@@ -34,7 +34,7 @@ const LandingPage = () => {
       </div>
       {/* Right ClipPath */}
       <div
-        className="absolute top-0 right-0 z-[20] bg-[#121212] w-full h-full hidden lg:block "
+        className=" max-sm:hidden absolute top-0 right-0 z-[20] bg-[#121212] w-full h-full hidden lg:block "
         style={{
           clipPath:
             "polygon(100% 0px, 100% 25%, 97% 35%, 97% 60%, 100% 70%, 100% 100%, 100% 100%)",
@@ -46,7 +46,7 @@ const LandingPage = () => {
       </div>
       {/* Bottom CLipPath */}
       <div
-        className="absolute top-0 z-[20] right-0 bg-[#121212] text-white w-full h-full hidden lg:block "
+        className=" max-sm:hidden absolute top-0 z-[20] right-0 bg-[#121212] text-white w-full h-full hidden lg:block "
         style={{
           clipPath: "polygon(100% 100%, 60% 100%, 55% 93%, 45% 93%, 40% 100%)",
         }}
@@ -94,7 +94,7 @@ const LandingPage = () => {
             the difference. We’ve got the perfect pair waiting for you.
           </p>
         </div>
-        <button className="px-2 py-1 top-6 left-10 absolute border-2 border-white cursor-pointer w-40 z-50">
+        <button className="px-2 py-1 top-6 left-10 absolute border-2 border-white cursor-pointer w-52 z-50">
           <span className="text-center font-montserrat text-white text-md transition-all ">
             {slidestext[activeIndex]}
           </span>
