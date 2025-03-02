@@ -3,7 +3,19 @@
 import { useState } from "react"
 import { Eye, Truck, CheckCircle, X } from "lucide-react"
 
-const initialOrders = [
+type OrderItem = {
+  name: string;
+  quantity: number;
+};
+type Order={
+id:string,
+customer: string,
+date: string,
+total: number,
+status: string,
+items: OrderItem[]
+}
+const initialOrders:Order[] = [
   {
     id: "1234",
     customer: "John Doe",
@@ -54,7 +66,7 @@ const initialOrders = [
 
 export function OrdersTable() {
   const [orders, setOrders] = useState(initialOrders)
-  const [selectedOrder, setSelectedOrder] = useState<any>(null)
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -153,8 +165,8 @@ export function OrdersTable() {
                 <div className="mt-4">
                   <h4 className="text-md font-medium text-gray-900">Items:</h4>
                   <ul className="list-disc list-inside">
-                    {selectedOrder.items.map((item: any, index: number) => (
-                      <li key={index} className="text-sm text-gray-500">
+                    {selectedOrder.items.map((item: OrderItem, index: number) => (
+                      <li key={item.name} className="text-sm text-gray-500">
                         {item.name} (x{item.quantity})
                       </li>
                     ))}

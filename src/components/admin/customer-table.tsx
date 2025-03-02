@@ -3,7 +3,16 @@
 import { useState } from "react"
 import { Eye, Mail, Phone } from "lucide-react"
 
-const initialCustomers = [
+type Customer = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  totalOrders: number;
+  totalSpent: number;
+  lastOrderDate: string;
+};
+const initialCustomers:Customer[] = [
   {
     id: "1",
     name: "John Doe",
@@ -53,7 +62,7 @@ const initialCustomers = [
 
 export function CustomerTable() {
   const [customers] = useState(initialCustomers)
-  const [selectedCustomer, setSelectedCustomer] = useState<any>(null)
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null | undefined>(null)
 
   return (
     <div className="bg-white shadow-sm rounded-lg overflow-hidden">

@@ -1,8 +1,12 @@
 "use client"
 
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from "recharts"
-
-const data = [
+type Data={
+  name:string,
+  value:number,
+  color:string
+}
+const data:Data[] = [
   { name: "United States", value: 52.1, color: "#4f507f" },
   { name: "Canada", value: 22.8, color: "#92bfff" },
   { name: "Mexico", value: 13.9, color: "#94e9b8" },
@@ -34,7 +38,7 @@ export function TrafficByLocation() {
               layout="vertical"
               verticalAlign="middle"
               align="right"
-              formatter={(value, entry, index) => {
+              formatter={(value) => {
                 return <span className="text-sm">{value}</span>
               }}
             />

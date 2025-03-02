@@ -3,7 +3,15 @@
 import { useState } from "react"
 import { ArrowUp, ArrowDown } from "lucide-react"
 
-const initialProducts = [
+type Product={
+  id:number,
+  name:string,
+  category:string
+  sales:number,
+  revenue:number,
+  profit:number
+}
+const initialProducts:Product[] = [
   { id: 1, name: "Product A", category: "Electronics", sales: 1234, revenue: 12340, profit: 2468 },
   { id: 2, name: "Product B", category: "Clothing", sales: 987, revenue: 9870, profit: 1974 },
   { id: 3, name: "Product C", category: "Home & Garden", sales: 765, revenue: 7650, profit: 1530 },
@@ -15,7 +23,7 @@ export function ProductPerformanceTable() {
   const [products] = useState(initialProducts)
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "ascending" | "descending" } | null>(null)
 
-  const sortedProducts = [...products].sort((a: any, b: any) => {
+  const sortedProducts = [...products].sort((a: Product, b: Product) => {
     if (!sortConfig) return 0
     const key = sortConfig.key as keyof typeof a
     if (a[key] < b[key]) {

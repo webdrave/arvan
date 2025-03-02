@@ -3,8 +3,18 @@
 import { useState, useEffect } from "react"
 import { Upload, X, Check } from "lucide-react"
 
+type Product = {
+  id:string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  stock: number;
+  images: string[];
+  status: "draft" | "published"; // Assuming status can be a string like "draft", "published", etc.
+};
 // This would typically come from an API call
-const fetchProduct = async (id: string) => {
+const fetchProduct = async (id: string):Promise<Product> => {
   // Simulating API call
   return {
     id,
@@ -19,7 +29,7 @@ const fetchProduct = async (id: string) => {
 }
 
 export function EditProductForm({ productId }: { productId: string }) {
-  const [product, setProduct] = useState<any>(null)
+  const [product, setProduct] = useState<Product | null>(null)
   const [images, setImages] = useState<string[]>([])
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
 
@@ -55,7 +65,11 @@ export function EditProductForm({ productId }: { productId: string }) {
   }
 
   const handleStatusChange = (status: "draft" | "published") => {
-    setProduct({ ...product, status })
+    if (product) {
+      setProduct({ ...product, status });
+    } else {
+      console.error("Product is null");
+    }
   }
 
   if (!product) {

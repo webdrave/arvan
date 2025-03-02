@@ -4,7 +4,15 @@ import { useState } from "react"
 import Link from "next/link"
 import { Edit, Trash2, Copy, Eye, EyeOff } from "lucide-react"
 
-const sampleProducts = [
+type Product={
+  id:number,
+  name:string,
+  category:string,
+  price:number,
+  stock:number,
+  status:string
+}
+const sampleProducts:Product[] = [
   { id: 1, name: "Product 1", category: "Electronics", price: 99.99, stock: 50, status: "published" },
   { id: 2, name: "Product 2", category: "Clothing", price: 49.99, stock: 100, status: "draft" },
   { id: 3, name: "Product 3", category: "Home & Garden", price: 29.99, stock: 75, status: "published" },

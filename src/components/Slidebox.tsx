@@ -11,7 +11,7 @@ type SlideboxProps = {
 
 const Slidebox: React.FC<SlideboxProps> = ({ image, name, price, category, discount = 0 }) => {
   return (
-    <div className='h-full w-full rounded-md'>
+    <div className='h-full w-full rounded-md hover:scale-105 duration-150 cursor-pointer'>
       <div className='p-2 bg-white aspect-square rounded-md relative'>
         {discount > 0 && (
           <span className='absolute top-2 left-2 text-black rounded-md bg-[#C2E53A] px-2 py-1 text-xs font-bold font-montserrat'>

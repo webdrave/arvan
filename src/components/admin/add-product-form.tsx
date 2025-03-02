@@ -7,7 +7,7 @@ export function AddProductForm() {
   const [images, setImages] = useState<string[]>([])
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   interface Variant {
-    isOpen: any
+    isOpen: boolean | null
     id: string
     color: string
     images: string[]
