@@ -1,7 +1,9 @@
 import React from "react";
 import StrokeMarquee from "../StrokeMarquee";
 import BrushStroke from "../BrushStroke";
+
 import HorizontalScroll from "../HorizontalScroll";
+
 
 const Section2 = () => {
   return (
