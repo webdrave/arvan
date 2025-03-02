@@ -97,11 +97,11 @@ type Slide = {
           loop={true}
           speed={1000}
           breakpoints={{
-            640: {
+            450: {
               slidesPerView: 1,
               spaceBetween: 10,
             },
-            768: {
+            451: {
               slidesPerView: 2,
               spaceBetween: 20,
             },
