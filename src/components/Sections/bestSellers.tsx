@@ -2,8 +2,6 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay} from 'swiper/modules';
 import 'swiper/css';
-import Image from 'next/image';
-import { useState } from 'react';
 import Slidebox from '../Slidebox';
 import { ArrowLeft } from 'lucide-react';
 

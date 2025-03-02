@@ -6,7 +6,6 @@ import Testimonials from "@/components/Sections/Testimonials";
 import Navbar from "@/components/Navbar";
 import LandingPage from "@/components/Sections/LandingPage";
 import Footer from "@/components/Footer";
-import Slidebox from "@/components/Slidebox";
 import NewArrivals from "@/components/Sections/NewArrivals";
 import BestSellers from "@/components/Sections/bestSellers";
 
