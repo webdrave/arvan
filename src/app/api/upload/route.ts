@@ -1,12 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import cloudinary from "cloudinary";
+import { config } from "dotenv";
+config();
+
 
 // Cloudinary Configuration
 cloudinary.v2.config({
-  cloud_name: "dk8ktsnp0",
-  api_key: "147789248934291",
-  api_secret: "86MlUcIX3ENeXww1mgNhYuUZQ4w",
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME!,
+  api_key: process.env.CLOUDINARY_API_KEY!,
+  api_secret: process.env.CLOUDINARY_API_SECRET!,
 });
+
+console.log("Cloudinary Configured:", cloudinary.v2.config());
+
 
 export async function POST(req: NextRequest) {
   try {
