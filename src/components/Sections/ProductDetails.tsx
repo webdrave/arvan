@@ -1,6 +1,7 @@
 "use client"
 import React, { useState } from 'react';
 import { Star, ShoppingCart } from 'lucide-react';
+import Image from 'next/image';
 
 const ProductDetails = () => {
   const [selectedColor, setSelectedColor] = useState("White");
@@ -39,10 +40,12 @@ const ProductDetails = () => {
         <div className="flex flex-col sm:flex-row items-center gap-4">
           <div className="flex sm:flex-col gap-3 order-2 sm:order-1">
             {product.images.map((img, index) => (
-              <img
+              <Image
                 key={index}
                 src={img}
                 alt="Thumbnail"
+                height={200}
+                width={200}
                 className={`h-12 w-14 cursor-pointer border-2 transition-all duration-200 ${
                   selectedImage === img ? "border-[#c2e53a]" : "border-white"
                 }`}
@@ -51,8 +54,10 @@ const ProductDetails = () => {
             ))}
           </div>
           <div className="w-full order-1 sm:order-2">
-            <img
+            <Image
               src={selectedImage}
+              height={500}
+              width={500}
               alt="Product"
               className="w-full h-auto rounded-md shadow-lg object-cover"
             />
@@ -88,9 +93,11 @@ const ProductDetails = () => {
               <p className="text-base mb-4">Select Color: {selectedColor}</p>
               <div className="flex gap-3 mb-4">
                 {product.colors.map((color, index) => (
-                  <img
+                  <Image
                     key={color}
                     src={product.images[index]}
+                    width={200}
+                    height={200}
                     alt={color}
                     className={`w-12 h-12 rounded-sm border-2 cursor-pointer transition-all duration-200 ${
                       selectedColor === color ? "border-[#c2e53a]" : "border-white"
@@ -181,7 +188,7 @@ const ProductDetails = () => {
                 </div>
               </div>
               <p className="text-base text-white mt-2">
-                It's is not very comfortable but ok ok product, not much good as we thought (bekar hain pesa barbaad) 
+                It{"'"}s is not very comfortable but ok ok product, not much good as we thought (bekar hain pesa barbaad) 
               </p>
             </div>
           </div>

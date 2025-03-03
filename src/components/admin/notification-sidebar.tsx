@@ -1,5 +1,6 @@
 import type React from "react"
 import { Bell, X } from "lucide-react"
+import Image from "next/image";
 
 export function NotificationSidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   if (!isOpen) return null
@@ -109,7 +110,7 @@ function ActivityItem({
 }) {
   return (
     <div className="flex items-center gap-3">
-      <img src={avatar || "/placeholder.svg"} alt="" className="w-6 h-6 rounded-full" />
+      <Image src={avatar || "/logo.svg"} alt="" width={200} height={200} className="w-6 h-6 rounded-full" />
       <div>
         <p className="text-sm">{title}</p>
         <p className="text-xs text-gray-500">{time}</p>
@@ -121,7 +122,7 @@ function ActivityItem({
 function ContactItem({ avatar, name }: { avatar: string; name: string }) {
   return (
     <div className="flex items-center gap-3">
-      <img src={avatar || "/placeholder.svg"} alt="" className="w-6 h-6 rounded-full" />
+      <Image src={avatar || "/logo.svg"} alt="" width={200} height={200} className="w-6 h-6 rounded-full" />
       <p className="text-sm">{name}</p>
     </div>
   )

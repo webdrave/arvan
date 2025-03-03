@@ -1,10 +1,8 @@
 "use client";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import TextReveal from "./TextReveal";
 
 gsap.registerPlugin(ScrollTrigger);
 

@@ -11,11 +11,20 @@ const initialProducts = [
   { id: 5, name: "Product E", category: "Sports", sales: 321, revenue: 3210, profit: 642 },
 ]
 
+interface Product {
+  id: number
+  name: string
+  category: string
+  sales: number
+  revenue: number
+  profit: number
+}
+
 export function ProductPerformanceTable() {
   const [products] = useState(initialProducts)
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "ascending" | "descending" } | null>(null)
 
-  const sortedProducts = [...products].sort((a: any, b: any) => {
+  const sortedProducts = [...products].sort((a: Product, b: Product) => {
     if (!sortConfig) return 0
     const key = sortConfig.key as keyof typeof a
     if (a[key] < b[key]) {

@@ -2,6 +2,7 @@ import Link from "next/link"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Twitter, Instagram, Youtube } from "lucide-react"
+import Image from "next/image"
 
 export default function Footer() {
   return (
@@ -11,7 +12,7 @@ export default function Footer() {
           {/* Company Info */}
           <div className="space-y-8">
             <Link href="/" className="inline-block">
-              <img src="/logo.svg" alt="" />
+              <Image src="/logo.svg" alt="" />
             </Link>
             <p className="text-[#999999] text-sm leading-relaxed">
               At The Arvan, we combine comfort and style. Our slippers elevate your day—whether you&apos;re relaxing, running

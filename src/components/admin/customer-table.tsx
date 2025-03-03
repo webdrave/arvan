@@ -51,9 +51,19 @@ const initialCustomers = [
   },
 ]
 
+interface Customer {
+  id: string
+  name: string
+  email: string
+  phone: string
+  totalOrders: number
+  totalSpent: number
+  lastOrderDate: string
+}
+
 export function CustomerTable() {
   const [customers] = useState(initialCustomers)
-  const [selectedCustomer, setSelectedCustomer] = useState<any>(null)
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null)
 
   return (
     <div className="bg-white shadow-sm rounded-lg overflow-hidden">
