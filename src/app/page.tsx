@@ -8,12 +8,14 @@ import LandingPage from "@/components/Sections/LandingPage";
 import Footer from "@/components/Footer";
 import NewArrivals from "@/components/Sections/NewArrivals";
 import BestSellers from "@/components/Sections/bestSellers";
+import Landing_overlay from "@/components/Sections/landing_overlay";
 
 
 export default function Home() {
   return (
     
     <div className="overflow-x-hidden">
+      <Landing_overlay></Landing_overlay>
       <div className="px-2 pt-2">
       <LandingPage></LandingPage>
       </div>

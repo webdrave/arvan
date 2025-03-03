@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Theme } from "@radix-ui/themes";
 import { GSAPProvider } from '@/context/GSAPContext';
+import { OverlayProvider } from "@/context/OverlayContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,7 +36,10 @@ export default function RootLayout({
         <Theme>
 
         <GSAPProvider>
+          <OverlayProvider>
+
           {children}
+          </OverlayProvider>
         </GSAPProvider>
         </Theme>
       </body>
