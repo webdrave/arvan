@@ -1,7 +1,7 @@
 "use client";
-import { createContext, useContext, useEffect } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { createContext, useContext, useEffect, useState } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -9,17 +9,29 @@ const gsapContext = gsap.context(() => {});
 export const GSAPContext = createContext(gsapContext);
 
 export const GSAPProvider = ({ children }: { children: React.ReactNode }) => {
-    useEffect(()=>{
 
-        window.addEventListener("resize", ()=>{
-          console.log("RELOAD")
-          window.location.reload();
-        })
-      })
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const ctx = gsap.context(() => {});
+    let lastWidth = window.innerWidth;
+
+    const handleResize = () => {
+      let newWidth = window.innerWidth;
+
+      if (Math.abs(newWidth - lastWidth) > 50) {
+        lastWidth = newWidth;
+      }
+    };
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      ctx.revert();
+    };
+  }, []);
   return (
-    <GSAPContext.Provider value={gsapContext}>
-      {children}
-    </GSAPContext.Provider>
+    <GSAPContext.Provider value={gsapContext}>{children}</GSAPContext.Provider>
   );
 };
 
