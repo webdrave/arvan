@@ -76,7 +76,8 @@ const HorizontalScroll = () => {
     if (isMobile || !innerDivRef.current || !wrapperRef.current) return;
 
     ctx.add(() => {
-      const totalWidth = innerDivRef.current?.offsetWidth - window.innerWidth;
+      //@ts-expect-error
+      const totalWidth = innerDivRef?.current?.offsetWidth - window.innerWidth;
 
       // Main horizontal scroll timeline
       const tl = gsap.timeline({

@@ -2,12 +2,13 @@
 
 import { useState } from "react"
 import { Upload, X, Check, Plus, Trash2, ChevronRight } from "lucide-react"
+import Image from "next/image"
 
 export function AddProductForm() {
   const [images, setImages] = useState<string[]>([])
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   interface Variant {
-    isOpen: any
+    isOpen: boolean
     id: string
     color: string
     images: string[]
@@ -162,9 +163,11 @@ export function AddProductForm() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {images.map((image, index) => (
               <div key={index} className="relative group">
-                <img
-                  src={image || "/placeholder.svg"}
+                <Image
+                  src={image || "/logo.svg"}
                   alt={`Product image ${index + 1}`}
+                  width={200}
+                  height={200}
                   className="w-full h-32 object-cover rounded-md border border-gray-200"
                 />
                 <button
@@ -290,8 +293,10 @@ export function AddProductForm() {
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                 {variant.images?.map((image, index) => (
                   <div key={index} className="relative group">
-                    <img
-                      src={image}
+                    <Image
+                      src={image || "/logo.svg"}
+                      width={200}
+                      height={200}
                       alt={`${variant.color} variant image ${index + 1}`}
                       className="w-full h-28 object-cover rounded-md border border-gray-200"
                     />

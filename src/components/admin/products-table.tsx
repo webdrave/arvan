@@ -12,6 +12,15 @@ const sampleProducts = [
   { id: 5, name: "Product 5", category: "Sports", price: 79.99, stock: 30, status: "published" },
 ]
 
+interface Product {
+  id: number
+  name: string
+  category: string
+  price: number
+  stock: number
+  status: string
+}
+
 export function ProductsTable() {
   const [products, setProducts] = useState(sampleProducts)
 
@@ -19,7 +28,7 @@ export function ProductsTable() {
     setProducts(products.filter((product) => product.id !== id))
   }
 
-  const handleCopy = (product: any) => {
+  const handleCopy = (product: Product) => {
     const newProduct = { ...product, id: Date.now(), name: `${product.name} (Copy)`, status: "draft" }
     setProducts([...products, newProduct])
   }

@@ -51,9 +51,19 @@ const initialContacts = [
   },
 ]
 
+interface Contact {
+  id: number
+  name: string
+  email: string
+  subject: string
+  message: string
+  date: string
+  status: string
+}
+
 export function ContactList() {
   const [contacts, setContacts] = useState(initialContacts)
-  const [selectedContact, setSelectedContact] = useState<any>(null)
+  const [selectedContact, setSelectedContact] = useState<Contact | null>(null)
 
   const handleDelete = (id: number) => {
     setContacts(contacts.filter((contact) => contact.id !== id))

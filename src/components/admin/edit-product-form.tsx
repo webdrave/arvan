@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Upload, X, Check } from "lucide-react"
+import Image from "next/image"
 
 // This would typically come from an API call
 const fetchProduct = async (id: string) => {
@@ -18,8 +19,19 @@ const fetchProduct = async (id: string) => {
   }
 }
 
+interface Product {
+  id: string 
+  name: string
+  description: string
+  price: number
+  category: string
+  stock: number
+  images: string[]
+  status: string
+}
+
 export function EditProductForm({ productId }: { productId: string }) {
-  const [product, setProduct] = useState<any>(null)
+  const [product, setProduct] = useState<Product>({} as Product)
   const [images, setImages] = useState<string[]>([])
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
 
@@ -54,7 +66,7 @@ export function EditProductForm({ productId }: { productId: string }) {
     }
   }
 
-  const handleStatusChange = (status: "draft" | "published") => {
+  const handleStatusChange = (status: string) => {
     setProduct({ ...product, status })
   }
 
@@ -118,9 +130,11 @@ export function EditProductForm({ productId }: { productId: string }) {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {images.map((image, index) => (
               <div key={index} className="relative group">
-                <img
-                  src={image || "/placeholder.svg"}
+                <Image
+                  src={image || "/logo.svg"}
                   alt={`Product image ${index + 1}`}
+                  width={200}
+                  height={200}
                   className="w-full h-32 object-cover rounded-md border border-gray-200"
                 />
                 <button

@@ -52,9 +52,23 @@ const initialOrders = [
   },
 ]
 
+interface Order {
+  id: string
+  customer: string
+  date: string
+  total: number
+  status: string
+  items: Item[]
+}
+
+interface Item {
+  name: string
+  quantity: number
+}
+
 export function OrdersTable() {
   const [orders, setOrders] = useState(initialOrders)
-  const [selectedOrder, setSelectedOrder] = useState<any>(null)
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -153,7 +167,7 @@ export function OrdersTable() {
                 <div className="mt-4">
                   <h4 className="text-md font-medium text-gray-900">Items:</h4>
                   <ul className="list-disc list-inside">
-                    {selectedOrder.items.map((item: any, index: number) => (
+                    {selectedOrder.items.map((item: Item, index: number) => (
                       <li key={index} className="text-sm text-gray-500">
                         {item.name} (x{item.quantity})
                       </li>

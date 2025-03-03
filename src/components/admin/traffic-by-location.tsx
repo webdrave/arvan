@@ -34,7 +34,7 @@ export function TrafficByLocation() {
               layout="vertical"
               verticalAlign="middle"
               align="right"
-              formatter={(value, entry, index) => {
+              formatter={(value) => {
                 return <span className="text-sm">{value}</span>
               }}
             />
