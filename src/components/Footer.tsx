@@ -11,12 +11,10 @@ export default function Footer() {
           {/* Company Info */}
           <div className="space-y-8">
             <Link href="/" className="inline-block">
-              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M20 0L40 40H0L20 0Z" fill="white" />
-              </svg>
+              <img src="/logo.svg" alt="" />
             </Link>
             <p className="text-[#999999] text-sm leading-relaxed">
-              At The Arvan, we combine comfort and style. Our slippers elevate your day—whether you're relaxing, running
+              At The Arvan, we combine comfort and style. Our slippers elevate your day—whether you&apos;re relaxing, running
               errands, or just enjoying life—with the perfect balance of coziness and flair.
             </p>
             <div className="flex gap-4">
@@ -111,11 +109,7 @@ export default function Footer() {
             <p className="text-sm text-[#999999]">© ARVAN | 2025 | ALL RIGHTS RESERVED</p>
             <div className="flex items-center gap-8">
               <div className="flex gap-2">
-                <img
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ARVAN_WEB_DESIGN-kILGZGWM4IuRP5QVwPW9qZ3GDL0hQX.png"
-                  alt="Payment Methods"
-                  className="h-5"
-                />
+                
               </div>
               <div className="text-sm text-[#999999]">
                 MADE BY:{" "}

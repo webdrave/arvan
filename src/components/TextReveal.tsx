@@ -67,7 +67,6 @@ const TextReveal: React.FC = () => {
       return;
 
     const headingLines = applyTextReveal(headingRef.current, headingSplitRef);
-
     const paragraphLines = applyTextReveal(
       paragraphRef.current,
       paragraphSplitRef
@@ -158,13 +157,15 @@ const TextReveal: React.FC = () => {
 
     // Debounce resize event
     let resizeTimeout: NodeJS.Timeout;
-    window.addEventListener("resize", () => {
+    const resizeHandler = () => {
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(handleResize, 200);
-    });
+    };
+
+    window.addEventListener("resize", resizeHandler);
 
     return () => {
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", resizeHandler);
       clearTimeout(resizeTimeout);
 
       // Clean up split instances
