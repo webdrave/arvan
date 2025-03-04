@@ -76,7 +76,7 @@ const HorizontalScroll = () => {
     if (isMobile || !innerDivRef.current || !wrapperRef.current) return;
 
     ctx.add(() => {
-      //@ts-expect-error
+      //@ts-expect-error: Property 'offsetWidth' does not exist on type 'HTMLElement'.
       const totalWidth = innerDivRef?.current?.offsetWidth - window.innerWidth;
 
       // Main horizontal scroll timeline

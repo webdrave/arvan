@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -17,7 +17,7 @@ export const GSAPProvider = ({ children }: { children: React.ReactNode }) => {
     let lastWidth = window.innerWidth;
 
     const handleResize = () => {
-      let newWidth = window.innerWidth;
+      const newWidth = window.innerWidth;
 
       if (Math.abs(newWidth - lastWidth) > 50) {
         lastWidth = newWidth;

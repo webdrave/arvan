@@ -112,6 +112,7 @@ export function AddProductForm() {
   }
 
   return (
+
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div className="lg:col-span-2 space-y-6">
         <div className="bg-white rounded-lg p-6 shadow-sm">
@@ -122,7 +123,7 @@ export function AddProductForm() {
               <label className="block text-sm font-medium text-gray-700 mb-1">Product Name</label>
               <input
                 type="text"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4f507f]"
+                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4f507f]"
                 placeholder="Enter product name"
               />
             </div>
@@ -131,7 +132,7 @@ export function AddProductForm() {
               <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
               <textarea
                 rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4f507f]"
+                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4f507f]"
                 placeholder="Enter product description"
               />
             </div>
@@ -141,7 +142,7 @@ export function AddProductForm() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">SKU</label>
                 <input
                   type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4f507f]"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4f507f]"
                   placeholder="Enter SKU"
                 />
               </div>
@@ -149,7 +150,7 @@ export function AddProductForm() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Barcode</label>
                 <input
                   type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4f507f]"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4f507f]"
                   placeholder="Enter barcode"
                 />
               </div>
@@ -199,7 +200,7 @@ export function AddProductForm() {
                 <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
                 <input
                   type="text"
-                  className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4f507f]"
+                  className="w-full pl-8 pr-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4f507f]"
                   placeholder="0.00"
                 />
               </div>
@@ -211,7 +212,7 @@ export function AddProductForm() {
                 <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
                 <input
                   type="text"
-                  className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4f507f]"
+                  className="w-full pl-8 pr-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4f507f]"
                   placeholder="0.00"
                 />
               </div>
@@ -221,7 +222,7 @@ export function AddProductForm() {
               <label className="block text-sm font-medium text-gray-700 mb-1">Tax Rate (%)</label>
               <input
                 type="text"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4f507f]"
+                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4f507f]"
                 placeholder="0"
               />
             </div>
@@ -356,7 +357,7 @@ export function AddProductForm() {
                       <input
                         type="number"
                         placeholder="Enter quantity"
-                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#4f507f] focus:border-[#4f507f] bg-white shadow-sm"
+                        className="w-full px-4 py-2 border bg-white rounded-lg focus:ring-2 focus:ring-[#4f507f] focus:border-[#4f507f] bg-white shadow-sm"
                         value={size.quantity}
                         onChange={(e) => {
                           setVariants(variants.map(v => {
@@ -429,7 +430,7 @@ export function AddProductForm() {
               <label className="block text-sm font-medium text-gray-700 mb-1">Tags</label>
               <input
                 type="text"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4f507f]"
+                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4f507f]"
                 placeholder="Enter tags separated by commas"
               />
             </div>
@@ -444,7 +445,7 @@ export function AddProductForm() {
               <label className="block text-sm font-medium text-gray-700 mb-1">Stock Quantity</label>
               <input
                 type="number"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4f507f]"
+                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4f507f]"
                 placeholder="0"
               />
             </div>
@@ -453,7 +454,7 @@ export function AddProductForm() {
               <label className="block text-sm font-medium text-gray-700 mb-1">Low Stock Threshold</label>
               <input
                 type="number"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4f507f]"
+                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4f507f]"
                 placeholder="0"
               />
             </div>
@@ -462,7 +463,7 @@ export function AddProductForm() {
               <input
                 type="checkbox"
                 id="track-inventory"
-                className="w-4 h-4 text-[#4f507f] rounded focus:ring-[#4f507f]"
+                className="w-4 h-4 text-[#4f507f] bg-white rounded focus:ring-[#4f507f]"
               />
               <label htmlFor="track-inventory" className="text-sm text-gray-700">
                 Track inventory
@@ -473,7 +474,7 @@ export function AddProductForm() {
               <input
                 type="checkbox"
                 id="continue-selling"
-                className="w-4 h-4 text-[#4f507f] rounded focus:ring-[#4f507f]"
+                className="w-4 h-4 bg-white text-[#4f507f] rounded focus:ring-[#4f507f]"
               />
               <label htmlFor="continue-selling" className="text-sm text-gray-700">
                 Continue selling when out of stock

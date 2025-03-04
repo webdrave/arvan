@@ -12,7 +12,7 @@ export default function Footer() {
           {/* Company Info */}
           <div className="space-y-8">
             <Link href="/" className="inline-block">
-              <Image src="/logo.svg" alt="" />
+              <Image src="/logo.svg" width={100} height={100} alt="The Arvan" />
             </Link>
             <p className="text-[#999999] text-sm leading-relaxed">
               At The Arvan, we combine comfort and style. Our slippers elevate your day—whether you&apos;re relaxing, running
