@@ -1,22 +1,24 @@
-import { DashboardHeader } from "@/components/admin/dashboard-header"
-import { ProductOverview } from "@/components/admin/product-overview"
-import { RecentOrders } from "@/components/admin/recent-orders"
-import { TopSellingProducts } from "@/components/admin/top-selling-products"
-import { InventoryAlerts } from "@/components/admin/inventory-alerts"
+import { DashboardHeader } from "@/components/admin/dashboard-header";
+import { ProductOverview } from "@/components/admin/product-overview";
+import { RecentOrders } from "@/components/admin/recent-orders";
+import { TopSellingProducts } from "@/components/admin/top-selling-products";
+import { InventoryAlerts } from "@/components/admin/inventory-alerts";
+import styles from "./admin.module.css";
 
 export default function AdminDashboard() {
   return (
-    <div className="p-6">
-      <DashboardHeader />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-        <ProductOverview />
-        <RecentOrders />
+    <main className={styles.adminPage}>
+      <div className="p-6">
+        <DashboardHeader />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+          <ProductOverview />
+          <RecentOrders />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+          <TopSellingProducts />
+          <InventoryAlerts />
+        </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-        <TopSellingProducts />
-        <InventoryAlerts />
-      </div>
-    </div>
-  )
+    </main>
+  );
 }
-
