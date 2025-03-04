@@ -23,15 +23,18 @@ body {
     text-wrap: balance;
   }
 }
-
-
+body.admin-panel {
+  --foreground: 0 0% 3.9%;
+  --background: 0 0% 100%;
+}
 
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
 
   }
-
+  
+  
 
 @layer base {
   :root {

@@ -3,11 +3,9 @@ import { ProductOverview } from "@/components/admin/product-overview";
 import { RecentOrders } from "@/components/admin/recent-orders";
 import { TopSellingProducts } from "@/components/admin/top-selling-products";
 import { InventoryAlerts } from "@/components/admin/inventory-alerts";
-import styles from "./admin.module.css";
 
 export default function AdminDashboard() {
   return (
-    <main className={styles.adminPage}>
       <div className="p-6">
         <DashboardHeader />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
@@ -19,6 +17,5 @@ export default function AdminDashboard() {
           <InventoryAlerts />
         </div>
       </div>
-    </main>
   );
 }

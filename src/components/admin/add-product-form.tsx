@@ -3,7 +3,6 @@
 import { useState } from "react"
 import { Upload, X, Check, Plus, Trash2, ChevronRight } from "lucide-react"
 import Image from "next/image"
-import styles from "../../app/admin/admin.module.css";
 
 export function AddProductForm() {
   const [images, setImages] = useState<string[]>([])
@@ -113,7 +112,6 @@ export function AddProductForm() {
   }
 
   return (
-    <div className={styles.adminPage}>
 
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div className="lg:col-span-2 space-y-6">
@@ -501,8 +499,6 @@ export function AddProductForm() {
         </div>
       </div>
     </div>
-    </div>
-
   )
 }
 
