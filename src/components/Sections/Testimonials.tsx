@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useRef } from 'react';
-import { FaStar, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import Image from 'next/image';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import { Navigation, Pagination } from 'swiper/modules';
+import { useRef } from "react";
+import { FaStar, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import Image from "next/image";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import { Navigation, Pagination } from "swiper/modules";
 
 export default function Testimonials() {
   const prevRef = useRef<HTMLButtonElement>(null);
@@ -15,53 +15,53 @@ export default function Testimonials() {
 
   const testimonials = [
     {
-      text: 'Finally there is someone making it for me to use projects. Love ya❤️❤️❤️',
-      name: 'John Williams',
-      role: 'Lead designer',
+      text: "Finally there is someone making it for me to use projects. Love ya❤️❤️❤️",
+      name: "John Williams",
+      role: "Lead designer",
       rating: 4,
-      img: '/user1.png',
+      img: "/user1.png",
     },
     {
-      text: 'The UI is smooth and user-friendly. I love how easy it is to navigate.',
-      name: 'Michael Brown',
-      role: 'Software Engineer',
+      text: "The UI is smooth and user-friendly. I love how easy it is to navigate.",
+      name: "Michael Brown",
+      role: "Software Engineer",
       rating: 4,
-      img: '/user2.png',
+      img: "/user2.png",
     },
     {
-      text: 'Fantastic service! I have never been this productive before. Great job!',
-      name: 'Sarah Lee',
-      role: 'Marketing Specialist',
+      text: "Fantastic service! I have never been this productive before. Great job!",
+      name: "Sarah Lee",
+      role: "Marketing Specialist",
       rating: 5,
-      img: '/user3.png',
+      img: "/user3.png",
     },
     {
-      text: 'This platform has completely changed how I manage my projects.',
-      name: 'Alice Johnson',
-      role: 'Project Manager',
+      text: "This platform has completely changed how I manage my projects.",
+      name: "Alice Johnson",
+      role: "Project Manager",
       rating: 5,
-      img: '/user1.png',
+      img: "/user1.png",
     },
     {
-      text: 'The UI is smooth and user-friendly. I love how easy it is to navigate.',
-      name: 'Michael Brown',
-      role: 'Software Engineer',
+      text: "The UI is smooth and user-friendly. I love how easy it is to navigate.",
+      name: "Michael Brown",
+      role: "Software Engineer",
       rating: 4,
-      img: '/user2.png',
+      img: "/user2.png",
     },
     {
-      text: 'Fantastic service! I have never been this productive before. Great job!',
-      name: 'Sarah Lee',
-      role: 'Marketing Specialist',
+      text: "Fantastic service! I have never been this productive before. Great job!",
+      name: "Sarah Lee",
+      role: "Marketing Specialist",
       rating: 5,
-      img: '/user3.png',
+      img: "/user3.png",
     },
     {
-      text: 'The UI is smooth and user-friendly. I love how easy it is to navigate.',
-      name: 'Michael Brown',
-      role: 'Software Engineer',
+      text: "The UI is smooth and user-friendly. I love how easy it is to navigate.",
+      name: "Michael Brown",
+      role: "Software Engineer",
       rating: 4,
-      img: '/user2.png',
+      img: "/user2.png",
     },
   ];
 
@@ -104,7 +104,10 @@ export default function Testimonials() {
           onSwiper={(swiper) => {
             setTimeout(() => {
               // Ensure navigation is defined before accessing its properties
-              if (swiper.params.navigation && typeof swiper.params.navigation === 'object') {
+              if (
+                swiper.params.navigation &&
+                typeof swiper.params.navigation === "object"
+              ) {
                 swiper.params.navigation.prevEl = prevRef.current;
                 swiper.params.navigation.nextEl = nextRef.current;
                 swiper.navigation.init();
@@ -116,7 +119,10 @@ export default function Testimonials() {
           className="mySwiper w-full h-full"
         >
           {testimonials.map((testimonial, index) => (
-            <SwiperSlide key={index} className="flex justify-center items-center">
+            <SwiperSlide
+              key={index}
+              className="flex justify-center items-center"
+            >
               <div className="relative w-full h-auto bg-[#1E1E1E] border border-gray-700 rounded-xl p-6 sm:p-9 flex flex-col items-center text-center shadow-lg">
                 {/* Background Circle */}
                 <div className="absolute w-40 h-40 bg-gradient-to-br blur-2xl from-[#6FD351] to-[#C2E53A] rounded-3xl opacity-30 -top-18 left-16"></div>
@@ -131,8 +137,11 @@ export default function Testimonials() {
                   {[...Array(5)].map((_, i) => (
                     <FaStar
                       key={i}
-                      className={`text-lg sm:text-xl ${i < testimonial.rating ? 'text-[#FFA43C]' : 'text-gray-500'
-                        }`}
+                      className={`text-lg sm:text-xl ${
+                        i < testimonial.rating
+                          ? "text-[#FFA43C]"
+                          : "text-gray-500"
+                      }`}
                     />
                   ))}
                 </div>
@@ -147,7 +156,9 @@ export default function Testimonials() {
                     className="rounded-full border border-gray-500"
                   />
                   <div className="text-left">
-                    <h3 className="text-white font-semibold">{testimonial.name}</h3>
+                    <h3 className="text-white font-semibold">
+                      {testimonial.name}
+                    </h3>
                     <p className="text-gray-400 text-sm">{testimonial.role}</p>
                   </div>
                 </div>

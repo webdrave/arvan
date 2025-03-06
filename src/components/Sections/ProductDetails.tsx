@@ -1,7 +1,7 @@
-"use client"
-import React, { useState } from 'react';
-import { Star, ShoppingCart } from 'lucide-react';
-import Image from 'next/image';
+"use client";
+import React, { useState } from "react";
+import { Star, ShoppingCart } from "lucide-react";
+import Image from "next/image";
 
 const ProductDetails = () => {
   const [selectedColor, setSelectedColor] = useState("White");
@@ -23,7 +23,6 @@ const ProductDetails = () => {
       "/images/shoe3.png",
       "/images/shoe4.png",
       "/images/shoe5.avif",
-
     ],
     details: {
       material: "Leather",
@@ -68,11 +67,21 @@ const ProductDetails = () => {
         <div className="pt-4 lg:pt-10">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-3">
             <div>
-              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold">{product.name}</h2>
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold">
+                {product.name}
+              </h2>
               <div className="flex items-center gap-2 sm:gap-5 my-2 flex-wrap">
-                <p className="text-white text-lg sm:text-xl font-bold">{product.currency}{product.price}</p>
-                <p className="text-[#858585] text-lg sm:text-xl font-bold line-through">{product.currency}{product.originalPrice}</p>
-                <div className="text-black text-xs border rounded-md bg-[#C2E53A] font-bold px-1">50%</div>
+                <p className="text-white text-lg sm:text-xl font-bold">
+                  {product.currency}
+                  {product.price}
+                </p>
+                <p className="text-[#858585] text-lg sm:text-xl font-bold line-through">
+                  {product.currency}
+                  {product.originalPrice}
+                </p>
+                <div className="text-black text-xs border rounded-md bg-[#C2E53A] font-bold px-1">
+                  50%
+                </div>
               </div>
             </div>
 
@@ -82,10 +91,12 @@ const ProductDetails = () => {
                 <span className="text-sm">{product.rating}</span>
                 <span className="text-sm">(1245)</span>
               </div>
-              <button className="text-[#bababa] text-sm underline">Write a Review</button>
+              <button className="text-[#bababa] text-sm underline">
+                Write a Review
+              </button>
             </div>
           </div>
-          <hr className="border-gray-600 my-4"/>
+          <hr className="border-gray-600 my-4" />
 
           {/* Color Selection */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-3">
@@ -100,7 +111,9 @@ const ProductDetails = () => {
                     height={200}
                     alt={color}
                     className={`w-12 h-12 rounded-sm border-2 cursor-pointer transition-all duration-200 ${
-                      selectedColor === color ? "border-[#c2e53a]" : "border-white"
+                      selectedColor === color
+                        ? "border-[#c2e53a]"
+                        : "border-white"
                     }`}
                     onClick={() => setSelectedColor(color)}
                   />
@@ -114,7 +127,9 @@ const ProductDetails = () => {
                   <button
                     key={size}
                     className={`w-12 h-12 rounded-sm border-2 ${
-                      selectedSize === size ? "border-[#c2e53a]" : "border-white"
+                      selectedSize === size
+                        ? "border-[#c2e53a]"
+                        : "border-white"
                     }`}
                     onClick={() => setSelectedSize(size)}
                   >
@@ -142,40 +157,58 @@ const ProductDetails = () => {
 
           {/* Product Details */}
           <div className="mt-4 border-t border-white pt-4">
-            <h3 className="text-2xl sm:text-3xl lg:text-[32px] font-bold">Product Details</h3>
+            <h3 className="text-2xl sm:text-3xl lg:text-[32px] font-bold">
+              Product Details
+            </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3 text-base lg:text-lg">
-              <p className="text-[#b3b3b3]">Material</p> <p className="text-white">{product.details.material}</p>
-              <p className="text-[#b3b3b3]">Color</p> <p className="text-white">{product.details.color}</p>
-              <p className="text-[#b3b3b3]">Name</p> <p className="text-white">{product.details.name}</p>
-              <p className="text-[#b3b3b3]">Size</p> <p className="text-white">{product.details.size}</p>
+              <p className="text-[#b3b3b3]">Material</p>{" "}
+              <p className="text-white">{product.details.material}</p>
+              <p className="text-[#b3b3b3]">Color</p>{" "}
+              <p className="text-white">{product.details.color}</p>
+              <p className="text-[#b3b3b3]">Name</p>{" "}
+              <p className="text-white">{product.details.name}</p>
+              <p className="text-[#b3b3b3]">Size</p>{" "}
+              <p className="text-white">{product.details.size}</p>
             </div>
           </div>
 
           {/* Ratings & Reviews */}
           <div className="mt-8 border-t border-white pt-4">
-            <h3 className="text-2xl sm:text-3xl lg:text-[32px] font-bold">Ratings & Review</h3>
+            <h3 className="text-2xl sm:text-3xl lg:text-[32px] font-bold">
+              Ratings & Review
+            </h3>
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between my-3 sm:m-5 gap-4 sm:gap-0">
               <div className="flex items-center gap-1">
                 <div className="border border-[#c2e53a] px-2 py-1 mr-4 rounded-md flex items-center gap-1">
                   <Star className="text-[#c2e53a] h-4 w-4" />
                   <span className="text-sm">{product.rating}</span>
                 </div>
-                <span className="text-[#bababa] text-sm">{product.totalRatings} of Total Ratings</span>
+                <span className="text-[#bababa] text-sm">
+                  {product.totalRatings} of Total Ratings
+                </span>
               </div>
-              <button className="text-base px-4 py-2 rounded-lg border border-[#C2E53A] w-full sm:w-48 h-10"
+              <button
+                className="text-base px-4 py-2 rounded-lg border border-[#C2E53A] w-full sm:w-48 h-10"
                 style={{
-                  background: 'linear-gradient(90deg, #C2E53A 0%, rgba(107, 127, 32, 0) 100%)'
-                }}>
+                  background:
+                    "linear-gradient(90deg, #C2E53A 0%, rgba(107, 127, 32, 0) 100%)",
+                }}
+              >
                 Rate Product
               </button>
             </div>
 
             <div className="mt-3 flex flex-wrap gap-3 sm:gap-6">
-              {["Color", "Comfort", "Perfect Fit", "Value for Money"].map((filter) => (
-                <button key={filter} className="border border-[#c2e53a] px-3 sm:px-6 py-1 rounded-sm text-sm sm:text-base">
-                  {filter}
-                </button>
-              ))}
+              {["Color", "Comfort", "Perfect Fit", "Value for Money"].map(
+                (filter) => (
+                  <button
+                    key={filter}
+                    className="border border-[#c2e53a] px-3 sm:px-6 py-1 rounded-sm text-sm sm:text-base"
+                  >
+                    {filter}
+                  </button>
+                )
+              )}
             </div>
 
             <hr className="opacity-50 my-4" />
@@ -188,7 +221,8 @@ const ProductDetails = () => {
                 </div>
               </div>
               <p className="text-base text-white mt-2">
-                It{"'"}s is not very comfortable but ok ok product, not much good as we thought (bekar hain pesa barbaad) 
+                It{"'"}s is not very comfortable but ok ok product, not much
+                good as we thought (bekar hain pesa barbaad)
               </p>
             </div>
           </div>
@@ -196,6 +230,6 @@ const ProductDetails = () => {
       </div>
     </div>
   );
-}
+};
 
 export default ProductDetails;

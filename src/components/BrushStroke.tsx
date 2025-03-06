@@ -23,22 +23,23 @@ const BrushStroke = () => {
         clipPath: "inset(0 100% 0 0)",
       });
 
-      gsap.timeline({
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 75%",
-          toggleActions: "play none none none",
-        },
-      })
-      .to(clipPathRef.current, {
-        opacity: 1,
-        duration: 0.3,
-      })
-      .to(clipPathRef.current, {
-        clipPath: "inset(0 0% 0 0)",
-        duration: 1.5,
-        ease: "power2.out",
-      });
+      gsap
+        .timeline({
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: "top 75%",
+            toggleActions: "play none none none",
+          },
+        })
+        .to(clipPathRef.current, {
+          opacity: 1,
+          duration: 0.3,
+        })
+        .to(clipPathRef.current, {
+          clipPath: "inset(0 0% 0 0)",
+          duration: 1.5,
+          ease: "power2.out",
+        });
     });
 
     return () => ctx.revert();
