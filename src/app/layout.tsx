@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { GSAPProvider } from '@/context/GSAPContext';
+import { GSAPProvider } from "@/context/GSAPContext";
 import AdminStyles from "@/components/AdminStyles";
+import { OverlayProvider } from "@/context/OverlayContext";
+import { Theme } from "@radix-ui/themes";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,15 +29,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-      <meta name="color-scheme" content="dark" />
+        <meta name="color-scheme" content="dark" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AdminStyles />
-        <GSAPProvider>
-          {children}
-        </GSAPProvider>
+        <Theme>
+          <AdminStyles />
+          <GSAPProvider>
+            <OverlayProvider>{children}</OverlayProvider>
+          </GSAPProvider>
+        </Theme>
       </body>
     </html>
   );

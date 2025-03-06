@@ -1,71 +1,90 @@
 "use client";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay } from 'swiper/modules';
-import 'swiper/css';
-import Slidebox from '../Slidebox';
-import { ArrowLeft } from 'lucide-react';
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from "swiper/modules";
+import "swiper/css";
+import Slidebox from "../Slidebox";
+import { ArrowLeft } from "lucide-react";
+import { useEffect, useState } from "react";
 
 type Slide = {
-    img: string;
-    name: string;
-    price: number;
-    category: string;
-    discount?: number;
-  };
-  
-  const NewArrivals: React.FC = () => {
-    const slides: Slide[] = [
-      {
-        img: "/slides/1.png",
-        name: "Wireless Headphones",
-        price: 99.99,
-        category: "Electronics",
-        discount: 0,
-      },
-      {
-        img: "/slides/2.png",
-        name: "Leather Jacket",
-        price: 149.99,
-        category: "Fashion",
-        discount: 15,
-      },
-      {
-        img: "/slides/3.png",
-        name: "Smart Watch",
-        price: 199.99,
-        category: "Electronics",
-        discount: 0,
-      },
-      {
-        img: "/slides/4.png",
-        name: "Running Shoes",
-        price: 89.99,
-        category: "Sports",
-        discount: 20,
-      },
-      {
-        img: "/slides/5.png",
-        name: "Coffee Maker",
-        price: 59.99,
-        category: "Home Appliances",
-        discount: 0,
-      },
-      {
-        img: "/slides/6.png",
-        name: "Backpack",
-        price: 49.99,
-        category: "Accessories",
-        discount: 10,
-      },
-      {
-        img: "/slides/7.png",
-        name: "Bluetooth Speaker",
-        price: 79.99,
-        category: "Electronics",
-        discount: 0,
-      },
-    ];
-  
+  img: string;
+  name: string;
+  price: number;
+  category: string;
+  discount?: number;
+};
+
+const NewArrivals: React.FC = () => {
+  const slides: Slide[] = [
+    {
+      img: "/slides/1.png",
+      name: "Wireless Headphones",
+      price: 99.99,
+      category: "Electronics",
+      discount: 0,
+    },
+    {
+      img: "/slides/2.png",
+      name: "Leather Jacket",
+      price: 149.99,
+      category: "Fashion",
+      discount: 15,
+    },
+    {
+      img: "/slides/3.png",
+      name: "Smart Watch",
+      price: 199.99,
+      category: "Electronics",
+      discount: 0,
+    },
+    {
+      img: "/slides/4.png",
+      name: "Running Shoes",
+      price: 89.99,
+      category: "Sports",
+      discount: 20,
+    },
+    {
+      img: "/slides/5.png",
+      name: "Coffee Maker",
+      price: 59.99,
+      category: "Home Appliances",
+      discount: 0,
+    },
+    {
+      img: "/slides/6.png",
+      name: "Backpack",
+      price: 49.99,
+      category: "Accessories",
+      discount: 10,
+    },
+    {
+      img: "/slides/7.png",
+      name: "Bluetooth Speaker",
+      price: 79.99,
+      category: "Electronics",
+      discount: 0,
+    },
+  ];
+  const [autoplayDelay, setAutoplayDelay] = useState(3000); // Default delay
+
+  useEffect(() => {
+    const updateAutoplay = () => {
+      const screenWidth = window.innerWidth;
+      if (screenWidth <= 450) {
+        setAutoplayDelay(1000); // 1s delay for small screens
+      } else {
+        setAutoplayDelay(3000); // 3s delay for others
+      }
+    };
+
+    updateAutoplay(); // Initial run
+    window.addEventListener("resize", updateAutoplay); // Listen for resize
+
+    return () => {
+      window.removeEventListener("resize", updateAutoplay);
+    };
+  }, []);
 
   return (
     <div className="w-full min-h-[500px] mt-24">
@@ -93,15 +112,22 @@ type Slide = {
           modules={[Autoplay]}
           spaceBetween={10}
           slidesPerView={1}
+          autoplay={{
+            delay: autoplayDelay, // Delay between slides in milliseconds
+            disableOnInteraction: true, // Continue autoplay even after user interaction
+          }}
           centeredSlides={true}
           loop={true}
           speed={1000}
           breakpoints={{
-            640: {
+            450: {
               slidesPerView: 1,
               spaceBetween: 10,
+              autoplay: {
+                delay: 1000,
+              },
             },
-            768: {
+            451: {
               slidesPerView: 2,
               spaceBetween: 20,
             },
@@ -121,7 +147,10 @@ type Slide = {
           className="w-full h-full flex items-center justify-center"
         >
           {slides.map((slide, index) => (
-            <SwiperSlide key={index} className="h-full flex justify-center items-center p-2">
+            <SwiperSlide
+              key={index}
+              className="h-full flex justify-center items-center p-2"
+            >
               <Slidebox
                 image={slide.img}
                 name={slide.name}

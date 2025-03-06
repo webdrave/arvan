@@ -4,6 +4,7 @@ import BrushStroke from "../BrushStroke";
 
 import HorizontalScroll from "../HorizontalScroll";
 
+
 const Section2 = () => {
   return (
     <div className="relative w-full min-h-[50dvh] ">
@@ -16,7 +17,7 @@ const Section2 = () => {
       <StrokeMarquee
         direction="right"
         text="STYLISH / COMFORT / AFFORDABLE /&nbsp;"
-        StrokeColor="1.5px #6FD351"
+        StrokeColor="2px #6FD351"
       />
 
       <div className="relative w-full min-h-[50dvh] mt-10">
