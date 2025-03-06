@@ -4,13 +4,96 @@ import { useState } from "react";
 import { Upload, X, Check, Plus, Trash2, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import UploadPopup from "../UploadPopup";
+import { Category, Product } from "@/types/types";
+import { z } from "zod";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export function AddProductForm() {
-  const [images, setImages] = useState<string[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  // const [images, setImages] = useState<string[]>([]);
+  // const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [isUploadPopupOpen, setIsUploadPopupOpen] = useState(false);
   const [varientId, setVarientId] = useState<string>("");
   const [varientImgPopUp, setVarientImgPopUp] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+  const [derror, setderror] = useState<string>("");
+  const [errors, setErrors] = useState({
+    name: "",
+    description: "",
+    price: "",
+    variants: "",
+    images: "",
+    category: "",
+    material: "",
+  });
+
+  const [product, setProduct] = useState<z.infer<typeof Product>>({
+    name: "",
+    description: "",
+    price: 0,
+    discountPrize: 0,
+    category_id: "",
+    material: "",
+    assets: [],
+  });
+
+  const validateProduct = () => {
+    const newErrors = {
+      name: "",
+      description: "",
+      price: "",
+      variants: "",
+      images: "",
+      category: "",
+      material: "",
+    };
+    if (!product.name.trim()) {
+      newErrors.name = "Product name is required";
+    }
+
+    if (!product.description.trim()) {
+      newErrors.description = "Product description is required";
+    }
+
+    if (product.price <= 0) {
+      newErrors.price = "Price must be greater than 0";
+    }
+
+    if (product.assets?.length === 0) {
+      newErrors.images = "At least one product image is required";
+    }
+
+    if (!product.category_id.trim()) {
+      newErrors.category = "Please select a category";
+    }
+
+    if (!product.material.trim()) {
+      newErrors.material = "Please select a material";
+    }
+
+    if (variants.length > 0) {
+      const hasInvalidVariant = variants.some(
+        (variant) =>
+          !variant.color ||
+          variant.images.length === 0 ||
+          variant.sizes.length === 0
+      );
+      if (hasInvalidVariant) {
+        newErrors.variants = "All variants must have color, images and sizes";
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.values(newErrors).every((error) => !error);
+  };
+
+  // const saveProduct = () => {
+  //   if (!validateProduct()) {
+  //     // Show error toast or alert
+  //     return;
+  //   }
+  //   // Proceed with saving
+  // };
+
   interface Variant {
     isOpen: boolean;
     id: string;
@@ -22,7 +105,6 @@ export function AddProductForm() {
       quantity: number;
     }[];
   }
-
   const [variants, setVariants] = useState<Variant[]>([]);
 
   const addVariant = () => {
@@ -104,36 +186,70 @@ export function AddProductForm() {
       })
     );
   };
-  const categories = [
-    "Electronics",
-    "Clothing",
-    "Home & Garden",
-    "Beauty",
-    "Sports",
-    "Toys",
-    "Books",
-    "Automotive",
-  ];
+
+  const categoryQuery = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/category`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      const data = await response.json();
+      return data;
+    },
+  });
 
   const handleAddImage = (imageUrl: string) => {
-    setImages([...images, imageUrl]);
+    setProduct({
+      ...product,
+      assets: [...(product.assets || []), { url: imageUrl, type: "IMAGE" }],
+    });
     setIsUploadPopupOpen(false);
   };
 
   const handleRemoveImage = (index: number) => {
-    const newImages = [...images];
-    newImages.splice(index, 1);
-    setImages(newImages);
-  };
+    const newAssets = [...(product.assets || [])];
+    newAssets.splice(index, 1);
+    setProduct({
+      ...product,
+      assets: newAssets,
+    });
+  };  
+  const productMutation = useMutation({
+    mutationFn: async (newProduct) => {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newProduct),
+        }
+      );
+      return response.json();
+    },
+    onSuccess: (data) => {
+      console.log("Product saved successfully", data);
+  
+      // Clear form
+      setProduct({
+        name: "",
+        description: "",
+        price: 0,
+        discountPrize: 0,
+        category_id: "",
+        material: "",
+        assets: [],
+      });
+    },
+  });
 
-  const toggleCategory = (category: string) => {
-    if (selectedCategories.includes(category)) {
-      setSelectedCategories(selectedCategories.filter((c) => c !== category));
-    } else {
-      setSelectedCategories([...selectedCategories, category]);
-    }
+  const saveProduct = async () => {
+    if (!validateProduct()) return;
+    productMutation.mutate(product as any); // Call mutation to save product
   };
-
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div className="lg:col-span-2 space-y-6">
@@ -149,9 +265,16 @@ export function AddProductForm() {
               </label>
               <input
                 type="text"
+                value={product.name}
+                onChange={(e) =>
+                  setProduct({ ...product, name: e.target.value })
+                }
                 className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4f507f]"
                 placeholder="Enter product name"
               />
+              {errors.name && (
+                <p className="text-red-500 text-xs">{errors.name}</p>
+              )}
             </div>
 
             <div>
@@ -160,12 +283,19 @@ export function AddProductForm() {
               </label>
               <textarea
                 rows={4}
+                value={product.description}
+                onChange={(e) =>
+                  setProduct({ ...product, description: e.target.value })
+                }
                 className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4f507f]"
                 placeholder="Enter product description"
               />
+              {errors.description && (
+                <p className="text-red-500 text-xs">{errors.description}</p>
+              )}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   SKU
@@ -186,17 +316,17 @@ export function AddProductForm() {
                   placeholder="Enter barcode"
                 />
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
         <div className="bg-white rounded-lg p-6 shadow-sm">
           <h2 className="text-lg font-medium mb-4 text-[#4f507f]">Media</h2>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {images.map((image, index) => (
+            {product.assets?.map((image, index) => (
               <div key={index} className="relative group">
                 <Image
-                  src={image || "/logo.svg"}
+                  src={image.url || "/logo.svg"}
                   alt={`Product image ${index + 1}`}
                   width={200}
                   height={200}
@@ -217,6 +347,9 @@ export function AddProductForm() {
               <span className="mt-2 text-sm">Add Image</span>
             </button>
           </div>
+          {errors.images && (
+            <p className="text-red-500 text-xs">{errors.images}</p>
+          )}
         </div>
         <div className="bg-white rounded-lg p-6 shadow-sm">
           <h2 className="text-lg font-medium mb-4 text-[#4f507f]">Pricing</h2>
@@ -228,41 +361,62 @@ export function AddProductForm() {
               </label>
               <div className="relative">
                 <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-                  $
+                  Rs
                 </span>
                 <input
                   type="text"
-                  className="w-full pl-8 pr-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4f507f]"
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (!/^\d*\.?\d*$/.test(value)) {
+                      setError("Please enter a valid number");
+                      return;
+                    }
+                    setError("");
+                    setProduct({
+                      ...product,
+                      price: value ? parseFloat(value) : 0,
+                    });
+                  }}
+                  className={`w-full pl-8 pr-3 py-2 bg-white border ${
+                    error ? "border-red-500" : "border-gray-300"
+                  } rounded-md focus:outline-none focus:ring-2 focus:ring-[#4f507f]`}
                   placeholder="0.00"
                 />
               </div>
+              {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+              {errors.price && (
+                <p className="mt-1 text-sm text-red-500">{errors.price}</p>
+              )}
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Discounted Price
               </label>
               <div className="relative">
                 <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-                  $
+                  Rs
                 </span>
                 <input
                   type="text"
-                  className="w-full pl-8 pr-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4f507f]"
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (!/^\d*\.?\d*$/.test(value)) {
+                      setderror("Please enter a valid number");
+                      return;
+                    }
+                    setderror("");
+                    setProduct({
+                      ...product,
+                      discountPrize: value ? parseFloat(value) : 0,
+                    });
+                  }}
+                  className={`w-full pl-8 pr-3 py-2 bg-white border ${
+                    derror ? "border-red-500" : "border-gray-300"
+                  } rounded-md focus:outline-none focus:ring-2 focus:ring-[#4f507f]`}
                   placeholder="0.00"
                 />
               </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Tax Rate (%)
-              </label>
-              <input
-                type="text"
-                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4f507f]"
-                placeholder="0"
-              />
+              {derror && <p className="mt-1 text-sm text-red-500">{derror}</p>}
             </div>
           </div>
         </div>
@@ -370,8 +524,8 @@ export function AddProductForm() {
                         <button
                           onClick={() => {
                             setVarientId(variant.id);
-                            setVarientImgPopUp(true)}
-                          }
+                            setVarientImgPopUp(true);
+                          }}
                           className="w-full h-28 border-2 border-dashed border-gray-300 rounded-md flex flex-col items-center justify-center text-gray-500 hover:text-[#4f507f] hover:border-[#4f507f] transition-colors">
                           <Upload size={20} />
                           <span className="mt-2 text-sm">Add Image</span>
@@ -481,41 +635,71 @@ export function AddProductForm() {
           <h2 className="text-lg font-medium mb-4 text-[#4f507f]">
             Organization
           </h2>
-
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Categories
               </label>
               <div className="space-y-2">
-                {categories.map((category) => (
-                  <div
-                    key={category}
-                    onClick={() => toggleCategory(category)}
-                    className={`flex items-center gap-2 p-2 rounded-md cursor-pointer ${
-                      selectedCategories.includes(category)
-                        ? "bg-[#edeefc] text-[#4f507f]"
-                        : "hover:bg-gray-100"
-                    }`}>
-                    <div
-                      className={`w-5 h-5 rounded-md flex items-center justify-center ${
-                        selectedCategories.includes(category)
-                          ? "bg-[#4f507f] text-white"
-                          : "border border-gray-300"
-                      }`}>
-                      {selectedCategories.includes(category) && (
-                        <Check size={14} />
-                      )}
-                    </div>
-                    <span>{category}</span>
+                {categoryQuery.isLoading ? (
+                  <div className="flex items-center flex-1 justify-start">
+                    {" "}
+                    Loading...
                   </div>
-                ))}
+                ) : (
+                  categoryQuery.data?.categories?.map((category: Category) => (
+                    <div
+                      key={category.id}
+                      onClick={() =>
+                        setProduct({ ...product, category_id: category.id })
+                      }
+                      className={`flex items-center gap-2 p-2 rounded-md cursor-pointer ${
+                        product.category_id === category.id
+                          ? "bg-[#edeefc] text-[#4f507f]"
+                          : "hover:bg-gray-100"
+                      }`}>
+                      <div
+                        className={`w-5 h-5 rounded-md flex items-center justify-center ${
+                          product.category_id === category.id
+                            ? "bg-[#4f507f] text-white"
+                            : "border border-gray-300"
+                        }`}>
+                        {product.category_id === category.id && (
+                          <Check size={14} />
+                        )}
+                      </div>
+                      <span>{category.name}</span>
+                      <span className="text-gray-500">{category.id}</span>
+                    </div>
+                  ))
+                )}
               </div>
+              {errors.category && (
+                <p className="text-red-500 text-xs">{errors.category}</p>
+              )}
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Tags
+                Material
+              </label>
+              <input
+                type="text"
+                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4f507f]"
+                placeholder="Enter material"
+                value={product.material}
+                onChange={(e) =>
+                  setProduct({ ...product, material: e.target.value })
+                }
+              />
+              {errors.material && (
+                <p className="text-red-500 text-xs">{errors.material}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Tags (Not working yet)
               </label>
               <input
                 type="text"
@@ -523,7 +707,7 @@ export function AddProductForm() {
                 placeholder="Enter tags separated by commas"
               />
             </div>
-          </div>
+          </div>{" "}
         </div>
 
         <div className="bg-white rounded-lg p-6 shadow-sm">
@@ -583,7 +767,8 @@ export function AddProductForm() {
         <div className="flex gap-3">
           <button
             type="submit"
-            className="flex-1 bg-[#4f507f] text-white py-2 px-4 rounded-md hover:bg-[#3e3f63] transition-colors">
+            className="flex-1 bg-[#4f507f] text-white py-2 px-4 rounded-md hover:bg-[#3e3f63] transition-colors"
+            onClick={saveProduct}>
             Save Product
           </button>
           <button

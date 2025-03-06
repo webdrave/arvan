@@ -1,29 +1,63 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Plus, Edit, Trash2 } from "lucide-react"
-
-const initialCategories = [
-  { id: 1, name: "Electronics", productCount: 120 },
-  { id: 2, name: "Clothing", productCount: 85 },
-  { id: 3, name: "Home & Garden", productCount: 65 },
-  { id: 4, name: "Beauty", productCount: 40 },
-  { id: 5, name: "Sports", productCount: 30 },
-]
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { Category } from "@/types/types"
 
 export function CategoriesList() {
-  const [categories, setCategories] = useState(initialCategories)
   const [newCategory, setNewCategory] = useState("")
+  const queryClient = useQueryClient()
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/category`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      })
+      const data = await response.json()
+      return data.categories
+    },
+  })
+
+  const addCategoryMutation = useMutation({
+    mutationFn: async (categoryName: string) => {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/category`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: categoryName }),
+      })
+      return response.json()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] }) // Refresh categories list
+    },  })
+
+  const deleteCategoryMutation = useMutation({
+    mutationFn: async (id: string) => {
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/category/${id}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      })
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] }) // Refresh categories list
+    },
+  })
 
   const handleAddCategory = () => {
-    if (newCategory.trim()) {
-      setCategories([...categories, { id: Date.now(), name: newCategory, productCount: 0 }])
-      setNewCategory("")
-    }
+    if (!newCategory.trim()) return
+    addCategoryMutation.mutate(newCategory)
+    setNewCategory("")
   }
 
-  const handleDeleteCategory = (id: number) => {
-    setCategories(categories.filter((category) => category.id !== id))
+  const handleDeleteCategory = (id: string) => {
+    deleteCategoryMutation.mutate(id)
+  }
+
+  if (isLoading) {
+    return <div>Loading...</div>
   }
 
   return (
@@ -35,7 +69,7 @@ export function CategoriesList() {
             value={newCategory}
             onChange={(e) => setNewCategory(e.target.value)}
             placeholder="New category name"
-            className="flex-grow px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-[#4f507f]"
+            className="flex-grow px-3 py-2 bg-white border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-[#4f507f]"
           />
           <button
             onClick={handleAddCategory}
@@ -46,7 +80,7 @@ export function CategoriesList() {
         </div>
       </div>
       <ul>
-        {categories.map((category) => (
+        {data?.map((category: Category) => (
           <li
             key={category.id}
             className="flex items-center justify-between px-6 py-4 border-b border-gray-200 last:border-b-0"
@@ -69,4 +103,3 @@ export function CategoriesList() {
     </div>
   )
 }
-

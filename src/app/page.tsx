@@ -12,20 +12,19 @@ import BestSellers from "@/components/Sections/bestSellers";
 
 export default function Home() {
   return (
-    
     <div className="overflow-x-hidden">
       <div className="px-2 pt-2">
-      <LandingPage></LandingPage>
+        <LandingPage/>
       </div>
-    <Navbar></Navbar>
-    <Section2></Section2>
-    <NewArrivals></NewArrivals>
-    <BestSellers></BestSellers>
-    <WhoWeAre></WhoWeAre>
-    <ShopNowAt></ShopNowAt>
-    <Testimonials></Testimonials>
-    <ContactForm></ContactForm>
-    <Footer></Footer>
+      <Navbar/>
+      <Section2/>
+      <NewArrivals/>
+      <BestSellers/>
+      <WhoWeAre/>
+      <ShopNowAt/>
+      <Testimonials/>
+      <ContactForm/>
+      <Footer/>
     </div>
   );
 }
