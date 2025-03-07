@@ -6,6 +6,9 @@ import { useState } from "react"
 import { Sidebar } from "@/components/admin/sidebar"
 import { NotificationSidebar } from "@/components/admin/notification-sidebar"
 import { Bell } from "lucide-react"
+import { queryClient } from "@/lib/client";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { QueryClientProvider } from "@tanstack/react-query"
 
 export default function AdminLayout({
   children,
@@ -15,6 +18,7 @@ export default function AdminLayout({
   const [isNotificationSidebarOpen, setIsNotificationSidebarOpen] = useState(false)
 
   return (
+    <QueryClientProvider client={queryClient}>
     <div className="flex min-h-screen bg-[#f9f9fa]">
       <Sidebar />
       <main className="flex-1 overflow-auto relative">
@@ -30,5 +34,7 @@ export default function AdminLayout({
       </main>
       <NotificationSidebar isOpen={isNotificationSidebarOpen} onClose={() => setIsNotificationSidebarOpen(false)} />
     </div>
+    <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   )
 }
