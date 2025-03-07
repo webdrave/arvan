@@ -485,9 +485,8 @@ const HorizontalScroll = () => {
           isMobile ? "block" : "hidden"
         } relative w-screen min-h-screen   overflow-hidden`}
       >
-            <GridBackground />
+        <GridBackground />
         <div className="relative ">
-      
           <div
             ref={mobileInnerRef}
             className="mobile-inner relative z-10 flex  flex-nowrap will-change-transform transform-gpu h-full"
@@ -509,10 +508,7 @@ const HorizontalScroll = () => {
                 </div>
               </div>
             ))}
-
           </div>
-
-          
 
           <div
             ref={mobileHeadingsRef}
@@ -586,15 +582,11 @@ const HorizontalScroll = () => {
           </div>
 
           <div className=" text-center -translate-y-[50%]">
-          <button className=" text-sm md:text-xl font-semibold p-5 bg-gradient-to-r from-[#c3e53a8a] to-[#b3d2343e] text-white uppercase shadow-[0px_0px_15px_#c3e53a] hover:shadow-[0px_0px_25px_#c3e53a] transition-all duration-300">
-            BUY NOW
-          </button>
+            <button className=" text-sm md:text-xl font-semibold p-5 bg-gradient-to-r from-[#c3e53a8a] to-[#b3d2343e] text-white uppercase shadow-[0px_0px_15px_#c3e53a] hover:shadow-[0px_0px_25px_#c3e53a] transition-all duration-300">
+              BUY NOW
+            </button>
+          </div>
         </div>
-
-        </div>
-
-      
-
       </div>
     </>
   );

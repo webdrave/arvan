@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState, ChangeEvent, FormEvent } from 'react';
-import { FaInstagram, FaFacebook } from 'react-icons/fa';
-import Image from 'next/image';
+import { useState, ChangeEvent, FormEvent } from "react";
+import { FaInstagram, FaFacebook } from "react-icons/fa";
+import Image from "next/image";
 
 // Define the type for the form data
 interface FormData {
@@ -15,14 +15,16 @@ interface FormData {
 export default function ContactForm() {
   // Initialize state with the FormData type
   const [formData, setFormData] = useState<FormData>({
-    name: '',
-    email: '',
-    mobile: '',
-    message: '',
+    name: "",
+    email: "",
+    mobile: "",
+    message: "",
   });
 
   // Handle input change with proper typing
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -39,7 +41,7 @@ export default function ContactForm() {
   return (
     <div className="relative flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 md:px-12 py-12">
       <h2 className="text-2xl sm:text-4xl md:text-6xl font-bold pb-6">
-        Contact {' '}
+        Contact{" "}
         <span className="relative">
           Us
           <Image
@@ -54,7 +56,12 @@ export default function ContactForm() {
 
       <div className="relative max-w-5xl w-full p-6 sm:p-8 text-white shadow-lg rounded-xl flex flex-col md:flex-row border border-gray-600 bg-transparent">
         <div className="absolute inset-0 z-0 opacity-50 md:opacity-70 blur-md scale-125">
-          <Image src="/background.svg" alt="Background" layout="fill" objectFit="cover" />
+          <Image
+            src="/background.svg"
+            alt="Background"
+            layout="fill"
+            objectFit="cover"
+          />
         </div>
 
         {/* Left Side - Form */}
@@ -64,7 +71,8 @@ export default function ContactForm() {
             <span className="text-white">?</span>
           </h2>
           <p className="text-gray-300 mt-2 text-xs sm:text-sm md:text-base leading-relaxed">
-            Lorem Ipsum Dolor Sit Amet. Lorem Ipsum Dolor Sit Amet. Lorem Ipsum Dolor Sit Amet.
+            Lorem Ipsum Dolor Sit Amet. Lorem Ipsum Dolor Sit Amet. Lorem Ipsum
+            Dolor Sit Amet.
           </p>
           <form className="mt-6 space-y-4 sm:space-y-6" onSubmit={handleSubmit}>
             <input
@@ -118,13 +126,16 @@ export default function ContactForm() {
             <div>
               <h3 className="text-[#C2E53A] font-semibold text-lg">EMAIL</h3>
               <p className="text-gray-300 mt-2 text-xs sm:text-sm md:text-base leading-relaxed">
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quod, temporibus!
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quod,
+                temporibus!
               </p>
             </div>
 
             {/* Follow Us Section */}
             <div className="w-full">
-              <h3 className="text-[#C2E53A] font-semibold text-lg">FOLLOW US ON</h3>
+              <h3 className="text-[#C2E53A] font-semibold text-lg">
+                FOLLOW US ON
+              </h3>
               <div className="flex space-x-4 mt-4">
                 <FaInstagram className="text-white text-3xl sm:text-4xl cursor-pointer" />
                 <FaInstagram className="text-white text-3xl sm:text-4xl cursor-pointer" />
@@ -135,7 +146,9 @@ export default function ContactForm() {
 
             {/* Phone No Section */}
             <div className="w-full">
-              <h3 className="text-[#C2E53A] font-semibold text-lg">PHONE NO.</h3>
+              <h3 className="text-[#C2E53A] font-semibold text-lg">
+                PHONE NO.
+              </h3>
               <p className="text-gray-300 mt-2 text-xs sm:text-sm md:text-base leading-relaxed">
                 +91 90391 XXXXX
               </p>
@@ -144,7 +157,8 @@ export default function ContactForm() {
 
           {/* Footer Text */}
           <p className="text-xs sm:text-sm md:text-base leading-relaxed mt-6">
-            Lorem Ipsum Dolor Sit Amet. Lorem Ipsum Dolor Sit Amet. Lorem Ipsum Dolor Sit Amet.
+            Lorem Ipsum Dolor Sit Amet. Lorem Ipsum Dolor Sit Amet. Lorem Ipsum
+            Dolor Sit Amet.
           </p>
         </div>
       </div>

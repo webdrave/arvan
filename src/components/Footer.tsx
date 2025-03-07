@@ -1,8 +1,7 @@
-import Link from "next/link"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Twitter, Instagram, Youtube } from "lucide-react"
-import Image from "next/image"
+import Link from "next/link";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Twitter, Instagram, Youtube } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -12,11 +11,12 @@ export default function Footer() {
           {/* Company Info */}
           <div className="space-y-8">
             <Link href="/" className="inline-block">
-              <Image src="/logo.svg" width={100} height={100} alt="The Arvan" />
+              <img src="/logo.svg" alt="" />
             </Link>
             <p className="text-[#999999] text-sm leading-relaxed">
-              At The Arvan, we combine comfort and style. Our slippers elevate your day—whether you&apos;re relaxing, running
-              errands, or just enjoying life—with the perfect balance of coziness and flair.
+              At The Arvan, we combine comfort and style. Our slippers elevate
+              your day—whether you&apos;re relaxing, running errands, or just
+              enjoying life—with the perfect balance of coziness and flair.
             </p>
             <div className="flex gap-4">
               <Link
@@ -52,7 +52,10 @@ export default function Footer() {
             <ul className="space-y-4">
               {["Home", "Products", "Track Order"].map((link) => (
                 <li key={link}>
-                  <Link href="#" className="text-[#999999] hover:text-white transition-colors">
+                  <Link
+                    href="#"
+                    className="text-[#999999] hover:text-white transition-colors"
+                  >
                     {link}
                   </Link>
                 </li>
@@ -65,19 +68,28 @@ export default function Footer() {
             <h3 className="text-lg font-medium">SUPPORT</h3>
             <ul className="space-y-4">
               <li>
-                <Link href="mailto:support@arvan.com" className="text-[#999999] hover:text-white transition-colors">
+                <Link
+                  href="mailto:support@arvan.com"
+                  className="text-[#999999] hover:text-white transition-colors"
+                >
                   Email
                 </Link>
               </li>
               <li>
-                <Link href="https://instagram.com" className="text-[#999999] hover:text-white transition-colors">
+                <Link
+                  href="https://instagram.com"
+                  className="text-[#999999] hover:text-white transition-colors"
+                >
                   Instagram
                 </Link>
               </li>
               <li>
                 <p className="text-[#999999]">
                   Phone :{" "}
-                  <Link href="tel:917428637234" className="hover:text-white transition-colors">
+                  <Link
+                    href="tel:917428637234"
+                    className="hover:text-white transition-colors"
+                  >
                     917428637234
                   </Link>
                 </p>
@@ -89,7 +101,8 @@ export default function Footer() {
           <div className="space-y-6">
             <h3 className="text-lg font-medium">NEWSLETTER</h3>
             <p className="text-[#999999] text-sm">
-              Sign up for our newsletter and get the latest updates, news and product offers via email.
+              Sign up for our newsletter and get the latest updates, news and
+              product offers via email.
             </p>
             <div className="flex">
               <Input
@@ -97,7 +110,10 @@ export default function Footer() {
                 placeholder="Email"
                 className="rounded-r-none bg-[#1E1E1E] border-r-0 focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
               />
-              <Button type="submit" className="rounded-l-none bg-white text-black hover:bg-white/90 px-4">
+              <Button
+                type="submit"
+                className="rounded-l-none bg-white text-black hover:bg-white/90 px-4"
+              >
                 →
               </Button>
             </div>
@@ -107,14 +123,17 @@ export default function Footer() {
         {/* Bottom Section */}
         <div className="mt-16 pt-8 border-t border-white/10">
           <div className="flex flex-col md:flex-row justify-between items-center gap-8">
-            <p className="text-sm text-[#999999]">© ARVAN | 2025 | ALL RIGHTS RESERVED</p>
+            <p className="text-sm text-[#999999]">
+              © ARVAN | 2025 | ALL RIGHTS RESERVED
+            </p>
             <div className="flex items-center gap-8">
-              <div className="flex gap-2">
-                
-              </div>
+              <div className="flex gap-2"></div>
               <div className="text-sm text-[#999999]">
                 MADE BY:{" "}
-                <Link href="https://webdrave.com" className="text-white hover:text-[#999999] transition-colors">
+                <Link
+                  href="https://webdrave.com"
+                  className="text-white hover:text-[#999999] transition-colors"
+                >
                   WEBDRAVE
                 </Link>
               </div>
@@ -123,6 +142,5 @@ export default function Footer() {
         </div>
       </div>
     </footer>
-  )
+  );
 }
-
