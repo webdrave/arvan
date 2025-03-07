@@ -6,6 +6,7 @@ import Image from "next/image";
 import UploadPopup from "../UploadPopup";
 import { Category, Product } from "@/types/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 export function AddProductForm() {
   // const [images, setImages] = useState<string[]>([]);
@@ -15,11 +16,29 @@ export function AddProductForm() {
   const [varientImgPopUp, setVarientImgPopUp] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [derror, setderror] = useState<string>("");
+
+  const router = useRouter();
+
+  const Sizes = [
+    "SIZE_5",
+    "SIZE_6",
+    "SIZE_7",
+    "SIZE_8",
+    "SIZE_9",
+    "SIZE_10",
+    "SIZE_11",
+    "SIZE_12",
+  ];
+
   interface Variant {
     isOpen: boolean;
     id: string;
     color: string;
-    images: string[];
+    customColor: boolean;
+    images: {
+      url: string;
+      type: "IMAGE" | "VIDEO";
+    }[];
     sizes: {
       id: string;
       name: string;
@@ -112,8 +131,13 @@ export function AddProductForm() {
       {
         id: crypto.randomUUID(),
         color: "",
+        customColor: false,
         images: [],
-        sizes: [],
+        sizes: [{
+          id: crypto.randomUUID(),
+          name: "SIZE_5",
+          quantity: 0
+        }],
         isOpen: true,
       },
     ]);
@@ -161,7 +185,7 @@ export function AddProductForm() {
         if (variant.id === varientId) {
           return {
             ...variant,
-            images: [...variant.images, imageUrl],
+            images: [...variant.images, { url: imageUrl, type: "IMAGE" }],
           };
         }
         return variant;
@@ -216,9 +240,37 @@ export function AddProductForm() {
       ...product,
       assets: newAssets,
     });
-  };  
+  };
+  const variantMutation = useMutation({
+    mutationFn: async (variant: {
+      productId: string;
+      color: string;
+      assets: {
+        url: string;
+        type: "IMAGE" | "VIDEO";
+      }[];
+      sizes: {
+        size: string;
+        stock: number;
+      }[];
+    }) => {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/color`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(variant),
+        }
+      );
+      return response.json();
+    },
+    onSuccess: (data) => {
+      console.log("Product color saved successfully", data);
+    },
+  });
+
   const productMutation = useMutation({
-    mutationFn: async (newProduct : Product) => {
+    mutationFn: async (newProduct: Product) => {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products`,
         {
@@ -230,33 +282,30 @@ export function AddProductForm() {
       return response.json();
     },
     onSuccess: (data) => {
-      console.log("Product saved successfully", data);
+      if (data.success && data.product.id) {
+        const productId = data.product.id;
 
-      if (data.success == true) {
-        // const productId = data.product.id;
-
-        if(variants.length > 0) {
-        }
+        // Iterate through variants and call the mutation for each one
+        variants.forEach((variant) => {
+          variantMutation.mutate({
+            productId,
+            color: variant.color,
+            assets: variant.images,
+            sizes: variant.sizes.map((size) => ({
+              size: size.name,
+              stock: size.quantity,
+            })),
+          });
+        });
       }
 
-  
-      // Clear form
-      setProduct({
-        name: "",
-        description: "",
-        price: 0,
-        discountPrize: 0,
-        category_id: "",
-        material: "",
-        assets: [],
-        status: "DRAFT",
-      });
+      router.push(`/product/${data.product.id}`);
     },
   });
 
   const saveProduct = async () => {
     if (!validateProduct()) return;
-    productMutation.mutate(product as Product  );
+    productMutation.mutate(product as Product);
   };
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -469,26 +518,73 @@ export function AddProductForm() {
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Color Variant
                       </label>
-                      <select
-                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#4f507f] focus:border-[#4f507f] bg-white shadow-sm"
-                        value={variant.color}
-                        onClick={(e) => e.stopPropagation()}
-                        onChange={(e) => {
-                          setVariants(
-                            variants.map((v) =>
-                              v.id === variant.id
-                                ? { ...v, color: e.target.value }
-                                : v
-                            )
-                          );
-                        }}>
-                        <option value="">Select Color</option>
-                        <option value="Red">Red</option>
-                        <option value="Blue">Blue</option>
-                        <option value="Green">Green</option>
-                        <option value="Black">Black</option>
-                        <option value="White">White</option>
-                      </select>
+                      {variant.customColor ? (
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#4f507f] focus:border-[#4f507f] bg-white shadow-sm"
+                            value={variant.color}
+                            onClick={(e) => e.stopPropagation()}
+                            onChange={(e) => {
+                              setVariants(
+                                variants.map((v) =>
+                                  v.id === variant.id
+                                    ? { ...v, color: e.target.value }
+                                    : v
+                                )
+                              );
+                            }}
+                            placeholder="Enter custom color"
+                          />
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setVariants(
+                                variants.map((v) =>
+                                  v.id === variant.id
+                                    ? { ...v, customColor: false, color: "" }
+                                    : v
+                                )
+                              );
+                            }}
+                            className="px-3 py-2 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200"
+                          >
+                            Back
+                          </button>
+                        </div>
+                      ) : (
+                        <select
+                          className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#4f507f] focus:border-[#4f507f] bg-white shadow-sm"
+                          value={variant.color}
+                          onClick={(e) => e.stopPropagation()}
+                          onChange={(e) => {
+                            if (e.target.value === "custom") {
+                              setVariants(
+                                variants.map((v) =>
+                                  v.id === variant.id
+                                    ? { ...v, customColor: true, color: "" }
+                                    : v
+                                )
+                              );
+                            } else {
+                              setVariants(
+                                variants.map((v) =>
+                                  v.id === variant.id
+                                    ? { ...v, color: e.target.value }
+                                    : v
+                                )
+                              );
+                            }
+                          }}>
+                          <option value="">Select Color</option>
+                          <option value="Red">Red</option>
+                          <option value="Blue">Blue</option>
+                          <option value="Green">Green</option>
+                          <option value="Black">Black</option>
+                          <option value="White">White</option>
+                          <option value="custom">Custom Color...</option>
+                        </select>
+                      )}
                     </div>
                   </div>
                   <button
@@ -511,7 +607,7 @@ export function AddProductForm() {
                         {variant.images?.map((image, index) => (
                           <div key={index} className="relative group">
                             <Image
-                              src={image || "/logo.svg"}
+                              src={image.url || "/logo.svg"}
                               width={200}
                               height={200}
                               alt={`${variant.color} variant image ${
@@ -573,13 +669,11 @@ export function AddProductForm() {
                                     })
                                   );
                                 }}>
-                                <option value="">Select Size</option>
-                                <option value="XS">XS</option>
-                                <option value="S">S</option>
-                                <option value="M">M</option>
-                                <option value="L">L</option>
-                                <option value="XL">XL</option>
-                                <option value="XXL">XXL</option>
+                                {Sizes.map((size) => (
+                                  <option key={size} value={size}>
+                                    {size.replace(/[^0-9]/g, "")}
+                                  </option>
+                                ))}
                               </select>
                             </div>
                             <div className="w-48">
@@ -717,7 +811,7 @@ export function AddProductForm() {
           </div>{" "}
         </div>
 
-        <div className="bg-white rounded-lg p-6 shadow-sm">
+        <div className="bg-white rounded-lg p-6 shadow-sm hidden ">
           <h2 className="text-lg font-medium mb-4 text-[#4f507f]">Inventory</h2>
 
           <div className="space-y-4">
@@ -771,32 +865,34 @@ export function AddProductForm() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg p-8 shadow-lg border border-gray-100">          
+        <div className="bg-white rounded-lg p-8 shadow-lg border border-gray-100">
           <h2 className="text-xl font-semibold mb-6 text-[#4f507f] flex items-center">
             <span className="inline-block w-2 h-2 bg-[#4f507f] rounded-full mr-2"></span>
             Status
           </h2>
 
           <div>
-              <div className="flex space-x-4">
-                <button
-                  onClick={() => setProduct({ ...product, status: "DRAFT" })}
-                  className={`px-4 py-2 rounded-md ${
-                    product.status === "DRAFT" ? "bg-yellow-100 text-yellow-800" : "bg-gray-100 text-gray-800"
-                  }`}
-                >
-                  Draft
-                </button>
-                <button
-                  onClick={() => setProduct({ ...product, status: "PUBLISHED" })}
-                  className={`px-4 py-2 rounded-md ${
-                    product.status === "PUBLISHED" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
-                  }`}
-                >
-                  Published
-                </button>
-              </div>
+            <div className="flex space-x-4">
+              <button
+                onClick={() => setProduct({ ...product, status: "DRAFT" })}
+                className={`px-4 py-2 rounded-md ${
+                  product.status === "DRAFT"
+                    ? "bg-yellow-100 text-yellow-800"
+                    : "bg-gray-100 text-gray-800"
+                }`}>
+                Draft
+              </button>
+              <button
+                onClick={() => setProduct({ ...product, status: "PUBLISHED" })}
+                className={`px-4 py-2 rounded-md ${
+                  product.status === "PUBLISHED"
+                    ? "bg-green-100 text-green-800"
+                    : "bg-gray-100 text-gray-800"
+                }`}>
+                Published
+              </button>
             </div>
+          </div>
         </div>
         <div className="flex gap-3">
           <button
