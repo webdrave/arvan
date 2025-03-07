@@ -1,5 +1,5 @@
 import { z } from "zod";
-export const Product = z.object({
+export const product = z.object({
     name: z.string().min(1, "Product name is required"),
     description: z.string().min(1, "Description is required"),
     price: z.number().positive("Price must be a positive number"),
@@ -14,9 +14,12 @@ export const Product = z.object({
         })
       )
       .optional(),
+    status: z.enum(['DRAFT', 'PUBLISHED']),
   });
 
-const category = z.object({
+export type Product = z.infer<typeof product>;
+
+export const category = z.object({
   id: z.string().uuid("Invalid category ID"),
   name: z.string().min(1, "Category name is required"),
   productCount: z.number().positive("Product count must be a positive number").optional(),

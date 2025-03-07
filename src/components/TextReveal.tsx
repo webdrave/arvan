@@ -109,18 +109,14 @@ const TextReveal: React.FC = () => {
   // Handle text resplitting on window resize
   useEffect(() => {
     const handleResize = () => {
-      if (!containerRef.current || !headingRef.current || !paragraphRef.current)
-        return;
-
+      if (!containerRef.current || !headingRef.current || !paragraphRef.current) return;
+  
       // Kill existing animations
       gsap.killTweensOf(".split-line");
-
+  
       const headingLines = applyTextReveal(headingRef.current, headingSplitRef);
-      const paragraphLines = applyTextReveal(
-        paragraphRef.current,
-        paragraphSplitRef
-      );
-
+      const paragraphLines = applyTextReveal(paragraphRef.current, paragraphSplitRef);
+  
       // Create new timeline
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -129,7 +125,7 @@ const TextReveal: React.FC = () => {
           toggleActions: "play none none none",
         },
       });
-
+  
       if (headingLines) {
         tl.to(headingLines, {
           yPercent: 0,
@@ -139,7 +135,7 @@ const TextReveal: React.FC = () => {
           ease: "power3.out",
         });
       }
-
+  
       if (paragraphLines) {
         tl.to(
           paragraphLines,
@@ -154,35 +150,36 @@ const TextReveal: React.FC = () => {
         );
       }
     };
-
+  
+    // Copy ref values to variables
+    const headingSplit = headingSplitRef.current;
+    const paragraphSplit = paragraphSplitRef.current;
+  
     // Debounce resize event
     let resizeTimeout: NodeJS.Timeout;
     const resizeHandler = () => {
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(handleResize, 200);
     };
-
+  
     window.addEventListener("resize", resizeHandler);
-
+  
     return () => {
       window.removeEventListener("resize", resizeHandler);
       clearTimeout(resizeTimeout);
-
+  
       // Clean up split instances
-      if (headingSplitRef.current) {
-        headingSplitRef.current.revert();
-      }
-      if (paragraphSplitRef.current) {
-        paragraphSplitRef.current.revert();
-      }
-
+      if (headingSplit) headingSplit.revert();
+      if (paragraphSplit) paragraphSplit.revert();
+  
       // Kill any remaining animations
       gsap.killTweensOf(".split-line");
-
+  
       // Kill ScrollTrigger instances
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
   }, []);
+  
 
   return (
     <div ref={containerRef} className="text-reveal-container">

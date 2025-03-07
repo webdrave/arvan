@@ -5,8 +5,7 @@ import { Upload, X, Check, Plus, Trash2, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import UploadPopup from "../UploadPopup";
 import { Category, Product } from "@/types/types";
-import { z } from "zod";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 export function AddProductForm() {
   // const [images, setImages] = useState<string[]>([]);
@@ -16,6 +15,18 @@ export function AddProductForm() {
   const [varientImgPopUp, setVarientImgPopUp] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [derror, setderror] = useState<string>("");
+  interface Variant {
+    isOpen: boolean;
+    id: string;
+    color: string;
+    images: string[];
+    sizes: {
+      id: string;
+      name: string;
+      quantity: number;
+    }[];
+  }
+  const [variants, setVariants] = useState<Variant[]>([]);
   const [errors, setErrors] = useState({
     name: "",
     description: "",
@@ -26,7 +37,7 @@ export function AddProductForm() {
     material: "",
   });
 
-  const [product, setProduct] = useState<z.infer<typeof Product>>({
+  const [product, setProduct] = useState<Product>({
     name: "",
     description: "",
     price: 0,
@@ -34,6 +45,7 @@ export function AddProductForm() {
     category_id: "",
     material: "",
     assets: [],
+    status: "DRAFT",
   });
 
   const validateProduct = () => {
@@ -93,19 +105,6 @@ export function AddProductForm() {
   //   }
   //   // Proceed with saving
   // };
-
-  interface Variant {
-    isOpen: boolean;
-    id: string;
-    color: string;
-    images: string[];
-    sizes: {
-      id: string;
-      name: string;
-      quantity: number;
-    }[];
-  }
-  const [variants, setVariants] = useState<Variant[]>([]);
 
   const addVariant = () => {
     setVariants([
@@ -219,7 +218,7 @@ export function AddProductForm() {
     });
   };  
   const productMutation = useMutation({
-    mutationFn: async (newProduct) => {
+    mutationFn: async (newProduct : Product) => {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products`,
         {
@@ -232,6 +231,14 @@ export function AddProductForm() {
     },
     onSuccess: (data) => {
       console.log("Product saved successfully", data);
+
+      if (data.success == true) {
+        // const productId = data.product.id;
+
+        if(variants.length > 0) {
+        }
+      }
+
   
       // Clear form
       setProduct({
@@ -242,13 +249,14 @@ export function AddProductForm() {
         category_id: "",
         material: "",
         assets: [],
+        status: "DRAFT",
       });
     },
   });
 
   const saveProduct = async () => {
     if (!validateProduct()) return;
-    productMutation.mutate(product as any); // Call mutation to save product
+    productMutation.mutate(product as Product  );
   };
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -669,7 +677,6 @@ export function AddProductForm() {
                         )}
                       </div>
                       <span>{category.name}</span>
-                      <span className="text-gray-500">{category.id}</span>
                     </div>
                   ))
                 )}
@@ -764,6 +771,33 @@ export function AddProductForm() {
           </div>
         </div>
 
+        <div className="bg-white rounded-lg p-8 shadow-lg border border-gray-100">          
+          <h2 className="text-xl font-semibold mb-6 text-[#4f507f] flex items-center">
+            <span className="inline-block w-2 h-2 bg-[#4f507f] rounded-full mr-2"></span>
+            Status
+          </h2>
+
+          <div>
+              <div className="flex space-x-4">
+                <button
+                  onClick={() => setProduct({ ...product, status: "DRAFT" })}
+                  className={`px-4 py-2 rounded-md ${
+                    product.status === "DRAFT" ? "bg-yellow-100 text-yellow-800" : "bg-gray-100 text-gray-800"
+                  }`}
+                >
+                  Draft
+                </button>
+                <button
+                  onClick={() => setProduct({ ...product, status: "PUBLISHED" })}
+                  className={`px-4 py-2 rounded-md ${
+                    product.status === "PUBLISHED" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+                  }`}
+                >
+                  Published
+                </button>
+              </div>
+            </div>
+        </div>
         <div className="flex gap-3">
           <button
             type="submit"
