@@ -3,7 +3,7 @@ export const product = z.object({
     name: z.string().min(1, "Product name is required"),
     description: z.string().min(1, "Description is required"),
     price: z.number().positive("Price must be a positive number"),
-    discountPrize: z.number().positive("Discount Prize must be a positive number").optional(),
+    discountPrice: z.number().positive("Discount Prize must be a positive number").optional(),
     category_id: z.string().cuid("Invalid category ID"),
     material: z.string().min(1, "Material is required"),
     assets: z

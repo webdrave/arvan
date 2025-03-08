@@ -9,8 +9,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
 export function AddProductForm() {
-  // const [images, setImages] = useState<string[]>([]);
-  // const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [isUploadPopupOpen, setIsUploadPopupOpen] = useState(false);
   const [varientId, setVarientId] = useState<string>("");
   const [varientImgPopUp, setVarientImgPopUp] = useState<boolean>(false);
@@ -60,7 +58,7 @@ export function AddProductForm() {
     name: "",
     description: "",
     price: 0,
-    discountPrize: 0,
+    discountPrice: 0,
     category_id: "",
     material: "",
     assets: [],
@@ -464,7 +462,7 @@ export function AddProductForm() {
                     setderror("");
                     setProduct({
                       ...product,
-                      discountPrize: value ? parseFloat(value) : 0,
+                      discountPrice: value ? parseFloat(value) : 0,
                     });
                   }}
                   className={`w-full pl-8 pr-3 py-2 bg-white border ${
