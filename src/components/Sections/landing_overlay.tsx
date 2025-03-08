@@ -1,6 +1,7 @@
 "use client";
 import { forwardRef, useState } from "react";
 import { useOverlayContext } from "@/context/OverlayContext";
+import Image from "next/image";
 
 const Landing_overlay = forwardRef<HTMLDivElement>((_, ref) => {
   const { animateOverlay } = useOverlayContext();
@@ -25,7 +26,9 @@ const Landing_overlay = forwardRef<HTMLDivElement>((_, ref) => {
     >
       <div className="w-full h-full flex flex-col gap-2 relative items-center justify-center">
         {hoveredIndex !== null && (
-          <img
+          <Image
+            width={500}
+            height={500}
             src={slides[hoveredIndex].image}
             alt=""
             className="w-full h-full bg-contain z-10 absolute transition-opacity duration-200"
