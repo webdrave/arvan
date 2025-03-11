@@ -1,14 +1,61 @@
 "use client";
+
 import AuthLayout from "@/components/AuthLayout";
 import { useRouter } from "next/navigation";
-import React from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { SignUpSchema } from "@/types/types";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { handleSignup } from "./actions/auth-functions";
+import toast from "react-hot-toast";
+// Define the form schema with Zod
 
 const SignUp = () => {
-  const handleSubmit = () => {
-    alert("SignUp Page Logic Here.");
-  };
-
   const router = useRouter();
+
+  // Initialize react-hook-form with Zod resolver
+  const form = useForm<z.infer<typeof SignUpSchema>>({
+    resolver: zodResolver(SignUpSchema),
+    defaultValues: {
+      name: "",
+      mobileNumber: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
+
+  // Form submission handler
+  async function onSubmit(values: z.infer<typeof SignUpSchema>) {
+    try {
+      const promise = handleSignup(values);
+
+      const data = await toast.promise(promise, {
+        loading: "Signing up...", // Show while waiting
+        success: (response) => {
+          if (response?.error) {
+            throw new Error(response.error); // Throw error to trigger rejection
+          }
+          return "Signup successful!"; // Success message
+        },
+        error: (error) => error.message || "Something went wrong", // Show on error
+      });
+
+      if (!data?.error) {
+        router.push("/signIn"); // Redirect if signup is successful
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <AuthLayout>
       <>
@@ -19,49 +66,107 @@ const SignUp = () => {
           <p className="text-gray-400 text-lg sm:text-xl">Welcome to Arvan</p>
         </div>
 
-        <form className="bg-transparent" onSubmit={handleSubmit}>
-          <div className="rounded-xl mb-4 border-2 border-lime-400 bg-gradient-to-r from-[#2e470fb4] via-[#3a5b0bc9] to-[#3a5b0b49]">
-            <input
-              type="text"
-              placeholder="Mobile Number"
-              className="w-full p-4 sm:p-5 text-white bg-transparent rounded-xl outline-none"
-              // value={mobileNumber}
-              // onChange={(e) => setMobileNumber(e.target.value)}
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="bg-transparent space-y-4"
+          >
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <div className="rounded-xl border-2 border-lime-400 bg-gradient-to-r from-[#2e470fb4] via-[#3a5b0bc9] to-[#3a5b0b49]">
+                      <Input
+                        placeholder="Full Name"
+                        className="w-full p-4 sm:p-5 text-white bg-transparent border-0 rounded-xl outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+                        {...field}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage className="text-red-400 text-sm ml-2" />
+                </FormItem>
+              )}
             />
-          </div>
 
-          <div className="mb-4 rounded-xl border-2 border-lime-400 bg-gradient-to-r from-[#2e470fb4] via-[#3a5b0bc9] to-[#3a5b0b49]">
-            <input
-              type="password"
-              placeholder="Password"
-              className="w-full p-4 sm:p-5 text-white bg-transparent rounded-xl outline-none"
-              // value={password}
-              // onChange={(e) => setPassword(e.target.value)}
+            <FormField
+              control={form.control}
+              name="mobileNumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <div className="rounded-xl border-2 border-lime-400 bg-gradient-to-r from-[#2e470fb4] via-[#3a5b0bc9] to-[#3a5b0b49]">
+                      <Input
+                        placeholder="Mobile Number"
+                        className="w-full p-4 sm:p-5 text-white bg-transparent border-0 rounded-xl outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+                        {...field}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage className="text-red-400 text-sm ml-2" />
+                </FormItem>
+              )}
             />
-          </div>
 
-          <div className="mb-4 rounded-xl border-2 border-lime-400 bg-gradient-to-r from-[#2e470fb4] via-[#3a5b0bc9] to-[#3a5b0b49]">
-            <input
-              type="password"
-              placeholder="Confirm Password"
-              className="w-full p-4 sm:p-5 text-white bg-transparent rounded-xl outline-none"
-              // value={confirmPassword}
-              // onChange={(e) => setConfirmPassword(e.target.value)}
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <div className="rounded-xl border-2 border-lime-400 bg-gradient-to-r from-[#2e470fb4] via-[#3a5b0bc9] to-[#3a5b0b49]">
+                      <Input
+                        type="password"
+                        placeholder="Password"
+                        className="w-full p-4 sm:p-5 text-white bg-transparent border-0 rounded-xl outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+                        {...field}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage className="text-red-400 text-sm ml-2" />
+                </FormItem>
+              )}
             />
-          </div>
 
-          <button className="relative w-full p-3 text-black font-bold text-lg sm:text-xl rounded-xl bg-lime-400 shadow-[0_4px_20px_rgba(255,255,255,0.6)]">
-            Sign Up
-          </button>
-        </form>
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <div className="rounded-xl border-2 border-lime-400 bg-gradient-to-r from-[#2e470fb4] via-[#3a5b0bc9] to-[#3a5b0b49]">
+                      <Input
+                        type="password"
+                        placeholder="Confirm Password"
+                        className="w-full p-4 sm:p-5 text-white bg-transparent border-0 rounded-xl outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+                        {...field}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage className="text-red-400 text-sm ml-2" />
+                </FormItem>
+              )}
+            />
+
+            <Button
+              type="submit"
+              className="relative w-full p-3 text-black font-bold text-lg sm:text-xl rounded-xl bg-lime-400 shadow-[0_4px_20px_rgba(255,255,255,0.6)] hover:bg-lime-500 mt-4"
+            >
+              Sign Up
+            </Button>
+          </form>
+        </Form>
+
         <div className="text-center mt-6 text-sm text-lime-400">
           Already have an account?{"  "}
-          <button
-            className="text-gray-400 font-bold"
+          <Button
+            variant="link"
+            className="text-gray-400 font-bold p-0"
             onClick={() => router.push("/signIn")}
           >
             Login
-          </button>
+          </Button>
         </div>
       </>
     </AuthLayout>

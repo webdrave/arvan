@@ -5,6 +5,8 @@ import { GSAPProvider } from "@/context/GSAPContext";
 import AdminStyles from "@/components/AdminStyles";
 import { OverlayProvider } from "@/context/OverlayContext";
 import { Theme } from "@radix-ui/themes";
+import QueryProvider from "@/lib/queryclient";
+import {Toaster} from 'react-hot-toast'
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,12 +36,17 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <QueryProvider>
         <Theme>
           <AdminStyles />
           <GSAPProvider>
-            <OverlayProvider>{children}</OverlayProvider>
+            <OverlayProvider>{children}
+
+            <Toaster />
+            </OverlayProvider>
           </GSAPProvider>
         </Theme>
+        </QueryProvider>
       </body>
     </html>
   );

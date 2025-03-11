@@ -27,3 +27,33 @@ export const category = z.object({
 });
 
 export type Category = z.infer<typeof category>;
+
+
+export const LoginSchema = z.object({
+
+  mobileNumber: z
+    .string()
+    .min(1, "Mobile number is required")
+    .regex(
+      /^(\+?\d{1,3})?\d{10}$/,
+      "Invalid mobile number format"
+    ),
+  password: z.string().min(1, "Password is required"),
+});
+
+
+
+export const SignUpSchema = z
+  .object({
+    name: z.string().min(1, "Name is required"),
+    mobileNumber: z
+      .string()
+      .min(1, "Mobile number is required")
+      .regex(/^(\+?\d{1,3})?\d{10}$/, "Invalid mobile number format"),
+    password: z.string().min(1, "Password is required"),
+    confirmPassword: z.string().min(1, "Confirm password is required"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  })

@@ -13,11 +13,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
 @layer utilities {
   .text-balance {
     text-wrap: balance;
@@ -27,12 +22,6 @@ body.admin-panel {
   --foreground: 0 0% 3.9%;
   --background: 0 0% 100%;
 }
-
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-
-  }
   
   
 
