@@ -2,6 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
+import { PiPencilSimple } from "react-icons/pi";
 
 interface Address {
   id: string;
@@ -53,16 +54,20 @@ const Checkout: React.FC = () => {
             {/* Delivery Address Section */}
             <div>
               <h2 className="text-4xl font-bold mb-4">Delivery To</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
                 {/* Home Address Card */}
                 {addresses.map((address) => (
                   <div
                     key={address.id}
-                    className={`p-4 rounded-lg flex justify-between items-start cursor-pointer ${
+                    className={`p-4 rounded-lg flex justify-between items-center cursor-pointer ${
                       address.isSelected
-                        ? "bg-[#0000003b] border border-lime-400"
+                        ? " border border-lime-400"
                         : "border-none"
                     }`}
+                    style={{
+                      backdropFilter: "blur(100px)",
+                      backgroundColor: "rgba(255, 255, 255, 0.1)",
+                    }}
                     onClick={() => selectAddress(address.id)}
                   >
                     <div className="flex items-start space-x-2">
@@ -78,8 +83,9 @@ const Checkout: React.FC = () => {
                         </p>
                       </div>
                     </div>
-                    <button className="text-gray-400 hover:text-white">
-                      {/* <FiEdit2 size={18} /> */}
+
+                    <button className="text-gray-200 hover:text-white">
+                      <PiPencilSimple size={20} />
                     </button>
                   </div>
                 ))}
@@ -88,10 +94,14 @@ const Checkout: React.FC = () => {
                 <Link
                   href={"/address"}
                   className="p-4 rounded-lg bg-transparent border-2 border-lime-900 flex items-center justify-center cursor-pointer h-full"
+                  style={{
+                    backdropFilter: "blur(100px)",
+                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                  }}
                   //   onClick={addNewAddress}
                 >
                   <div className="flex items-center text-lime-400">
-                    {/* <IoMdAdd size={20} /> */}
+                    {/* <PiPencilSimple size={20} color="white"/> */}
                     <span className="ml-2">Add New Address</span>
                   </div>
                 </Link>
@@ -101,7 +111,7 @@ const Checkout: React.FC = () => {
             {/* Payment Methods Section */}
             <div>
               <h2 className="text-4xl font-bold mb-4">Payment Methods</h2>
-              <div className=" grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {/* UPI Option */}
                 <div
                   className={`p-4 rounded-lg bg-[#6c8118] border flex justify-between items-center cursor-pointer ${
@@ -114,27 +124,28 @@ const Checkout: React.FC = () => {
                   <div className="flex items-center">
                     <div className="bg-white p-2 rounded mr-3">
                       <Image
-                        src="/upi-logo.png"
+                        src="/upi.svg"
                         alt="UPI"
-                        width={100}
-                        height={100}
-                        className="h-6 w-6"
+                        width={200}
+                        height={200}
+                        className="h-10 w-10"
                       />
                     </div>
-                    <span>UPI (UNIFIED PAYMENTS INTERFACE)</span>
+                    <label htmlFor="upi-radio" className="cursor-pointer">
+                      UPI (UNIFIED PAYMENTS INTERFACE)
+                    </label>
                   </div>
                   <div className="radio-button">
-                    <div
-                      className={`w-5 h-5 rounded-full border ${
-                        paymentMethod === "upi"
-                          ? "border-lime-400"
-                          : "border-lime-400"
-                      } flex items-center justify-center`}
-                    >
-                      {paymentMethod === "upi" && (
-                        <div className="w-3 h-3 rounded-full bg-lime-500"></div>
-                      )}
-                    </div>
+                    <input
+                      type="radio"
+                      id="upi-radio"
+                      name="payment-method"
+                      value="upi"
+                      checked={paymentMethod === "upi"}
+                      onChange={() => setPaymentMethod("upi")}
+                      className="w-5 h-5 accent-lime-500 appearance-none checked:bg-lime-400 checked:border-lime-800 border-2  border-lime-400 rounded-full"
+                      aria-label="Select UPI payment method"
+                    />
                   </div>
                 </div>
 
@@ -150,27 +161,28 @@ const Checkout: React.FC = () => {
                   <div className="flex items-center">
                     <div className="bg-white p-2 rounded mr-3">
                       <Image
-                        src="/upi-logo.png"
-                        alt="UPI"
-                        width={100}
-                        height={100}
-                        className="h-6 w-6"
+                        src="/money.svg"
+                        alt="COD"
+                        width={200}
+                        height={200}
+                        className="h-10 w-10"
                       />
                     </div>
-                    <span>Cash On Delivery</span>
+                    <label htmlFor="cod-radio" className="cursor-pointer">
+                      Cash On Delivery
+                    </label>
                   </div>
                   <div className="radio-button">
-                    <div
-                      className={`w-5 h-5 rounded-full border ${
-                        paymentMethod === "cod"
-                          ? "border-lime-400"
-                          : "border-lime-400"
-                      } flex items-center justify-center`}
-                    >
-                      {paymentMethod === "cod" && (
-                        <div className="w-3 h-3 rounded-full bg-lime-500"></div>
-                      )}
-                    </div>
+                    <input
+                      type="radio"
+                      id="cod-radio"
+                      name="payment-method"
+                      value="cod"
+                      checked={paymentMethod === "cod"}
+                      onChange={() => setPaymentMethod("cod")}
+                      className="w-5 h-5 accent-lime-500 appearance-none checked:bg-lime-400 checked:border-lime-800 border-2  border-lime-400 rounded-full"
+                      aria-label="Select Cash on Delivery payment method"
+                    />
                   </div>
                 </div>
 
@@ -186,27 +198,28 @@ const Checkout: React.FC = () => {
                   <div className="flex items-center">
                     <div className="bg-white p-2 rounded mr-3">
                       <Image
-                        src="/upi-logo.png"
-                        alt="UPI"
-                        width={100}
-                        height={100}
-                        className="h-6 w-6"
+                        src="/wallet.svg"
+                        alt="Credit Card"
+                        width={200}
+                        height={200}
+                        className="h-10 w-10"
                       />
                     </div>
-                    <span>Credit Card</span>
+                    <label htmlFor="credit-radio" className="cursor-pointer">
+                      Credit Card
+                    </label>
                   </div>
                   <div className="radio-button">
-                    <div
-                      className={`w-5 h-5 rounded-full border ${
-                        paymentMethod === "credit"
-                          ? "border-lime-400"
-                          : "border-lime-400"
-                      } flex items-center justify-center`}
-                    >
-                      {paymentMethod === "credit" && (
-                        <div className="w-3 h-3 rounded-full bg-lime-500"></div>
-                      )}
-                    </div>
+                    <input
+                      type="radio"
+                      id="credit-radio"
+                      name="payment-method"
+                      value="credit"
+                      checked={paymentMethod === "credit"}
+                      onChange={() => setPaymentMethod("credit")}
+                      className="w-5 h-5 accent-lime-500 appearance-none checked:bg-lime-400 checked:border-lime-800 border-2  border-lime-400 rounded-full"
+                      aria-label="Select Credit Card payment method"
+                    />
                   </div>
                 </div>
               </div>
@@ -215,7 +228,13 @@ const Checkout: React.FC = () => {
 
           {/* Right column - Payment Details */}
           <div className="lg:col-span-1">
-            <div className="border-2 border-lime-500 rounded-lg lg:mt-5 p-6">
+            <div
+              className="border-2 border-lime-500 rounded-lg lg:mt-5 p-6"
+              style={{
+                backdropFilter: "blur(100px)",
+                backgroundColor: "rgba(255, 255, 255, 0.1)",
+              }}
+            >
               <h2 className="text-xl font-bold mb-6">Payment Details</h2>
 
               <div className="space-y-4">
@@ -247,7 +266,7 @@ const Checkout: React.FC = () => {
                   </div>
                 </div>
 
-                <button className="w-full bg-[#748a1d] hover:bg-lime-600 rounded-lg py-3 font-bold mt-6 uppercase">
+                <button className="w-full bg-[#748a1d] hover:bg-[#546415] rounded-lg py-3 font-bold mt-6 uppercase">
                   Checkout
                 </button>
               </div>
