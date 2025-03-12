@@ -21,7 +21,6 @@ const Checkout: React.FC = () => {
     },
   ]);
 
-  const [showAddressForm, setShowAddressForm] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("credit");
 
   // Sample checkout data
@@ -38,9 +37,6 @@ const Checkout: React.FC = () => {
     );
   };
 
-  const addNewAddress = () => {
-    setShowAddressForm(true);
-  };
 
   return (
     <div className="min-h-screen bg-black text-white p-6 flex items-center justify-center">
