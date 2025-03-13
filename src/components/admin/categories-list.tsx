@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Plus, Edit, Trash2 } from "lucide-react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { Category } from "@/types/types"
+import { apiClient } from "@/lib/axiosClient"
 
 export function CategoriesList() {
   const [newCategory, setNewCategory] = useState("")
@@ -12,11 +13,12 @@ export function CategoriesList() {
   const { data, isLoading } = useQuery({
     queryKey: ["categories"],
     queryFn: async () => {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/category`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      })
-      const data = await response.json()
+      // const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/category`, {
+      //   method: "GET",
+      //   headers: { "Content-Type": "application/json" },
+      // })
+      const response = await apiClient.get('/api/category')
+      const data = response.data;
       return data.categories
     },
   })
