@@ -1,5 +1,7 @@
 "use client";
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, ChangeEvent, FormEvent, useRef } from "react";
+import Image from 'next/image';
+import { Upload } from "lucide-react";
 
 // Define types for form data
 interface TestimonialFormData {
@@ -19,6 +21,7 @@ const TestimonialForm: React.FC = () => {
     ratings: "",
   });
   const [loading, setLoading] = useState<boolean>(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Handle input changes
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -31,6 +34,10 @@ const TestimonialForm: React.FC = () => {
     if (e.target.files && e.target.files[0]) {
       setFormData({ ...formData, image: e.target.files[0] });
     }
+  };
+
+  const handleImageUploadClick = () => {
+    fileInputRef.current?.click();
   };
 
   // Handle form submission
@@ -142,13 +149,34 @@ const TestimonialForm: React.FC = () => {
 
         {/* Image Upload */}
         <label className="font-semibold mt-2">Image Upload:</label>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
-          required
-          className="mt-1 p-2 border rounded-md focus:ring-2 bg-white focus:ring-blue-500"
-        />
+        <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+          <div className="flex items-center justify-center space-x-4">
+            {formData.image && (
+              <div className="relative w-32 h-32 border border-gray-200 rounded-md overflow-hidden">
+                <Image
+                  src={URL.createObjectURL(formData.image)}
+                  alt="Product image"
+                  layout="fill"
+                  objectFit="contain"
+                />
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={handleImageUploadClick}
+              className="flex flex-col items-center justify-center w-32 h-32 border-2 border-dashed border-gray-300 rounded-md text-gray-500 hover:text-blue-500 hover:border-blue-500 transition-colors">
+              <Upload size={24} />
+              <span className="mt-2 text-sm">Add Image</span>
+            </button>
+            <input
+              type="file"
+              ref={fileInputRef}
+              accept="image/*"
+              onChange={handleImageChange}
+              className="hidden"
+            />
+          </div>
+        </div>
 
         {/* Ratings */}
         <label className="font-semibold mt-2">Rating (1 to 5):</label>

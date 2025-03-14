@@ -19,9 +19,9 @@ export function CustomerTable() {
   const { data: customers, isLoading, error } = useQuery({
     queryKey: ["customers"],
     queryFn: async () => {
-      const url = process.env.NEXT_PUBLIC_ALLCUSTOMERS_URL;
+      const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/allcustomers`;
       if (!url) {
-        throw new Error("NEXT_PUBLIC_ALLCUSTOMERS_URL is not defined");
+        throw new Error("NEXT_PUBLIC_BACKEND_URL is not defined");
       } 
       const response = await fetch(url);
       if (!response.ok) {
