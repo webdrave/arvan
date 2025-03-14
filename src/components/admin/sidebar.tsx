@@ -118,6 +118,12 @@ export function Sidebar() {
             label="All Customers"
             active={isActive("/admin/customers")}
           />
+          <NavItem
+            href="/admin/testimonials"
+            icon={<Plus size={18} />}
+            label="Add Testimonial"
+            active={isActive("/admin/testimonials")}
+          />
         </div>
       </div>
 
