@@ -1,55 +1,7 @@
 "use client"
-
 import { useState } from "react"
+import { useQuery } from "@tanstack/react-query"
 import { Eye, Mail, Phone } from "lucide-react"
-
-const initialCustomers = [
-  {
-    id: "1",
-    name: "John Doe",
-    email: "john@example.com",
-    phone: "+1 234 567 8901",
-    totalOrders: 5,
-    totalSpent: 499.95,
-    lastOrderDate: "2023-06-01",
-  },
-  {
-    id: "2",
-    name: "Jane Smith",
-    email: "jane@example.com",
-    phone: "+1 234 567 8902",
-    totalOrders: 3,
-    totalSpent: 299.97,
-    lastOrderDate: "2023-05-28",
-  },
-  {
-    id: "3",
-    name: "Bob Johnson",
-    email: "bob@example.com",
-    phone: "+1 234 567 8903",
-    totalOrders: 7,
-    totalSpent: 799.93,
-    lastOrderDate: "2023-06-03",
-  },
-  {
-    id: "4",
-    name: "Alice Brown",
-    email: "alice@example.com",
-    phone: "+1 234 567 8904",
-    totalOrders: 2,
-    totalSpent: 159.98,
-    lastOrderDate: "2023-05-15",
-  },
-  {
-    id: "5",
-    name: "Charlie Davis",
-    email: "charlie@example.com",
-    phone: "+1 234 567 8905",
-    totalOrders: 4,
-    totalSpent: 399.96,
-    lastOrderDate: "2023-06-02",
-  },
-]
 
 interface Customer {
   id: string
@@ -62,8 +14,25 @@ interface Customer {
 }
 
 export function CustomerTable() {
-  const [customers] = useState(initialCustomers)
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null)
+
+  const { data: customers, isLoading, error } = useQuery({
+    queryKey: ["customers"],
+    queryFn: async () => {
+      const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/allcustomers`;
+      if (!url) {
+        throw new Error("NEXT_PUBLIC_BACKEND_URL is not defined");
+      } 
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error("Failed to fetch customers");
+      }
+      return response.json();
+    },
+  });
+
+  if (isLoading) return <p>Loading customers...</p>
+  if (error) return <p>Failed to load customers</p>
 
   return (
     <div className="bg-white shadow-sm rounded-lg overflow-hidden">
@@ -85,7 +54,7 @@ export function CustomerTable() {
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {customers.map((customer) => (
+          {customers?.map((customer: Customer) => (
             <tr key={customer.id}>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{customer.name}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{customer.email}</td>
@@ -138,4 +107,3 @@ export function CustomerTable() {
     </div>
   )
 }
-
