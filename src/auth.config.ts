@@ -45,10 +45,10 @@ export default {
             cause: "Invalid credentials or user not found",
           });
         }
-        if (!user?.isPhoneNoVerified) {
-          console.error("❌ User Not Verified");
-          throw new CredentialsSignin({ cause: "User not verified" });
-        }
+        // if (!user?.isPhoneNoVerified) {
+        //   console.error("❌ User Not Verified");
+        //   throw new CredentialsSignin({ cause: "User not verified" });
+        // }
 
         if (!user.password) {
           console.error("❌ User Signed Up with Social Media");
@@ -105,7 +105,8 @@ export default {
       if (user) {
         token.id = user.id;
         token.picture = user.image;
-        token.role = user?.role as any; // Store user role
+        token.mobile_no = user.mobile_no;
+        token.role = process.env.ADMIN_NUMBERS?.split(",").includes(user.mobile_no) ? "admin" : "user"; // Store user role
       }
 
       console.log("✅ Token Created:", token);
@@ -118,7 +119,8 @@ export default {
 
       session.user.id = token.id;
       session.user.image = token.picture;
-      session.user.role = token.role; // Pass role to session
+      session.user.mobile_no = token.mobile_no;
+      session.user.role = process.env.ADMIN_NUMBERS?.split(",").includes(token.mobile_no) ? "admin" : "user"; 
 
       console.log("✅ Session Created:", session);
 

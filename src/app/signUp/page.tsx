@@ -50,7 +50,7 @@ const SignUp = () => {
       });
 
       if (!data?.error) {
-        router.push("/signIn"); // Redirect if signup is successful
+        router.push("/signin"); // Redirect if signup is successful
       }
     } catch (error) {
       console.log(error);
@@ -163,7 +163,7 @@ const SignUp = () => {
           <Button
             variant="link"
             className="text-gray-400 font-bold p-0"
-            onClick={() => router.push("/signIn")}
+            onClick={() => router.push("/signin")}
           >
             Login
           </Button>

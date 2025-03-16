@@ -1,17 +1,26 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap');
-@import url('https://fonts.cdnfonts.com/css/general-sans');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap");
+@import url("https://fonts.cdnfonts.com/css/general-sans");
 
 /* globals.css */
 @font-face {
-  font-family: 'Coluna';
-  src: url('/fonts/Coluna-CondensedBold.woff2') format('woff2');
-  font-weight:normal;
+  font-family: "Coluna";
+  src: url("/fonts/Coluna-CondensedBold.woff2") format("woff2");
+  font-weight: normal;
   font-style: normal;
   font-display: swap; /* Optional: Ensures text is visible while the font loads */
 }
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+:root {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}
 
 @layer utilities {
   .text-balance {
@@ -22,8 +31,6 @@ body.admin-panel {
   --foreground: 0 0% 3.9%;
   --background: 0 0% 100%;
 }
-  
-  
 
 @layer base {
   :root {
@@ -111,7 +118,6 @@ body.admin-panel {
     left: -200px;
   }
 }
-
 
 /* .montserrat {
   font-family: "Montserrat", sans-serif;

@@ -70,9 +70,9 @@ const OTPInput: React.FC = () => {
   };
 
   // Get the complete OTP value
-  const getOtpValue = (): string => {
-    return otp.join("");
-  };
+  // const getOtpValue = (): string => {
+  //   return otp.join("");
+  // };
 
   return (
     <div className="flex flex-col items-center gap-4 ">

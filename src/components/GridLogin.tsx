@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 interface InteractiveGridPatternProps extends React.SVGProps<SVGSVGElement> {
   width?: number;
@@ -15,7 +15,8 @@ const GridLogin: React.FC<InteractiveGridPatternProps> = ({
   squares = [70],
 }) => {
   const [horizontal] = squares;
-  const [vertical, setVertical] = useState(50);
+  // const [vertical, setVertical] = useState(50);
+  const vertical = 50;
 
   return (
     <>

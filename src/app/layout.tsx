@@ -7,6 +7,7 @@ import { OverlayProvider } from "@/context/OverlayContext";
 import { Theme } from "@radix-ui/themes";
 import QueryProvider from "@/lib/queryclient";
 import {Toaster} from 'react-hot-toast'
+import Providers from "./providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,8 +41,10 @@ export default function RootLayout({
         <Theme>
           <AdminStyles />
           <GSAPProvider>
-            <OverlayProvider>{children}
-
+            <OverlayProvider>
+              <Providers>
+              {children}
+              </Providers>
             <Toaster />
             </OverlayProvider>
           </GSAPProvider>
