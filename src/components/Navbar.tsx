@@ -27,12 +27,6 @@ const Navbar = () => {
              after:transition-all after:duration-300
              "
             //  hover:text-[#CCFF00]
-            className="relative font-montserrat font-normal text-md transition-colors duration-300
-             after:content-[''] after:absolute after:left-0 after:bottom-0 
-             after:h-[2.5px] after:bg-[#CCFF00] after:transform-gpu  after:w-0 hover:after:w-full
-             after:transition-all after:duration-300
-             "
-            //  hover:text-[#CCFF00]
           >
             {item}
           </Link>
