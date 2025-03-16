@@ -61,6 +61,9 @@ const Signin = () => {
       const data: any = await loginFunction(values);
       if (data === "Login successful") {
         toast.success("Login successful");
+        setTimeout(() => {
+          router.refresh();
+        }, 500);
         router.push("/");
       } else {
         toast.error(data);
