@@ -3,17 +3,20 @@ import GridLogin from "@/components/GridLogin";
 import Image from "next/image";
 import { ReactNode } from "react";
 import BentoImg from "./BentoImg";
+import { useRouter } from "next/navigation";
 interface AuthLayoutProps {
   children: ReactNode;
 }
 
 const AuthLayout = ({ children }: AuthLayoutProps) => {
+  const router = useRouter();
   return (
     <div className="flex items-center justify-center h-screen bg-black text-white relative overflow-hidden">
       {/* Back button */}
       <button
         // onClick={handleBack}
-        className="absolute top-4 left-4 bg-lime-400 text-black font-bold py-1 px-4 rounded"
+        onClick={() => router.back()}
+        className="absolute z-10 top-4 left-4 bg-lime-400 text-black font-bold py-1 px-4 rounded"
       >
         Back
       </button>
