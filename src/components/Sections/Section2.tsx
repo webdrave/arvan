@@ -4,7 +4,6 @@ import BrushStroke from "../BrushStroke";
 
 import HorizontalScroll from "../HorizontalScroll";
 
-
 const Section2 = () => {
   return (
     <div className="relative w-full min-h-[50dvh] ">
@@ -20,7 +19,7 @@ const Section2 = () => {
         StrokeColor="2px #6FD351"
       />
 
-      <div className="relative w-full min-h-[50dvh] mt-10">
+      <div className="relative w-full min-h-[50dvh] pt-20 md:pt-32 lg:pt-40">
         <div className="heading relative text-center">
           <BrushStroke />
           <p className="px-[10vw] mt-2 md:px-[20vw] text-xs md:text-lg">
