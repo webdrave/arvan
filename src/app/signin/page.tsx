@@ -29,20 +29,16 @@ const Signin = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
 
+  
   useEffect(() => {
     if (status === "authenticated") {
       router.push("/"); // Redirect to homepage or dashboard
     }
   }, [status, router]);
 
-  if (status === "loading") {
-    return (
-      <div className="text-center text-white">Checking authentication...</div>
-    );
-  }
 
-  if (status === "authenticated") {
-    return null; // Prevents rendering the login form
+  if(session?.user) {
+    router.push("/profile");
   }
 
   const form = useForm<z.infer<typeof LoginSchema>>({
@@ -52,6 +48,12 @@ const Signin = () => {
       password: "",
     },
   });
+
+  if (status === "loading") {
+    return (
+      <div className="text-center text-white">Checking authentication...</div>
+    );
+  }
 
   async function onSubmit(values: z.infer<typeof LoginSchema>) {
     try {
@@ -142,7 +144,7 @@ const Signin = () => {
         </Form>
 
         <div className="text-center mt-6 text-sm text-lime-400">
-          Don't have an account?{" "}
+          Don{"'"}t have an account?
           <Button
             variant="link"
             className="text-gray-400 font-bold p-0"
