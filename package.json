@@ -54,5 +54,18 @@
     "prisma": "^6.4.1",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
+  },
+  "pnpm": {
+    "ignoredBuiltDependencies": [
+      "@prisma/client",
+      "@prisma/engines",
+      "esbuild",
+      "prisma",
+      "sharp"
+    ],
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "prisma"
+    ]
   }
 }

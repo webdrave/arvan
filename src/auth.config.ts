@@ -105,6 +105,7 @@ export default {
       if (user) {
         token.id = user.id;
         token.picture = user.image;
+        token.mobile_no = user.mobile_no;
         token.role = process.env.ADMIN_NUMBERS?.split(",").includes(user.mobile_no) ? "admin" : "user"; // Store user role
       }
 
@@ -118,6 +119,7 @@ export default {
 
       session.user.id = token.id;
       session.user.image = token.picture;
+      session.user.mobile_no = token.mobile_no;
       session.user.role = process.env.ADMIN_NUMBERS?.split(",").includes(token.mobile_no) ? "admin" : "user"; 
 
       console.log("✅ Session Created:", session);
