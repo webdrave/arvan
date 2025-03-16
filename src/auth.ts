@@ -9,6 +9,6 @@ export const { handlers: { GET, POST }, signIn, signOut, auth } = NextAuth({
     session:{
         strategy:"jwt"
     },
-    adapter: PrismaAdapter(prisma),  // Add the Prisma adapter here
+    adapter: PrismaAdapter(prisma),  // Type assertion to bypass version mismatch
     ...authConfig
 });

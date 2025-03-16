@@ -7,6 +7,7 @@ import UploadPopup from "../UploadPopup";
 import { Category, Product } from "@/types/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { apiClient } from "@/lib/axiosClient";
 
 export function AddProductForm() {
   const [isUploadPopupOpen, setIsUploadPopupOpen] = useState(false);
@@ -211,14 +212,8 @@ export function AddProductForm() {
   const categoryQuery = useQuery({
     queryKey: ["categories"],
     queryFn: async () => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/category`,
-        {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      const data = await response.json();
+      const response = await apiClient.get('/api/category')
+      const data = response.data;
       return data;
     },
   });
