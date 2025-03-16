@@ -3,12 +3,12 @@ import React, { useState } from "react";
 import { IoCartOutline } from "react-icons/io5";
 import { FiUser } from "react-icons/fi";
 import { IoMenu } from "react-icons/io5";
-
 import Link from "next/link";
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navitems = ["Home", "Shop", "track order", "about", "contact"];
+
   return (
     <nav className="fixed top-0 flex p-6 w-full z-30">
       <div className="w-full hidden md:flex  bg-transparent justify-end  gap-6 uppercase  z-30">
@@ -16,13 +16,18 @@ const Navbar = () => {
           <a
             key={i}
             href=""
-            className="hover:underline underline-offset-1 font-montserrat font-normal text-md hover:text-[#CCFF00]"
+            className="relative font-montserrat font-normal text-md transition-colors duration-300
+             after:content-[''] after:absolute after:left-0 after:bottom-0 
+             after:h-[2.5px] after:bg-[#CCFF00] after:transform-gpu  after:w-0 hover:after:w-full
+             after:transition-all after:duration-300
+             "
+            //  hover:text-[#CCFF00]
           >
             {item}
           </a>
         ))}
         <IoCartOutline className="text-lg text-white cursor-pointer hover:text-[#CCFF00]"></IoCartOutline>
-        <FiUser className="text-lg text-white cursor-pointer hover:text-[#CCFF00]"></FiUser>
+        <Link href={'/signIn'}><FiUser className="text-lg text-white cursor-pointer hover:text-[#CCFF00]"></FiUser></Link>
       </div>
 
       {/* Mobile Hamburger Menu */}

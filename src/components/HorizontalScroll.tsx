@@ -470,7 +470,11 @@ const HorizontalScroll = () => {
 
             <div className="absolute bottom-4 left-0 w-full z-20">
               <div className="text-center">
-                <button className="text-sm md:text-xl font-semibold p-5 bg-gradient-to-r from-[#c3e53a8a] to-[#b3d2343e] text-white uppercase shadow-[0px_0px_15px_#c3e53a] hover:shadow-[0px_0px_25px_#c3e53a] transition-all duration-300">
+                <button
+                  className="text-sm md:text-xl font-semibold  p-5 bg-transparent
+                      border border-[#c3e53ab9] bg-gradient-to-r from-[#c3e53a77]  via-[#6c7f2069]  to-[#6c7f2069] transition-all duration-300 shadow-[0px_4px_20px_#c3e53a77]"
+                >
+                  {/* <button className="text-sm md:text-xl font-semibold  p-5 bg-gradient-to-r from-[#c3e53a8a] to-[#b3d2343e] text-white uppercase shadow-[0px_0px_15px_#c3e53a] hover:shadow-[0px_0px_25px_#c3e53a] transition-all duration-300"> */}
                   BUY NOW
                 </button>
               </div>
@@ -582,7 +586,10 @@ const HorizontalScroll = () => {
           </div>
 
           <div className=" text-center -translate-y-[50%]">
-            <button className=" text-sm md:text-xl font-semibold p-5 bg-gradient-to-r from-[#c3e53a8a] to-[#b3d2343e] text-white uppercase shadow-[0px_0px_15px_#c3e53a] hover:shadow-[0px_0px_25px_#c3e53a] transition-all duration-300">
+            <button
+              className=" text-sm md:text-xl font-semibold p-5 bg-transparent
+                      border border-[#c3e53ab9] bg-gradient-to-r from-[#c3e53a77]  via-[#6c7f2069]  to-[#6c7f2069] transition-all duration-300 shadow-[0px_4px_20px_#c3e53a77]"
+            >
               BUY NOW
             </button>
           </div>
