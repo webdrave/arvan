@@ -4,13 +4,11 @@ import Image from "next/image";
 import { ReactNode } from "react";
 import BentoImg from "./BentoImg";
 import { useRouter } from "next/navigation";
-import { useRouter } from "next/navigation";
 interface AuthLayoutProps {
   children: ReactNode;
 }
 
 const AuthLayout = ({ children }: AuthLayoutProps) => {
-  const router = useRouter();
   const router = useRouter();
   return (
     <div className="flex items-center justify-center h-screen bg-black text-white relative overflow-hidden">

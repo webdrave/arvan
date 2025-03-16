@@ -13,6 +13,7 @@ const Navbar = () => {
 
   const navitems = ["Home", "Shop", "track order", "about", "contact"];
 
+
   return (
     <nav className="fixed top-0 flex p-6 w-full z-30">
       <div className="w-full hidden md:flex  bg-transparent justify-end  gap-6 uppercase  z-30">
@@ -20,6 +21,12 @@ const Navbar = () => {
           <Link
             key={i}
             href=""
+            className="relative font-montserrat font-normal text-md transition-colors duration-300
+             after:content-[''] after:absolute after:left-0 after:bottom-0 
+             after:h-[2.5px] after:bg-[#CCFF00] after:transform-gpu  after:w-0 hover:after:w-full
+             after:transition-all after:duration-300
+             "
+            //  hover:text-[#CCFF00]
             className="relative font-montserrat font-normal text-md transition-colors duration-300
              after:content-[''] after:absolute after:left-0 after:bottom-0 
              after:h-[2.5px] after:bg-[#CCFF00] after:transform-gpu  after:w-0 hover:after:w-full
