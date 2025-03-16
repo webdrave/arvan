@@ -31,7 +31,6 @@ export async function handleSignup(data: z.infer<typeof SignUpSchema>) {
         name: data.name,
         mobile_no: data.mobileNumber,
         password: hashedPassword,
-        role: process.env.ADMIN_NUMBERS?.split(",").includes(data.mobileNumber) ? "ADMIN" : "USER",
       },
     });
 
