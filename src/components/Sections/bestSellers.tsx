@@ -114,6 +114,7 @@ const BestSellers: React.FC = () => {
           autoplay={{
             delay: autoplayDelay, // Delay between slides in milliseconds
             disableOnInteraction: true, // Continue autoplay even after user interaction
+            reverseDirection: true,
           }}
           loop={true}
           speed={1000}

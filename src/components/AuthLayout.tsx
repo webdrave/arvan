@@ -14,9 +14,8 @@ const AuthLayout = ({ children }: AuthLayoutProps) => {
     <div className="flex items-center justify-center h-screen bg-black text-white relative overflow-hidden">
       {/* Back button */}
       <button
-        // onClick={handleBack}
         onClick={() => router.back()}
-        className="absolute z-10 top-4 left-4 bg-lime-400 text-black font-bold py-1 px-4 rounded"
+        className="absolute top-4 cursor-pointer z-10 left-4 bg-lime-400 text-black font-bold py-1 px-4 rounded"
       >
         Back
       </button>

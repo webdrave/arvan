@@ -47,7 +47,7 @@ const BrushStroke = () => {
 
   return (
     <div ref={containerRef}>
-      <h1 className="text-lg md:text-3xl lg:text-5xl px-[5vw] md:px-[15vw] lg:px-[10vw] leading-none uppercase font-semibold relative">
+      <h1 className="text-lg md:text-4xl lg:text-6xl px-[5vw] md:px-[10vw] lg:px-[13w] leading-none uppercase font-bold relative">
         ARVAN CRAFTED FOR THOSE WHO VALUE COMFORT AND{" "}
         <span className="relative inline-block">
           STYLE.
@@ -56,7 +56,7 @@ const BrushStroke = () => {
             alt="Brush Stroke"
             width={1000}
             height={1000}
-            className="absolute left-0 top-0 md:top-1 lg:top-0 -z-10 opacity-0"
+            className="absolute left-0 top-0 md:top-1 -z-10 opacity-0"
             ref={clipPathRef}
             style={{ clipPath: "inset(0 100% 0 0)" }}
           />
