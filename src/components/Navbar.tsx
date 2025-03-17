@@ -13,7 +13,6 @@ const Navbar = () => {
 
   const navitems = ["Home", "Shop", "track order", "about", "contact"];
 
-
   return (
     <nav className="fixed top-0 flex p-6 w-full z-30">
       <div className="w-full hidden md:flex  bg-transparent justify-end  gap-6 uppercase  z-30">
