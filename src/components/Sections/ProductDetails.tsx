@@ -6,30 +6,29 @@ import Image from "next/image";
 import ReviewWritings from "../reviewWriting";
 import { useQueries } from "@tanstack/react-query";
 import { productApi } from "@/lib/api/productdetails";
-import { productReviewApi } from "@/lib/api/productreview";
 import Navbar from "../Navbar";
 
-export interface Product {
-  title: string;
-  product: any;
-  id : string;
-  details: any;
-  name: string;
-  description: string;
-  price: number;
-  discountPrice: number | null;
-  currency: "₹";
-  material: string;
-  rating: number;
-  totalRatings: number | 400;
-  asset: {
-    asset_url: string;
-    type: string;
-  }[];
-  colors: string[];
-  sizes: string[];
-  reviews: Review[];
-}
+// export interface Product {
+//   title: string;
+//   product: any;
+//   id : string;
+//   details: any;
+//   name: string;
+//   description: string;
+//   price: number;
+//   discountPrice: number | null;
+//   currency: "₹";
+//   material: string;
+//   rating: number;
+//   totalRatings: number | 400;
+//   asset: {
+//     asset_url: string;
+//     type: string;
+//   }[];
+//   colors: string[];
+//   sizes: string[];
+//   reviews: Review[];
+// }
 
 export interface Review {
   id: string;
@@ -86,7 +85,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
   };
 
   // 🌟 React Query product details by id
-  const [{ data:{ product = {}, ...data } = {}  }] = useQueries({
+  const [{ data: productData }] = useQueries({
     queries: [
       {
         queryKey: ["products", productId],
@@ -96,22 +95,19 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
   });
 
 // 🌟 React Query product reviews by product id
-const [{ data: fetchedReviews = { reviews: [] } }] = useQueries({
-  queries: [
-    {
-      queryKey: ["reviews", productId],
-      queryFn: () => productReviewApi.getById(productId),
-    },
-  ],
-});
-
-
-
+// const [{ data: fetchedReviews = { reviews: [] } }] = useQueries({
+//   queries: [
+//     {
+//       queryKey: ["reviews", productId],
+//       queryFn: () => productReviewApi.getById(productId),
+//     },
+//   ],
+// });
 
   return (
     <div className=" pt-20">
       <Navbar/>
-      {data ? (
+      {productData ? (
         <div className="w-full mx-auto grid grid-cols-1 lg:grid-cols-2 items-start gap-6 lg:gap-8">
           {/* Left Section - Image Gallery */}
           <div className="flex flex-col sm:flex-row items-center gap-4 ">
@@ -145,12 +141,12 @@ const [{ data: fetchedReviews = { reviews: [] } }] = useQueries({
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-3">
               <div>
                 <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold uppercase">
-                  {product.name}
+                  {productData.name}
                 </h2>
                 <div className="flex items-center gap-2 sm:gap-5 my-2 flex-wrap">
                   <p className="text-white text-lg sm:text-xl font-bold">
                     {remainProduct.currency}
-                    {product.price}
+                    {productData.price}
                   </p>
                   <p className="text-[#858585] text-lg sm:text-xl font-bold line-through">
                     {remainProduct.discountPrice}
@@ -163,8 +159,8 @@ const [{ data: fetchedReviews = { reviews: [] } }] = useQueries({
               <div className="flex flex-col items-start sm:items-center gap-1 mt-2 sm:mt-0">
                 <div className="border border-[#c2e53a] px-2 py-1 rounded-md flex items-center gap-1">
                   <Star className="text-[#c2e53a] h-4 w-4" />
-                  <span className="text-sm">{product.rating}</span>
-                  <span className="text-sm">{fetchedReviews.reviews.length}</span>{" "}
+                  {/* <span className="text-sm">{productData.rating}</span> */}
+                  {/* <span className="text-sm">{fetchedReviews.reviews.length}</span>{" "} */}
                 </div>
                 <button
                   className="text-[#bababa] text-sm underline"
@@ -242,13 +238,13 @@ const [{ data: fetchedReviews = { reviews: [] } }] = useQueries({
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3 text-base lg:text-lg">
                   <p className="text-[#b3b3b3]">Material</p>{" "}
-                  <p className="text-white uppercase">{product.material}</p>
+                  <p className="text-white uppercase">{productData.material}</p>
                   <p className="text-[#b3b3b3]">Color</p>{" "}
                   <p className="text-white">{remainProduct.colors}</p>
                   <p className="text-[#b3b3b3] ">Name</p>{" "}
-                  <p className="text-white ">{product.name}</p>
+                  <p className="text-white ">{productData.name}</p>
                   <p className="text-[#b3b3b3]">Size</p>{" "}
-                  <p className="text-white">{product.sizes}</p>
+                  {/* <p className="text-white">{productData}</p> */}
                 </div>
               </div>
             </div>
@@ -267,7 +263,7 @@ const [{ data: fetchedReviews = { reviews: [] } }] = useQueries({
                     <span className="text-sm">{5}</span>
                   </div>
                   <span className="text-[#bababa] text-sm">
-                     Total Ratings {fetchedReviews.reviews.length}
+                     {/* Total Ratings {fetchedReviews.reviews.length} */}
                   </span>
                 </div>
 
@@ -301,33 +297,7 @@ const [{ data: fetchedReviews = { reviews: [] } }] = useQueries({
               <hr className="opacity-50 my-4" />
 
               {/* Show Reviews or Empty State */}
-                {fetchedReviews.reviews.length? (
-                fetchedReviews.reviews.map((review) => (
-                  <div key={review.id} className="mt-4 text-gray-400">
-                  <div className="flex items-center gap-4">
-                    {/* Review Title */}
-                    {/* <p className="text-base text-white mt-2">{review.userId}</p> */}
-                    <p className="text-base text-white ">{review.title}</p>
-
-                    {/* Review Rating */}
-                    {review.rating && (
-                    <div className="border border-[#c2e53a] px-2 py-1 rounded-md flex items-center gap-1">
-                      <Star className="text-[#c2e53a] h-3 w-3" />
-                      <span className="text-xs">{review.rating}</span>
-                    </div>
-                    )}
-                  </div>
-
-                  {/* Review Description */}
-                  <p className="text-sm mt-2">{review.description}</p>
-                  <hr className="opacity-50 my-4" />
-                  </div>
-                ))
-                ) : (
-                <p className="text-gray-400 mt-4">
-                  No reviews yet. Be the first to review!
-                </p>
-                )}
+                
             </div>
           </div>
         </div>
@@ -337,5 +307,4 @@ const [{ data: fetchedReviews = { reviews: [] } }] = useQueries({
     </div>
   );
 };
-
 export default ProductDetails;

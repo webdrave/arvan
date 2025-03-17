@@ -7,7 +7,10 @@ import UploadPopup from "../UploadPopup";
 import { Category, Product } from "@/types/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { apiClient } from "@/lib/axiosClient";
+import { categoryApi } from "@/lib/api/categories";
+import cuid from "cuid";
+import { varientApi } from "@/lib/api/varients";
+import { productApi } from "@/lib/api/productdetails";
 
 export function AddProductForm() {
   const [isUploadPopupOpen, setIsUploadPopupOpen] = useState(false);
@@ -116,27 +119,21 @@ export function AddProductForm() {
     return Object.values(newErrors).every((error) => !error);
   };
 
-  // const saveProduct = () => {
-  //   if (!validateProduct()) {
-  //     // Show error toast or alert
-  //     return;
-  //   }
-  //   // Proceed with saving
-  // };
-
   const addVariant = () => {
     setVariants([
       ...variants,
       {
-        id: crypto.randomUUID(),
+        id: cuid(),
         color: "",
         customColor: false,
         images: [],
-        sizes: [{
-          id: crypto.randomUUID(),
-          name: "SIZE_5",
-          quantity: 0
-        }],
+        sizes: [
+          {
+            id: cuid(),
+            name: "SIZE_5",
+            quantity: 0,
+          },
+        ],
         isOpen: true,
       },
     ]);
@@ -148,10 +145,7 @@ export function AddProductForm() {
         if (variant.id === variantId) {
           return {
             ...variant,
-            sizes: [
-              ...variant.sizes,
-              { id: crypto.randomUUID(), name: "", quantity: 0 },
-            ],
+            sizes: [...variant.sizes, { id: cuid(), name: "", quantity: 0 }],
           };
         }
         return variant;
@@ -211,11 +205,7 @@ export function AddProductForm() {
 
   const categoryQuery = useQuery({
     queryKey: ["categories"],
-    queryFn: async () => {
-      const response = await apiClient.get('/api/category')
-      const data = response.data;
-      return data;
-    },
+    queryFn: () => categoryApi.getAll(),
   });
 
   const handleAddImage = (imageUrl: string) => {
@@ -235,7 +225,7 @@ export function AddProductForm() {
     });
   };
   const variantMutation = useMutation({
-    mutationFn: async (variant: {
+    mutationFn: (variant: {
       productId: string;
       color: string;
       assets: {
@@ -243,56 +233,47 @@ export function AddProductForm() {
         type: "IMAGE" | "VIDEO";
       }[];
       sizes: {
-        size: string;
+        size:
+          | "SIZE_5"
+          | "SIZE_6"
+          | "SIZE_7"
+          | "SIZE_8"
+          | "SIZE_9"
+          | "SIZE_10"
+          | "SIZE_11"
+          | "SIZE_12";
         stock: number;
       }[];
-    }) => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/color`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(variant),
-        }
-      );
-      return response.json();
-    },
-    onSuccess: (data) => {
-      console.log("Product color saved successfully", data);
-    },
+    }) => varientApi.addVarient(variant),
   });
 
   const productMutation = useMutation({
-    mutationFn: async (newProduct: Product) => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(newProduct),
-        }
-      );
-      return response.json();
-    },
+    mutationFn: (product: Product) => productApi.addProduct(product),
     onSuccess: (data) => {
-      if (data.success && data.product.id) {
-        const productId = data.product.id;
-
-        // Iterate through variants and call the mutation for each one
+      if (data && data.id) {
+        const productId = data.id;
         variants.forEach((variant) => {
           variantMutation.mutate({
             productId,
             color: variant.color,
             assets: variant.images,
             sizes: variant.sizes.map((size) => ({
-              size: size.name,
+              size: size.name as
+                | "SIZE_5"
+                | "SIZE_6"
+                | "SIZE_7"
+                | "SIZE_8"
+                | "SIZE_9"
+                | "SIZE_10"
+                | "SIZE_11"
+                | "SIZE_12",
               stock: size.quantity,
             })),
           });
         });
       }
 
-      router.push(`/product/${data.product.id}`);
+      router.push(`/product/${data.id}`);
     },
   });
 
@@ -540,8 +521,7 @@ export function AddProductForm() {
                                 )
                               );
                             }}
-                            className="px-3 py-2 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200"
-                          >
+                            className="px-3 py-2 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200">
                             Back
                           </button>
                         </div>
@@ -742,7 +722,7 @@ export function AddProductForm() {
                     Loading...
                   </div>
                 ) : (
-                  categoryQuery.data?.categories?.map((category: Category) => (
+                  categoryQuery.data?.map((category: Category) => (
                     <div
                       key={category.id}
                       onClick={() =>
@@ -890,9 +870,10 @@ export function AddProductForm() {
         <div className="flex gap-3">
           <button
             type="submit"
-            className="flex-1 bg-[#4f507f] text-white py-2 px-4 rounded-md hover:bg-[#3e3f63] transition-colors"
-            onClick={saveProduct}>
-            Save Product
+            className="flex-1 bg-[#4f507f] text-white py-2 px-4 rounded-md hover:bg-[#3e3f63] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={saveProduct}
+            disabled={productMutation.isPending}>
+            {productMutation.isPending ? "Saving..." : "Save Product"}
           </button>
           <button
             type="button"

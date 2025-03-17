@@ -1,3 +1,4 @@
+import { AssetType, VariantsValues } from "@prisma/client";
 import { z } from "zod";
 export const product = z.object({
     name: z.string().min(1, "Product name is required"),
@@ -17,10 +18,40 @@ export const product = z.object({
     status: z.enum(['DRAFT', 'PUBLISHED']),
   });
 
+export const varient = z.object({
+  productId: z.string().cuid("Invalid product ID"),
+  color: z.string().min(1, "Color is required"),
+  assets: z.array(
+    z.object({
+      url: z.string().url("Invalid asset URL"),
+      type: z.nativeEnum(AssetType, {
+        errorMap: () => ({ message: "Invalid asset type" }),
+      }),
+    })
+  ),
+  sizes: z.array(
+    z.object({
+      size: z.nativeEnum(VariantsValues, {
+        errorMap: () => ({ message: "Invalid size value" }),
+      }),
+      stock: z.number().int().min(0, "Stock must be a non-negative integer"),
+    })
+  ),
+})
+
+export const review = z.object({
+  rating: z.number().min(1, "Rating must be a positive number"),
+  title: z.string().min(1, "Title is required"),
+  description: z.string().min(1, "Description is required"),
+});
+export type Review = z.infer<typeof review>;
+
+export type Varient = z.infer<typeof varient>;
+
 export type Product = z.infer<typeof product>;
 
 export const category = z.object({
-  id: z.string().uuid("Invalid category ID"),
+  id: z.string().cuid("Invalid category ID"),
   name: z.string().min(1, "Category name is required"),
   productCount: z.number().positive("Product count must be a positive number").optional(),
   description: z.string().min(1, "Category description is required").optional(),
