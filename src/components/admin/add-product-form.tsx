@@ -8,6 +8,10 @@ import { Category, Product } from "@/types/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { apiClient } from "@/lib/axiosClient";
+import { categoryApi } from "@/lib/api/categories";
+import cuid from "cuid";
+import { varientApi } from "@/lib/api/varients";
+import { productApi } from "@/lib/api/productdetails";
 
 export function AddProductForm() {
   const [isUploadPopupOpen, setIsUploadPopupOpen] = useState(false);
@@ -116,24 +120,16 @@ export function AddProductForm() {
     return Object.values(newErrors).every((error) => !error);
   };
 
-  // const saveProduct = () => {
-  //   if (!validateProduct()) {
-  //     // Show error toast or alert
-  //     return;
-  //   }
-  //   // Proceed with saving
-  // };
-
   const addVariant = () => {
     setVariants([
       ...variants,
       {
-        id: crypto.randomUUID(),
+        id: cuid(),
         color: "",
         customColor: false,
         images: [],
         sizes: [{
-          id: crypto.randomUUID(),
+          id: cuid(),
           name: "SIZE_5",
           quantity: 0
         }],
@@ -150,7 +146,7 @@ export function AddProductForm() {
             ...variant,
             sizes: [
               ...variant.sizes,
-              { id: crypto.randomUUID(), name: "", quantity: 0 },
+              { id: cuid(), name: "", quantity: 0 },
             ],
           };
         }
@@ -211,11 +207,7 @@ export function AddProductForm() {
 
   const categoryQuery = useQuery({
     queryKey: ["categories"],
-    queryFn: async () => {
-      const response = await apiClient.get('/api/category')
-      const data = response.data;
-      return data;
-    },
+    queryFn: () => categoryApi.getAll(),
   });
 
   const handleAddImage = (imageUrl: string) => {
@@ -235,62 +227,36 @@ export function AddProductForm() {
     });
   };
   const variantMutation = useMutation({
-    mutationFn: async (variant: {
-      productId: string;
-      color: string;
-      assets: {
-        url: string;
-        type: "IMAGE" | "VIDEO";
-      }[];
-      sizes: {
-        size: string;
-        stock: number;
-      }[];
-    }) => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/color`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(variant),
-        }
-      );
-      return response.json();
-    },
-    onSuccess: (data) => {
-      console.log("Product color saved successfully", data);
-    },
+    mutationFn: (variant: {
+        productId: string;
+        color: string;
+        assets: {
+          url: string;
+          type: "IMAGE" | "VIDEO";
+        }[];
+        sizes: {
+          size: "SIZE_5" | "SIZE_6" | "SIZE_7" | "SIZE_8" | "SIZE_9" | "SIZE_10" | "SIZE_11" | "SIZE_12";
+          stock: number;
+        }[];
+      }) => varientApi.addVarient(variant)
   });
 
   const productMutation = useMutation({
-    mutationFn: async (newProduct: Product) => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(newProduct),
-        }
-      );
-      return response.json();
-    },
-    onSuccess: (data) => {
-      if (data.success && data.product.id) {
+    //@ts-ignore
+  mutationFn: (product: Product) => productApi.addProduct(product),  
+  onSuccess: (data) => {      if (data.success && data.product.id) {
         const productId = data.product.id;
-
-        // Iterate through variants and call the mutation for each one
         variants.forEach((variant) => {
           variantMutation.mutate({
             productId,
             color: variant.color,
             assets: variant.images,
             sizes: variant.sizes.map((size) => ({
-              size: size.name,
+              size: size.name as "SIZE_5" | "SIZE_6" | "SIZE_7" | "SIZE_8" | "SIZE_9" | "SIZE_10" | "SIZE_11" | "SIZE_12",
               stock: size.quantity,
             })),
           });
-        });
-      }
+        });      }
 
       router.push(`/product/${data.product.id}`);
     },
@@ -742,7 +708,7 @@ export function AddProductForm() {
                     Loading...
                   </div>
                 ) : (
-                  categoryQuery.data?.categories?.map((category: Category) => (
+                  categoryQuery.data?.map((category: Category) => (
                     <div
                       key={category.id}
                       onClick={() =>

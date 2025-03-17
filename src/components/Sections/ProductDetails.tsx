@@ -10,6 +10,7 @@ import { productReviewApi } from "@/lib/api/productreview";
 import Navbar from "../Navbar";
 
 export interface Product {
+  success: any;
   title: string;
   product: any;
   id : string;
