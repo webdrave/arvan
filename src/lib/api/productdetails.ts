@@ -1,11 +1,7 @@
+import { Products } from "@/components/admin/products-table";
 import { apiClient } from "@/lib/axiosClient";
-
-
 import { Product } from "@/types/types";
 
-interface Products extends Product {
-  id: string;
-}
 export const productApi = {
   getAll: async (): Promise<Products[]> => {
     const response = await apiClient.get("/api/products");
@@ -26,5 +22,11 @@ export const productApi = {
   },
   deleteProduct: async (id: string): Promise<void> => {
     await apiClient.delete(`/api/products/${id}`);
-  }
+  },
+  updateStatus: async (id: string, status: string): Promise<Products> => {
+    const response = await apiClient.put(`/api/products/status/${id}`, {
+      status,
+    });
+    return response.data;
+  },
 };
