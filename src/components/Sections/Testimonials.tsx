@@ -15,13 +15,12 @@ export default function Testimonials() {
   interface Testimonial {
     description: string;
     ratings: number;
-    imag: string;
+    image: string;
     username: string;
     role: string;
   }
 
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
-  const [imageLoaded, setImageLoaded] = useState<{ [key: number]: boolean }>({});
 
   const [isLoading , setIsLoading] = useState<boolean>(true); 
 
@@ -44,10 +43,6 @@ export default function Testimonials() {
 
     fetchTestimonials();
   }, []);
-
-  const handleImageLoad = (index: number) => {
-    setImageLoaded((prev) => ({ ...prev, [index]: true }));
-  };
 
   if (isLoading) {
     return (
@@ -133,16 +128,12 @@ export default function Testimonials() {
 
                 {/* User Info */}
                 <div className="flex items-center gap-3">
-                  {!imageLoaded[index] && (
-                    <div className="w-12 h-12 border-4 border-gray-300 border-t-transparent rounded-full animate-spin"></div>
-                  )}
                   <Image
-                    src={testimonial.imag}
+                    src={testimonial.image}
                     width={50}
                     height={50}
                     alt={testimonial.username}
-                    className={`rounded-full border border-gray-500 ${!imageLoaded[index] ? "hidden" : ""}`}
-                    onLoad={() => handleImageLoad(index)}
+                    className={`rounded-full border border-gray-500`}
                   />
                   <div className="text-left">
                     <h3 className="text-white font-semibold">
