@@ -7,7 +7,6 @@ import UploadPopup from "../UploadPopup";
 import { Category, Product } from "@/types/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { apiClient } from "@/lib/axiosClient";
 import { categoryApi } from "@/lib/api/categories";
 import cuid from "cuid";
 import { varientApi } from "@/lib/api/varients";
@@ -128,11 +127,13 @@ export function AddProductForm() {
         color: "",
         customColor: false,
         images: [],
-        sizes: [{
-          id: cuid(),
-          name: "SIZE_5",
-          quantity: 0
-        }],
+        sizes: [
+          {
+            id: cuid(),
+            name: "SIZE_5",
+            quantity: 0,
+          },
+        ],
         isOpen: true,
       },
     ]);
@@ -144,10 +145,7 @@ export function AddProductForm() {
         if (variant.id === variantId) {
           return {
             ...variant,
-            sizes: [
-              ...variant.sizes,
-              { id: cuid(), name: "", quantity: 0 },
-            ],
+            sizes: [...variant.sizes, { id: cuid(), name: "", quantity: 0 }],
           };
         }
         return variant;
@@ -228,37 +226,54 @@ export function AddProductForm() {
   };
   const variantMutation = useMutation({
     mutationFn: (variant: {
-        productId: string;
-        color: string;
-        assets: {
-          url: string;
-          type: "IMAGE" | "VIDEO";
-        }[];
-        sizes: {
-          size: "SIZE_5" | "SIZE_6" | "SIZE_7" | "SIZE_8" | "SIZE_9" | "SIZE_10" | "SIZE_11" | "SIZE_12";
-          stock: number;
-        }[];
-      }) => varientApi.addVarient(variant)
+      productId: string;
+      color: string;
+      assets: {
+        url: string;
+        type: "IMAGE" | "VIDEO";
+      }[];
+      sizes: {
+        size:
+          | "SIZE_5"
+          | "SIZE_6"
+          | "SIZE_7"
+          | "SIZE_8"
+          | "SIZE_9"
+          | "SIZE_10"
+          | "SIZE_11"
+          | "SIZE_12";
+        stock: number;
+      }[];
+    }) => varientApi.addVarient(variant),
   });
 
   const productMutation = useMutation({
-    //@ts-ignore
-  mutationFn: (product: Product) => productApi.addProduct(product),  
-  onSuccess: (data) => {      if (data.success && data.product.id) {
-        const productId = data.product.id;
+    mutationFn: (product: Product) => productApi.addProduct(product),
+    onSuccess: (data) => {
+      if (data && data.id) {
+        const productId = data.id;
         variants.forEach((variant) => {
           variantMutation.mutate({
             productId,
             color: variant.color,
             assets: variant.images,
             sizes: variant.sizes.map((size) => ({
-              size: size.name as "SIZE_5" | "SIZE_6" | "SIZE_7" | "SIZE_8" | "SIZE_9" | "SIZE_10" | "SIZE_11" | "SIZE_12",
+              size: size.name as
+                | "SIZE_5"
+                | "SIZE_6"
+                | "SIZE_7"
+                | "SIZE_8"
+                | "SIZE_9"
+                | "SIZE_10"
+                | "SIZE_11"
+                | "SIZE_12",
               stock: size.quantity,
             })),
           });
-        });      }
+        });
+      }
 
-      router.push(`/product/${data.product.id}`);
+      router.push(`/product/${data.id}`);
     },
   });
 
@@ -506,8 +521,7 @@ export function AddProductForm() {
                                 )
                               );
                             }}
-                            className="px-3 py-2 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200"
-                          >
+                            className="px-3 py-2 text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200">
                             Back
                           </button>
                         </div>
@@ -856,9 +870,10 @@ export function AddProductForm() {
         <div className="flex gap-3">
           <button
             type="submit"
-            className="flex-1 bg-[#4f507f] text-white py-2 px-4 rounded-md hover:bg-[#3e3f63] transition-colors"
-            onClick={saveProduct}>
-            Save Product
+            className="flex-1 bg-[#4f507f] text-white py-2 px-4 rounded-md hover:bg-[#3e3f63] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={saveProduct}
+            disabled={productMutation.isPending}>
+            {productMutation.isPending ? "Saving..." : "Save Product"}
           </button>
           <button
             type="button"

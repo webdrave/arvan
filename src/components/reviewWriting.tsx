@@ -1,4 +1,5 @@
 import { productReviewApi } from '@/lib/api/productreview';
+import { Review } from '@/types/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import React, { useState } from 'react';
 
@@ -18,7 +19,7 @@ function ReviewWriting({ onClose, productId }: ReviewWritingProps) {
 
   // Create review mutation
   const createMutation = useMutation({
-    mutationFn: (variables: { productId: string; review: any }) =>
+    mutationFn: (variables: { productId: string; review: Review }) =>
       productReviewApi.create(variables.productId, variables.review),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reviews', productId] });

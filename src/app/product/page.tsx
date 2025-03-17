@@ -10,7 +10,7 @@ export default function ProductPage() {
     queries: [
       {
         queryKey: ["products"],
-        queryFn: () => productApi.getAll("someProductId"),
+        queryFn: () => productApi.getAll(),
       },
     ],
   });

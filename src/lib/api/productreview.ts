@@ -1,27 +1,27 @@
 import { apiClient } from "@/lib/axiosClient";
-import {ReviewsResponse} from "@/components/Sections/ProductDetails";
+import { Review } from "@/types/types";
 
 export const productReviewApi = {
     // fetch all reviews
-  getAll: async (productId: string): Promise<ReviewsResponse[]> => {
-    const response = await apiClient.get("/api/reviews");
+  getAll: async (productId: string): Promise<Review[]> => {
+    const response = await apiClient.get("/api/reviews", {params: {productId}});
     return response.data.reviews;
   },
 
     // fetch review by product id
-    getById: async (productId: string): Promise<ReviewsResponse> => {
+    getById: async (productId: string): Promise<Review> => {
         const response = await apiClient.get(`/api/reviews/${productId}`);
         return response.data;
     },
 
     // create a new review by product id
-    create: async (id: string , review: Omit<ReviewsResponse, "id" | "date">): Promise<ReviewsResponse> => {
+    create: async (id: string , review: Omit<Review, "id" | "date">): Promise<Review> => {
         const response = await apiClient.post(`/api/reviews/${id}`, review);
         return response.data;
     },
 
     // update a review
-    update: async (id: string, review: Partial<ReviewsResponse>): Promise<ReviewsResponse> => {
+    update: async (id: string, review: Partial<Review>): Promise<Review> => {
         const response = await apiClient.put(`/api/reviews/${id}`, review);
         return response.data;
     },

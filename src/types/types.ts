@@ -39,6 +39,13 @@ export const varient = z.object({
   ),
 })
 
+export const review = z.object({
+  rating: z.number().min(1, "Rating must be a positive number"),
+  title: z.string().min(1, "Title is required"),
+  description: z.string().min(1, "Description is required"),
+});
+export type Review = z.infer<typeof review>;
+
 export type Varient = z.infer<typeof varient>;
 
 export type Product = z.infer<typeof product>;
