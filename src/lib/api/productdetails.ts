@@ -7,6 +7,16 @@ export const productApi = {
     const response = await apiClient.get("/api/products");
     return response.data.products;
   },
+  getProducts: async (currentPage:number, itemsPerPage:number,debouncedSearchTerm:string): Promise<{products:Products[], pagination: {totalPages: number}}> => {
+    const response = await apiClient.get("/api/products", {
+      params: {
+        page: currentPage,
+        limit: itemsPerPage,
+        search: debouncedSearchTerm,
+      },
+    });
+    return response.data;
+  },
   
   getById: async (id: string): Promise<Products> => {
     const response = await apiClient.get(`/api/products/${id}`);
