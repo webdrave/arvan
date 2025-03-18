@@ -1,4 +1,5 @@
 "use client";
+import Navigation from "@/components/navigation";
 import ProductGrid from "@/components/product-grid";
 import { Button } from "@/components/ui/button";
 import { productApi } from "@/lib/api/productdetails";
@@ -98,6 +99,7 @@ export default function ProductPage() {
 
   return (
     <div className="min-h-screen bg-black text-white">
+      <Navigation />
       {/* Hero Section */}
       <section className="relative h-[80dvh] lg:h-screen flex items-center justify-center overflow-hidden">
         <div
