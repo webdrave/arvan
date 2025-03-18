@@ -37,12 +37,11 @@ const Checkout: React.FC = () => {
     );
   };
 
-
   return (
     <div className="min-h-screen bg-black text-white p-6 flex items-center justify-center">
       <div className="container  mx-auto max-w-6xl relative">
         {/* Blurred circle in background */}
-        <div className="absolute w-[80vw] h-[40vw] rounded-full bg-lime-600/20 blur-3xl left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 -z-1"></div>
+        <div className="absolute w-[80vw] h-[40vw] rounded-full bg-lime-600/15 blur-3xl left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 -z-1"></div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 items-center relative z-10">
           {/* Left column - Address and Payment */}
