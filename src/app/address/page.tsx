@@ -56,7 +56,7 @@ const AddAddressForm: React.FC = () => {
   return (
     <div className="relative w-full min-h-screen bg-black overflow-hidden py-5">
       {/* Blurred circle in background */}
-      <div className="absolute w-[80vw] h-[40vw] rounded-full bg-lime-500/20 blur-3xl left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 -z-1"></div>
+      <div className="absolute w-[80vw] h-[40vw] rounded-full bg-lime-500/15 blur-3xl left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 -z-1"></div>
 
       <button
         onClick={handleBack}
