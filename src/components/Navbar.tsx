@@ -11,15 +11,36 @@ const Navbar = () => {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const navitems = ["Home", "Shop", "track order", "about", "contact"];
+  const navItems = [
+    {
+      name: "Home",
+      href: "/",
+    },
+    {
+      name: "Shop",
+      href: "/product",
+    },
+    {
+      name: "Track Order",
+      href: "/",
+    },
+    {
+      name: "About",
+      href: "/",
+    },
+    {
+      name: "Contact",
+      href: "/",
+    },
+  ];
 
   return (
     <nav className="fixed top-0 flex p-6 w-full z-30">
       <div className="w-full hidden md:flex  bg-transparent justify-end  gap-6 uppercase  z-30">
-        {navitems.map((item, i) => (
+        {navItems.map((item, i) => (
           <Link
             key={i}
-            href=""
+            href={item.href}
             className="relative font-montserrat font-normal text-md transition-colors duration-300
              after:content-[''] after:absolute after:left-0 after:bottom-0 
              after:h-[2.5px] after:bg-[#CCFF00] after:transform-gpu  after:w-0 hover:after:w-full
@@ -27,7 +48,7 @@ const Navbar = () => {
              "
             //  hover:text-[#CCFF00]
           >
-            {item}
+            {item.name}
           </Link>
         ))}
         <Link href="/cart">
@@ -61,7 +82,8 @@ const Navbar = () => {
           )}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="text-white focus:outline-none ml-auto">
+            className="text-white focus:outline-none ml-auto"
+          >
             <IoMenu className="text-lg text-white cursor-pointer hover:text-[#CCFF00]" />
           </button>
         </div>
@@ -69,13 +91,14 @@ const Navbar = () => {
       {isMenuOpen && (
         <div className="md:hidden fixed top-16 left-0 right-0 bg-transparent p-4 z-40 backdrop-blur-lg">
           <div className="flex flex-col space-y-4">
-            {navitems.map((navItem, idx) => (
+            {navItems.map((navItem, idx) => (
               <Link
                 key={idx}
-                href={`/${navItem.toLowerCase().replace(" ", "-")}`}
+                href={navItem.href}
                 className="px-4 py-2 text-sm font-medium rounded-full transition-all text-white hover:text-[#CCFF00]"
-                onClick={() => setIsMenuOpen(false)}>
-                {navItem}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {navItem.name}
               </Link>
             ))}
           </div>

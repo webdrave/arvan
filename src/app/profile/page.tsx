@@ -5,23 +5,23 @@ import { useRouter } from "next/navigation";
 import React from "react";
 
 const Page = () => {
-    const { data: session, status } = useSession();
-    const router = useRouter();
+  const { data: session, status } = useSession();
+  const router = useRouter();
 
-    if (status !== "loading" && !session?.user) {
-        router.push("/signin");
-    }
+  if (status !== "loading" && !session?.user) {
+    router.push("/signin");
+  }
 
-    if (status === "loading") {
-        return <div>Loading...</div>;
-    }
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
 
-    return (
-        <>
-            {/* <ProfilePage user={session?.user} /> */}
-            <ProfilePage />
-        </>
-    );
+  return (
+    <>
+      {/* <ProfilePage user={session?.user} /> */}
+      <ProfilePage />
+    </>
+  );
 };
 
 export default Page;

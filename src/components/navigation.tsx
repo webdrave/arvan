@@ -1,32 +1,60 @@
-import Link from "next/link"
-import { Search, ShoppingCart, User } from "lucide-react"
+import Link from "next/link";
+import { Search, ShoppingCart, User } from "lucide-react";
+import Image from "next/image";
 
 export default function Navigation() {
+  const navItems = [
+    {
+      name: "Home",
+      href: "/",
+    },
+    {
+      name: "Shop",
+      href: "/product",
+    },
+    {
+      name: "Track Order",
+      href: "/",
+    },
+    {
+      name: "About",
+      href: "/",
+    },
+    {
+      name: "Contact",
+      href: "/",
+    },
+  ];
+
   return (
     <nav className="bg-black text-white py-4 px-6 border-b border-gray-800">
       <div className="container mx-auto flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="text-2xl font-bold">
-          ARVAN
+          <Image
+            src={"/logo.svg"}
+            width={30}
+            height={80}
+            alt="logo"
+            className="object-cover"
+          />
         </Link>
 
         {/* Navigation Links */}
         <div className="hidden md:flex items-center space-x-8">
-          <Link href="/" className="hover:text-[#CCFF00]">
-            HOME
-          </Link>
-          <Link href="/shop" className="hover:text-[#CCFF00]">
-            SHOP
-          </Link>
-          <Link href="/track-order" className="hover:text-[#CCFF00]">
-            TRACK ORDER
-          </Link>
-          <Link href="/about" className="hover:text-[#CCFF00]">
-            ABOUT
-          </Link>
-          <Link href="/contact" className="hover:text-[#CCFF00]">
-            CONTACT
-          </Link>
+          {navItems.map((item, i) => (
+            <Link
+              key={i}
+              href={item.href}
+              className="relative font-montserrat font-normal text-md transition-colors duration-300
+             after:content-[''] after:absolute after:left-0 after:bottom-0 
+             after:h-[2px] after:bg-[#CCFF00] after:transform-gpu  after:w-0 hover:after:w-full
+             after:transition-all after:duration-300
+             "
+            >
+              {item.name}
+            </Link>
+          ))}
         </div>
 
         {/* Right Icons */}
@@ -43,6 +71,5 @@ export default function Navigation() {
         </div>
       </div>
     </nav>
-  )
+  );
 }
-
