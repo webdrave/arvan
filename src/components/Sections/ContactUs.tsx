@@ -92,7 +92,6 @@ export default function ContactForm() {
             objectFit="cover"
           />
         </div>
-
         <div className="relative z-10 flex flex-col md:flex-row w-full pb-6 sm:p-4 md:p-6">
           {/* Left Side - Form */}
           <div className="relative md:w-1/2 p-4 sm:p-6 border-b md:border-b-0 md:border-r border-gray-700">

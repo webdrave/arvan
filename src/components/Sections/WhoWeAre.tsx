@@ -2,7 +2,7 @@ import Image from "next/image";
 
 const WhoWeAre = () => {
   return (
-    <section className="px-6 sm:px-8 md:px-10">
+    <section className="px-6 sm:px-8 md:px-10 mt-20">
       {/* Centered Heading */}
       <div className="text-center relative py-10 sm:py-16 md:py-20">
         <h2 className="text-2xl sm:text-4xl md:text-6xl font-bold">
@@ -41,7 +41,7 @@ const WhoWeAre = () => {
         {/* Right Content */}
         <div className="w-full md:w-[35%] flex justify-center md:justify-start items-center relative">
           <Image
-            src="/Group-Logo.svg"
+            src="/logo.svg"
             alt="Chocolate"
             width={400}
             height={160}

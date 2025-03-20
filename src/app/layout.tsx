@@ -1,6 +1,14 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { GSAPProvider } from "@/context/GSAPContext";
+import AdminStyles from "@/components/AdminStyles";
+import { OverlayProvider } from "@/context/OverlayContext";
+import { Theme } from "@radix-ui/themes";
+import QueryProvider from "@/lib/queryclient";
+
+import { Toaster } from "react-hot-toast";
+import { SessionProvider } from "next-auth/react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,12 +31,26 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
-    </html>
+    <SessionProvider>
+      <html lang="en">
+        <head>
+          <meta name="color-scheme" content="dark" />
+        </head>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+          <QueryProvider>
+            <Theme>
+              <AdminStyles />
+              <GSAPProvider>
+                <OverlayProvider>
+                  {children}
+                  <Toaster />
+                </OverlayProvider>
+              </GSAPProvider>
+            </Theme>
+          </QueryProvider>
+        </body>
+      </html>
+    </SessionProvider>
   );
 }
