@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, ChangeEvent, FormEvent } from "react";
-import { FaInstagram, FaFacebook } from "react-icons/fa";
+import { FaInstagram, FaFacebook, FaTwitter } from "react-icons/fa";
 import Image from "next/image";
+import { useMutation } from "@tanstack/react-query";
 
 // Define the type for the form data
-interface FormData {
+export interface FormData {
   name: string;
   email: string;
   mobile: string;
@@ -21,6 +22,9 @@ export default function ContactForm() {
     message: "",
   });
 
+  // State for error messages
+  const [error, setError] = useState<string | null>(null);
+
   // Handle input change with proper typing
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -32,10 +36,70 @@ export default function ContactForm() {
     }));
   };
 
+  // Validate email format
+  const validateEmail = (email: string) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+
+  // Validate mobile number format (10 digits)
+  const validateMobile = (mobile: string) => {
+    const regex = /^\d{10}$/;
+    return regex.test(mobile);
+  };
+
+
   // Handle form submission with proper typing
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log(formData); // Replace with your form submission logic
+    e.preventDefault(); // Prevent default form submission
+
+    // Check if any field is empty
+    if (!formData.name || !formData.email || !formData.mobile || !formData.message) {
+      setError("All fields are required. Please fill out the form completely.");
+      return;
+    }
+
+    // Validate email format
+    if (!validateEmail(formData.email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    // Validate mobile number format
+    if (!validateMobile(formData.mobile)) {
+      setError("Please enter a valid 10-digit mobile number.");
+      return;
+    }
+
+    // Clear any previous errors
+    setError(null);
+
+    // If all fields are filled and valid, proceed with the mutation
+   console.log(formData);
+   fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/send/contactform`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    },
+    body: JSON.stringify(formData),
+
+   })
+   .then((res) => {
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    return res.json();
+  })
+
+    // Clear the form after submission
+    setFormData({
+      name: "",
+      email: "",
+      mobile: "",
+      message: "",
+    });
   };
 
   return (
@@ -48,7 +112,7 @@ export default function ContactForm() {
             src="/Star.svg"
             width={40}
             height={40}
-            alt="Star SVG"
+            alt="Star decoration"
             className="absolute -top-6 sm:-top-5 right-0 animate-[spin_3s_linear_infinite]"
           />
         </span>
@@ -75,6 +139,7 @@ export default function ContactForm() {
             Dolor Sit Amet.
           </p>
           <form className="mt-6 space-y-4 sm:space-y-6" onSubmit={handleSubmit}>
+            {error && <p className="text-red-500 text-sm">{error}</p>}
             <input
               type="text"
               name="name"
@@ -138,8 +203,7 @@ export default function ContactForm() {
               </h3>
               <div className="flex space-x-4 mt-4">
                 <FaInstagram className="text-white text-3xl sm:text-4xl cursor-pointer" />
-                <FaInstagram className="text-white text-3xl sm:text-4xl cursor-pointer" />
-                <FaInstagram className="text-white text-3xl sm:text-4xl cursor-pointer" />
+                <FaTwitter className="text-white text-3xl sm:text-4xl cursor-pointer" />
                 <FaFacebook className="text-white text-3xl sm:text-4xl cursor-pointer" />
               </div>
             </div>
