@@ -4,9 +4,11 @@ import { useEffect, useState } from "react";
 import { Upload, X, Check, Plus, Trash2, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import UploadPopup from "../UploadPopup";
-import { Category, Product } from "@/types/types";
+import { Category, Product, Varient } from "@/types/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { productApi } from "@/lib/api/productdetails";
+import { varientApi } from "@/lib/api/varients";
 
 export function EditProductForm({productId}: { productId: string }) {
   const [isUploadPopupOpen, setIsUploadPopupOpen] = useState(false);
@@ -14,6 +16,8 @@ export function EditProductForm({productId}: { productId: string }) {
   const [varientImgPopUp, setVarientImgPopUp] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [derror, setderror] = useState<string>("");
+  const [price, setPrice] = useState<number>(0);
+  const [discountPrice, setDiscountPrice] = useState<number>(0);
 
   const router = useRouter();
 
@@ -134,14 +138,17 @@ export function EditProductForm({productId}: { productId: string }) {
     if (data) {
       const product = {
         ...data.product,
+        discountPrice: data.product.discountPrice ?? 1,
         assets: data.product.assets?.map((asset: { asset_url: string; }) => ({
           ...asset,
           url: asset.asset_url || "",
         })),
       }
       setProduct(product);
+      setPrice(product.price);
+      setDiscountPrice(product.discountPrice);
 
-      const varients = data.product.colors.map((color: { assets: { asset_url: string; }[]; sizes: { stock: number; }[]; }) => ({
+      const varients = data.product.colors.map((color: { assets: { asset_url: string; }[]; sizes: { size: string; stock: number; }[]; }) => ({
         ...color,
         isOpen: false,
         customColor:true,
@@ -151,10 +158,12 @@ export function EditProductForm({productId}: { productId: string }) {
         })),
         sizes: color.sizes?.map((size) => ({
           ...size,
+          name: size.size,
           quantity: size.stock,
         })),
       }));
-      setVariants(varients);      
+      setVariants(varients);  
+          
     }
 
   }, [data]);
@@ -275,64 +284,33 @@ export function EditProductForm({productId}: { productId: string }) {
     });
   };
   const variantMutation = useMutation({
-    mutationFn: async (variant: {
-      productId: string;
-      color: string;
-      assets: {
-        url: string;
-        type: "IMAGE" | "VIDEO";
-      }[];
-      sizes: {
-        size: string;
-        stock: number;
-      }[];
-    }) => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/color`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(variant),
-        }
-      );
-      return response.json();
-    },
-    onSuccess: (data) => {
-      console.log("Product color saved successfully", data);
-    },
+    mutationFn: async (variant: Varient) => {
+      //@ts-ignore
+      await varientApi.updateVarient(variant.id,variant);
+    }
   });
 
   const productMutation = useMutation({
-    mutationFn: async (newProduct: Product) => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(newProduct),
-        }
-      );
-      return response.json();
-    },
+    mutationFn: (newProduct:Product)=>productApi.updateProduct(productId,newProduct),
     onSuccess: (data) => {
-      if (data.success && data.product.id) {
-        const productId = data.product.id;
-
+      if (data) {
+        const productId = data.id;
         // Iterate through variants and call the mutation for each one
         variants.forEach((variant) => {
           variantMutation.mutate({
+            //@ts-ignore
+            id: variant.id,
             productId,
             color: variant.color,
             assets: variant.images,
             sizes: variant.sizes.map((size) => ({
-              size: size.name,
+              size: size.name as "SIZE_5" | "SIZE_6" | "SIZE_7" | "SIZE_8" | "SIZE_9" | "SIZE_10" | "SIZE_11" | "SIZE_12",
               stock: size.quantity,
             })),
           });
-        });
-      }
+        });      }
 
-      router.push(`/product/${data.product.id}`);
+      router.push(`/product/${productId}`);
     },
   });
 
@@ -458,6 +436,7 @@ export function EditProductForm({productId}: { productId: string }) {
                 </span>
                 <input
                   type="text"
+                  value={price}
                   onChange={(e) => {
                     const value = e.target.value;
                     if (!/^\d*\.?\d*$/.test(value)) {
@@ -469,6 +448,7 @@ export function EditProductForm({productId}: { productId: string }) {
                       ...product,
                       price: value ? parseFloat(value) : 0,
                     });
+                    setPrice(value ? parseFloat(value) : 0);
                   }}
                   className={`w-full pl-8 pr-3 py-2 bg-white border ${
                     error ? "border-red-500" : "border-gray-300"
@@ -491,6 +471,7 @@ export function EditProductForm({productId}: { productId: string }) {
                 </span>
                 <input
                   type="text"
+                  value={discountPrice}
                   onChange={(e) => {
                     const value = e.target.value;
                     if (!/^\d*\.?\d*$/.test(value)) {
@@ -502,6 +483,7 @@ export function EditProductForm({productId}: { productId: string }) {
                       ...product,
                       discountPrice: value ? parseFloat(value) : 0,
                     });
+                    setDiscountPrice(value ? parseFloat(value) : 0);
                   }}
                   className={`w-full pl-8 pr-3 py-2 bg-white border ${
                     derror ? "border-red-500" : "border-gray-300"

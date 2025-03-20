@@ -28,7 +28,7 @@ export const productApi = {
   },
   updateProduct: async (id: string, product: Product): Promise<Products> => {
     const response = await apiClient.put(`/api/products/${id}`, product);
-    return response.data;
+    return response.data.updatedProduct;
   },
   deleteProduct: async (id: string): Promise<void> => {
     await apiClient.delete(`/api/products/${id}`);

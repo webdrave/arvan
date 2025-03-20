@@ -62,7 +62,7 @@ export function AddProductForm() {
     name: "",
     description: "",
     price: 0,
-    discountPrice: 0,
+    discountPrice: 1,
     category_id: "",
     material: "",
     assets: [],
