@@ -18,7 +18,6 @@ export default function ProductPage() {
     ],
   });
 
-  console.log(products);
   const router = useRouter();
 
   //Test Products
