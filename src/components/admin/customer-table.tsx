@@ -19,7 +19,7 @@ export function CustomerTable() {
   const { data: customers, isLoading, error } = useQuery({
     queryKey: ["customers"],
     queryFn: async () => {
-      const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/allcustomers`;
+      const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/customers/allcustomers`;
       if (!url) {
         throw new Error("NEXT_PUBLIC_BACKEND_URL is not defined");
       } 

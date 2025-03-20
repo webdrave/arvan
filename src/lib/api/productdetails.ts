@@ -7,6 +7,16 @@ export const productApi = {
     const response = await apiClient.get("/api/products");
     return response.data.products;
   },
+  getProducts: async (currentPage:number, itemsPerPage:number,debouncedSearchTerm:string): Promise<{products:Products[], pagination: {totalPages: number}}> => {
+    const response = await apiClient.get("/api/products", {
+      params: {
+        page: currentPage,
+        limit: itemsPerPage,
+        search: debouncedSearchTerm,
+      },
+    });
+    return response.data;
+  },
   
   getById: async (id: string): Promise<Products> => {
     const response = await apiClient.get(`/api/products/${id}`);
@@ -18,7 +28,7 @@ export const productApi = {
   },
   updateProduct: async (id: string, product: Product): Promise<Products> => {
     const response = await apiClient.put(`/api/products/${id}`, product);
-    return response.data;
+    return response.data.updatedProduct;
   },
   deleteProduct: async (id: string): Promise<void> => {
     await apiClient.delete(`/api/products/${id}`);
