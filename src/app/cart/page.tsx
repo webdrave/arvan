@@ -7,72 +7,59 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { X, Plus, Minus, ArrowLeft } from "lucide-react";
 import Navigation from "@/components/navigation";
+import { useCart } from "@/context/CartContext";
 
 // Sample cart data
-const initialCartItems = [
-  {
-    id: 1,
-    name: "Leather",
-    color: "White",
-    size: "6 UK",
-    quantity: 1,
-    price: 599,
-    image: "/slides/1.png",
-  },
-  {
-    id: 2,
-    name: "Leather",
-    color: "White",
-    size: "6 UK",
-    quantity: 1,
-    price: 599,
-    image: "/slides/2.png",
-  },
-  {
-    id: 3,
-    name: "Leather",
-    color: "White",
-    size: "6 UK",
-    quantity: 1,
-    price: 599,
-    image: "/slides/3.png",
-  },
-  {
-    id: 4,
-    name: "Leather",
-    color: "White",
-    size: "6 UK",
-    quantity: 1,
-    price: 599,
-    image: "/slides/4.png",
-  },
-];
+// const initialCartItems = [
+//   {
+//     id: 1,
+//     name: "Leather",
+//     color: "White",
+//     size: "6 UK",
+//     quantity: 1,
+//     price: 599,
+//     image: "/slides/1.png",
+//   },
+//   {
+//     id: 2,
+//     name: "Leather",
+//     color: "White",
+//     size: "6 UK",
+//     quantity: 1,
+//     price: 599,
+//     image: "/slides/2.png",
+//   },
+//   {
+//     id: 3,
+//     name: "Leather",
+//     color: "White",
+//     size: "6 UK",
+//     quantity: 1,
+//     price: 599,
+//     image: "/slides/3.png",
+//   },
+//   {
+//     id: 4,
+//     name: "Leather",
+//     color: "White",
+//     size: "6 UK",
+//     quantity: 1,
+//     price: 599,
+//     image: "/slides/4.png",
+//   },
+// ];
 
 export default function CartPage() {
-  const [cartItems, setCartItems] = useState(initialCartItems);
   const [giftCode, setGiftCode] = useState("");
   const [showSummary, setShowSummary] = useState(false);
 
-  const updateQuantity = (id: number, newQuantity: number) => {
-    if (newQuantity < 1) return;
-    setCartItems(
-      cartItems.map((item) =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      )
-    );
-  };
+  const { cart, updateQuantity, removeFromCart } = useCart();
 
-  const removeItem = (id: number) => {
-    setCartItems(cartItems.filter((item) => item.id !== id));
-  };
-
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
-  const shippingCharges = 5999;
+  const subtotal =
+    cart && cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const shippingCharges = 149;
   const tax = 200;
-  const total = subtotal + shippingCharges + tax;
+  const total = cart.length > 0 ? subtotal + shippingCharges + tax : 0;
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -112,9 +99,9 @@ export default function CartPage() {
             <div className="absolute pointer-events-none w-[80vw] h-[80vw] rounded-full bg-lime-500/20 blur-[100px] left-1/2 top-[30%]  md:hidden transform -translate-x-1/2 -translate-y-1/2 z-[1]"></div>
             {/* Cart Items */}
 
-            {cartItems.length > 0 ? (
+            {cart.length > 0 ? (
               <div className="space-y-6 relative z-2">
-                {cartItems.map((item) => (
+                {cart.map((item) => (
                   <div
                     key={item.id}
                     className="flex md:grid md:grid-cols-7 gap-4 items-center border-b border-gray-800 pb-6"
@@ -123,7 +110,7 @@ export default function CartPage() {
                     <div className="flex md:hidden w-full relative">
                       <div className="w-24 h-24 bg-white rounded overflow-hidden flex-shrink-0">
                         <Image
-                          src={item.image || "/placeholder.svg"}
+                          src={item.assets[0].asset_url || "/placeholder.svg"}
                           alt={item.name}
                           width={96}
                           height={96}
@@ -136,7 +123,7 @@ export default function CartPage() {
                             {item.name}
                           </span>
                           <button
-                            onClick={() => removeItem(item.id)}
+                            onClick={() => removeFromCart(item.id)}
                             className="text-gray-400 hover:text-white"
                           >
                             <X className="w-5 h-5" />
@@ -171,7 +158,7 @@ export default function CartPage() {
                     <div className="hidden md:flex md:col-span-2 items-center gap-4">
                       <div className="w-16 h-16 bg-white rounded overflow-hidden flex-shrink-0">
                         <Image
-                          src={item.image || "/placeholder.svg"}
+                          src={item.assets[0].asset_url || "/placeholder.svg"}
                           alt={item.name}
                           width={64}
                           height={64}
@@ -181,7 +168,9 @@ export default function CartPage() {
                       <span className="font-medium">{item.name}</span>
                     </div>
 
-                    <div className="hidden md:block">{item.color}</div>
+                    <div className="hidden md:block">
+                      {item.color || "white"}
+                    </div>
                     <div className="hidden md:block">{item.size}</div>
 
                     <div className="hidden md:flex items-center">
@@ -210,7 +199,7 @@ export default function CartPage() {
 
                     <div className="hidden md:flex justify-center ">
                       <button
-                        onClick={() => removeItem(item.id)}
+                        onClick={() => removeFromCart(item.id)}
                         className="text-gray-400 hover:text-white "
                       >
                         <X className="w-5 h-5" />
@@ -346,7 +335,7 @@ export default function CartPage() {
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-sm text-gray-400">Total</div>
-                <div className="text-xl font-bold">₹{total}</div>
+                <div className="text-xl font-bold">₹{"total"}</div>
               </div>
               <div className="flex gap-2">
                 <Button

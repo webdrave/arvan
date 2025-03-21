@@ -20,7 +20,7 @@ export const productApi = {
   
   getById: async (id: string): Promise<Products> => {
     const response = await apiClient.get(`/api/products/${id}`);
-    return response.data;
+    return response.data.product;
   },
   addProduct: async (product: Product): Promise<Products> => {
     const response = await apiClient.post("/api/products", product);

@@ -33,7 +33,6 @@ body.admin-panel {
 }
 
 @layer base {
- 
   .dark {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
@@ -85,9 +84,43 @@ body.admin-panel {
   }
 }
 
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.pulse {
+  animation: pulse 0.3s linear infinite;
+}
+
 /* .montserrat {
   font-family: "Montserrat", sans-serif;
   font-optical-sizing: auto;
   font-weight: 200;
   font-style: normal;
 } */
+
+@media screen and (max-width) {
+  .shop {
+    height: 60vh;
+  }
+}
+
+@media (width: 1024px) {
+  .shop {
+    height: 40vh;
+  }
+}
+
+@media screen and (width: 1024px) and (height: 600px) {
+  .shop {
+    height: 80vh;
+  }
+}

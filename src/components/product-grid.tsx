@@ -10,8 +10,7 @@ export default function ProductGrid({ products }: { products: any }) {
           {products.map((product: any) => (
             <Link
               key={product.id}
-              // href={`/products/${product.name.toLowerCase().replace(" ", "-")}`}
-              href={`/products/${product.id}`}
+              href={`/product/${product.id}`}
               className="group"
             >
               <div className="relative aspect-square bg-white rounded-lg overflow-hidden mb-4">
@@ -21,7 +20,7 @@ export default function ProductGrid({ products }: { products: any }) {
                   </span>
                 )}
                 <Image
-                  src={product.image || "/placeholder.svg"}
+                  src={product.assets[0]?.asset_url || "/placeholder.svg"}
                   alt={product.name}
                   width={400}
                   height={400}

@@ -48,13 +48,17 @@ export default function ContactForm() {
     return regex.test(mobile);
   };
 
-
   // Handle form submission with proper typing
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // Prevent default form submission
 
     // Check if any field is empty
-    if (!formData.name || !formData.email || !formData.mobile || !formData.message) {
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.mobile ||
+      !formData.message
+    ) {
       setError("All fields are required. Please fill out the form completely.");
       return;
     }
@@ -75,23 +79,21 @@ export default function ContactForm() {
     setError(null);
 
     // If all fields are filled and valid, proceed with the mutation
-   console.log(formData);
-   fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/send/contactform`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Accept": "application/json",
-      "Access-Control-Allow-Origin": "*",
-    },
-    body: JSON.stringify(formData),
-
-   })
-   .then((res) => {
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
-    return res.json();
-  })
+    console.log(formData);
+    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/send/contactform`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+      body: JSON.stringify(formData),
+    }).then((res) => {
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      return res.json();
+    });
 
     // Clear the form after submission
     setFormData({
@@ -206,10 +208,13 @@ export default function ContactForm() {
               <span className="text-white">?</span>
             </h2>
             <p className="text-gray-300 mt-2 text-xs sm:text-sm md:text-base leading-relaxed">
-              Lorem Ipsum Dolor Sit Amet. Lorem Ipsum Dolor Sit Amet. Lorem Ipsum
-              Dolor Sit Amet.
+              Lorem Ipsum Dolor Sit Amet. Lorem Ipsum Dolor Sit Amet. Lorem
+              Ipsum Dolor Sit Amet.
             </p>
-            <form className="mt-6 space-y-4 sm:space-y-6" onSubmit={handleSubmit}>
+            <form
+              className="mt-6 space-y-4 sm:space-y-6"
+              onSubmit={handleSubmit}
+            >
               <input
                 type="text"
                 name="name"
@@ -261,8 +266,8 @@ export default function ContactForm() {
               <div>
                 <h3 className="text-[#C2E53A] font-semibold text-lg">EMAIL</h3>
                 <p className="text-gray-300 mt-2 text-xs sm:text-sm md:text-base leading-relaxed">
-                  Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quod,
-                  temporibus!
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                  Quod, temporibus!
                 </p>
               </div>
 
@@ -288,13 +293,14 @@ export default function ContactForm() {
                     </div>
                   </div>
                 </div>
-            </div>
+              </div>
 
-            {/* Footer Text */}
-            <p className="text-xs sm:text-sm md:text-base leading-relaxed mt-6 hidden md:block">
-              Lorem Ipsum Dolor Sit Amet. Lorem Ipsum Dolor Sit Amet. Lorem Ipsum
-              Dolor Sit Amet.
-            </p>
+              {/* Footer Text */}
+              <p className="text-xs sm:text-sm md:text-base leading-relaxed mt-6 hidden md:block">
+                Lorem Ipsum Dolor Sit Amet. Lorem Ipsum Dolor Sit Amet. Lorem
+                Ipsum Dolor Sit Amet.
+              </p>
+            </div>
           </div>
         </div>
       </div>
