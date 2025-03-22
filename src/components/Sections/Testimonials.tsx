@@ -33,6 +33,7 @@ export default function Testimonials() {
         }
         const data = await response.json();
         setTestimonials(data.testimonials);
+        console.log(data.testimonials);
       } catch (error) {
         console.error("Error fetching testimonials:", error);
       }
