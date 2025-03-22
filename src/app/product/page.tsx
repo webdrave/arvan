@@ -9,99 +9,95 @@ import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function ProductPage() {
-  // const [{ data: products = [] }] = useQueries({
-  //   queries: [
-  //     {
-  //       queryKey: ["products"],
-  //       queryFn: () => productApi.getAll(),
-  //     },
-  //   ],
-  // });
+  const [{ data: products = [] }] = useQueries({
+    queries: [
+      {
+        queryKey: ["products"],
+        queryFn: () => productApi.getAll(),
+      },
+    ],
+  });
 
   const router = useRouter();
 
-  // const handleProductClick = (productId: string) => {
-  //   router.push(`/products/${productId}`);
-  // };
-
   //Test Products
-  const products = [
-    {
-      id: 1,
-      name: "LEATHER BLACK",
-      price: 499,
-      category: "Men's Flip Flops",
-      image: "/slides/1.png",
-    },
-    {
-      id: 2,
-      name: "LEATHER WHITE",
-      price: 499,
-      category: "Men's Flip Flops",
-      image: "/slides/2.png",
-    },
-    {
-      id: 3,
-      name: "HAUNTED SKULL",
-      price: 599,
-      originalPrice: 1199,
-      category: "Men's Flip Flops",
-      image: "/slides/3.png",
-      saleTag: "50% OFF",
-    },
-    {
-      id: 4,
-      name: "LEATHER BLACK",
-      price: 499,
-      category: "Men's Flip Flops",
-      image: "/slides/4.png",
-    },
-    {
-      id: 5,
-      name: "LEATHER WHITE",
-      price: 499,
-      category: "Men's Flip Flops",
-      image: "/slides/5.png",
-    },
-    {
-      id: 6,
-      name: "HAUNTED SKULL",
-      price: 599,
-      originalPrice: 1199,
-      category: "Men's Flip Flops",
-      image: "/slides/6.png",
-      saleTag: "50% OFF",
-    },
-    {
-      id: 7,
-      name: "LEATHER BLACK",
-      price: 499,
-      category: "Men's Flip Flops",
-      image: "/slides/7.png",
-    },
-    {
-      id: 8,
-      name: "LEATHER WHITE",
-      price: 499,
-      category: "Men's Flip Flops",
-      image: "/slides/12.png",
-    },
-    {
-      id: 9,
-      name: "HAUNTED SKULL",
-      price: 599,
-      originalPrice: 1199,
-      category: "Men's Flip Flops",
-      image: "/slides/9.png",
-      saleTag: "50% OFF",
-    },
-  ];
+  // const products = [
+  //   {
+  //     id: 1,
+  //     name: "LEATHER BLACK",
+  //     price: 499,
+  //     category: "Men's Flip Flops",
+  //     image: "/slides/1.png",
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "LEATHER WHITE",
+  //     price: 499,
+  //     category: "Men's Flip Flops",
+  //     image: "/slides/2.png",
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "HAUNTED SKULL",
+  //     price: 599,
+  //     originalPrice: 1199,
+  //     category: "Men's Flip Flops",
+  //     image: "/slides/3.png",
+  //     saleTag: "50% OFF",
+  //   },
+  //   {
+  //     id: 4,
+  //     name: "LEATHER BLACK",
+  //     price: 499,
+  //     category: "Men's Flip Flops",
+  //     image: "/slides/4.png",
+  //   },
+  //   {
+  //     id: 5,
+  //     name: "LEATHER WHITE",
+  //     price: 499,
+  //     category: "Men's Flip Flops",
+  //     image: "/slides/5.png",
+  //   },
+  //   {
+  //     id: 6,
+  //     name: "HAUNTED SKULL",
+  //     price: 599,
+  //     originalPrice: 1199,
+  //     category: "Men's Flip Flops",
+  //     image: "/slides/6.png",
+  //     saleTag: "50% OFF",
+  //   },
+  //   {
+  //     id: 7,
+  //     name: "LEATHER BLACK",
+  //     price: 499,
+  //     category: "Men's Flip Flops",
+  //     image: "/slides/7.png",
+  //   },
+  //   {
+  //     id: 8,
+  //     name: "LEATHER WHITE",
+  //     price: 499,
+  //     category: "Men's Flip Flops",
+  //     image: "/slides/12.png",
+  //   },
+  //   {
+  //     id: 9,
+  //     name: "HAUNTED SKULL",
+  //     price: 599,
+  //     originalPrice: 1199,
+  //     category: "Men's Flip Flops",
+  //     image: "/slides/9.png",
+  //     saleTag: "50% OFF",
+  //   },
+  // ];
 
   return (
     <div className="min-h-screen bg-black text-white">
       <Navigation />
       {/* Hero Section */}
-      <section className="relative h-[80dvh] lg:h-screen flex items-center justify-center overflow-hidden">
+      <section className="shop relative h-[100dvh] lg:h-screen flex items-center justify-center overflow-hidden">
         <div
           className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 md:w-72 md:h-72 lg:w-96 lg:h-96 rounded-full bg-gray-200/40   blur-3xl"
           style={{

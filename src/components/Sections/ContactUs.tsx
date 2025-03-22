@@ -34,6 +34,19 @@ export default function ContactForm() {
     }));
   };
 
+  // Validate email format
+  const validateEmail = (email: string) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+
+  // Validate mobile number format (10 digits)
+  const validateMobile = (mobile: string) => {
+    const regex = /^\d{10}$/;
+    return regex.test(mobile);
+  };
+
+
   // Handle form submission with proper typing
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -120,10 +133,13 @@ export default function ContactForm() {
               <span className="text-white">?</span>
             </h2>
             <p className="text-gray-300 mt-2 text-xs sm:text-sm md:text-base leading-relaxed">
-              Lorem Ipsum Dolor Sit Amet. Lorem Ipsum Dolor Sit Amet. Lorem Ipsum
-              Dolor Sit Amet.
+              Lorem Ipsum Dolor Sit Amet. Lorem Ipsum Dolor Sit Amet. Lorem
+              Ipsum Dolor Sit Amet.
             </p>
-            <form className="mt-6 space-y-4 sm:space-y-6" onSubmit={handleSubmit}>
+            <form
+              className="mt-6 space-y-4 sm:space-y-6"
+              onSubmit={handleSubmit}
+            >
               <input
                 type="text"
                 name="name"
@@ -175,8 +191,8 @@ export default function ContactForm() {
               <div>
                 <h3 className="text-[#C2E53A] font-semibold text-lg">EMAIL</h3>
                 <p className="text-gray-300 mt-2 text-xs sm:text-sm md:text-base leading-relaxed">
-                  Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quod,
-                  temporibus!
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                  Quod, temporibus!
                 </p>
               </div>
 
@@ -192,26 +208,25 @@ export default function ContactForm() {
                     <FaInstagram className="text-white text-3xl sm:text-4xl cursor-pointer" />
                     <FaInstagram className="text-white text-3xl sm:text-4xl cursor-pointer" />
                     <FaFacebook className="text-white text-3xl sm:text-4xl cursor-pointer" />
+                    {/* Phone No Section */}
+                    <div className="w-1/2 md:w-full">
+                      <h3 className="text-[#C2E53A] font-semibold text-lg">
+                        PHONE NO.
+                      </h3>
+                      <p className="text-gray-300 mt-2 text-xs sm:text-sm md:text-base leading-relaxed">
+                        +91 90391 XXXXX
+                      </p>
+                    </div>
                   </div>
                 </div>
-
-                {/* Phone No Section */}
-                <div className="w-1/2 md:w-full">
-                  <h3 className="text-[#C2E53A] font-semibold text-lg">
-                    PHONE NO.
-                  </h3>
-                  <p className="text-gray-300 mt-2 text-xs sm:text-sm md:text-base leading-relaxed">
-                    +91 90391 XXXXX
-                  </p>
-                </div>
               </div>
-            </div>
 
-            {/* Footer Text */}
-            <p className="text-xs sm:text-sm md:text-base leading-relaxed mt-6 hidden md:block">
-              Lorem Ipsum Dolor Sit Amet. Lorem Ipsum Dolor Sit Amet. Lorem Ipsum
-              Dolor Sit Amet.
-            </p>
+              {/* Footer Text */}
+              <p className="text-xs sm:text-sm md:text-base leading-relaxed mt-6 hidden md:block">
+                Lorem Ipsum Dolor Sit Amet. Lorem Ipsum Dolor Sit Amet. Lorem
+                Ipsum Dolor Sit Amet.
+              </p>
+            </div>
           </div>
         </div>
       </div>

@@ -1,13 +1,12 @@
 "use client";
-import { useParams } from 'next/navigation';
-import ProductDetails from '../../../components/Sections/ProductDetails';
+import { useParams } from "next/navigation";
+import ProductDetails from "../../../components/Sections/ProductDetails";
 export default function ProductDetail({}) {
   const { id } = useParams();
-  const productId = Array.isArray(id) ? id[0] : id || '';
-
+  const productId = Array.isArray(id) ? id[0] : id || "";
 
   return (
-    <div>
+    <div className="">
       <ProductDetails productId={productId} />
     </div>
   );
