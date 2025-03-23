@@ -11,7 +11,7 @@ export default function Navigation() {
     },
     {
       name: "Shop",
-      href: "/product",
+      href: "/shop",
     },
     {
       name: "Track Order",
@@ -27,7 +27,7 @@ export default function Navigation() {
     },
   ];
 
-  const {cart} = useCart();
+  const { cart } = useCart();
 
   return (
     <nav className="bg-black text-white py-4 px-6 border-b border-gray-800">
