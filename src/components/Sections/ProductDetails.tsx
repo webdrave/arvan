@@ -4,14 +4,14 @@ import React, { useEffect, useState } from "react";
 import { Star, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import ReviewWritings from "../reviewWriting";
-import { useQueries } from "@tanstack/react-query";
+import { useQueries, useQuery } from "@tanstack/react-query";
 import { productApi } from "@/lib/api/productdetails";
 import { useCart } from "@/context/CartContext";
 import Loading from "@/app/product/[id]/loading";
 import Navigation from "../navigation";
 import BestSellers from "./bestSellers";
 import Footer from "../Footer";
-// import { productReviewApi } from "@/lib/api/productreview";
+import { productReviewApi } from "@/lib/api/productreview";
 
 const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
   const [showReviewModal, setShowReviewModal] = useState(false);
@@ -29,22 +29,22 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
     setShowReviewModal(true);
   };
 
-  // //Parrallel Queries
   const results = useQueries({
     queries: [
       {
         queryKey: ["products", productId],
         queryFn: ({ queryKey }) => productApi.getById(queryKey[1] as string),
       },
-      // {
-      //   queryKey: ["reviews", productId],
-      //   queryFn: ({ queryKey }) =>
-      //     productReviewApi.getById(queryKey[1] as string),
-      // },
+
+      {
+        queryKey: ["reviews", productId],
+        queryFn: ({ queryKey }) =>
+          productReviewApi.getById(queryKey[1] as string),
+      },
     ],
   });
 
-  const [productData] = results;
+  const [productData, fetchedReviews] = results;
 
   useEffect(() => {
     if (productData.data) {
@@ -98,6 +98,8 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
           // Fallback to first overall image if no color-specific assets
           setSelectedImage(allImages[0]);
         }
+      } else {
+        setSelectedImage(productData.data.assets[0].asset_url);
       }
     }
   }, [productData.data]);
@@ -134,7 +136,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
       ) : productData.data ? (
         <>
           <Navigation />
-          <div className="w-full min-h-screen relative mx-auto pt-10 pb-28 px-12 ">
+          <div className="w-full min-h-screen relative mx-auto pt-10 pb-10 px-6 md:px-12 ">
             <div className="w-full h-full relative mx-auto pb-10  grid grid-cols-1 lg:grid-cols-2 items-start gap-6 lg:gap-8">
               {/* Left Section - Image Gallery */}
               <div className="flex flex-col lg:sticky lg:top-5 sm:flex-row items-center gap-4 ">
@@ -170,7 +172,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
 
               <div>
                 <div className="flex flex-col sm:flex-row justify-between w-full  items-start sm:items-center mt-3">
-                  <div>
+                  <div className="md:w-[80%]">
                     <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-montserrat uppercase">
                       {productData.data.name}
                     </h2>
@@ -191,19 +193,21 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                       </div>
                     </div>
                   </div>
-                  <div className="flex flex-col items-start sm:items-center gap-1 mt-2 sm:mt-0">
+                  <div className="md:w-[20%] flex flex-col items-start sm:items-center gap-1 mt-2 sm:mt-0">
                     <div className="border border-[#c2e53a] px-2 py-1 rounded-md flex items-center gap-1">
                       <Star className="text-[#c2e53a] h-4 w-4" />
-                      {/* {fetchedReviews.data &&
-                        fetchedReviews.data.length > 0 && (
+                      {fetchedReviews.data &&
+                        fetchedReviews.data.reviews.length > 0 && (
                           <>
-                            <span className="text-sm">{productData.product.rating}</span>
-                            <span className="text-sm">{fetchedReviews.reviews.length}</span>{" "}
+                            {/* <span className="text-sm">{productData.data.rating}</span> */}
+                            <span className="text-sm">
+                              {fetchedReviews.data.reviews.length}
+                            </span>
                           </>
-                        )} */}
+                        )}
                     </div>
                     <button
-                      className="text-[#bababa] text-sm underline"
+                      className="text-[#bababa] w-full text-sm underline"
                       onClick={handleWriteReview}
                     >
                       Write a Review
@@ -277,7 +281,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                         Buy Now
                       </button>
                       <button
-                        className="w-full h-10 border border-[#c2e53a] text-white text-xl font-normal uppercase font-montserrat flex items-center justify-center gap-2 rounded-xl"
+                        className="w-full h-10 border border-[#c2e53a] text-white  text-sm md:text-xl font-normal uppercase font-montserrat flex items-center justify-center gap-2 rounded-xl"
                         onClick={() => {
                           addToCart({
                             id: productData.data.id,
@@ -313,7 +317,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                     <p className="text-[#b3b3b3] ">Name</p>{" "}
                     <p className="text-white ">{productData.data.name}</p>
                     <p className="text-[#b3b3b3]">Size</p>{" "}
-                    {/* <p className="text-white">{productData.product}</p> */}
+                    <p className="text-white">{selectedSize}</p>
                   </div>
                 </div>
                 <div className="mt-10 border-t border-white pt-4">
@@ -357,21 +361,51 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                     )}
                   </div>
 
-                  <hr className="opacity-50 my-4" />
+                  <hr className="opacity-10 my-5 border" />
 
                   {/* Show Reviews or Empty State */}
-                  {/* <div>Review here</div> */}
+                  {fetchedReviews.data &&
+                    fetchedReviews.data.reviews.length > 0 && (
+                      <div className="flex flex-col gap-2 w-full">
+                        {fetchedReviews.data.reviews.map((review, i) => (
+                          <>
+                            <div
+                              className=" w-full  flex  gap-2 items-center"
+                              key={i}
+                            >
+                              <h1 className="font-montserrat text-zinc-500 text-xl">
+                                {review.title}
+                              </h1>
+                              <div className="border border-[#c2e53a] px-2 py-1 rounded-md flex items-center gap-1">
+                                <Star className="text-[#c2e53a] h-4 w-4" />
+                                <span className="text-sm">
+                                  {review.rating}
+                                </span>{" "}
+                              </div>
+                            </div>
+                            <div className=" w-full ">
+                              <p className="text-sm md:text-lg">
+                                {review.description}
+                              </p>
+                            </div>
+                          </>
+                        ))}
+                      </div>
+                    )}
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="w-full pb-28">
-            <hr className="opacity-50 my-4" />
+          <hr className="opacity-50 my-4" />
+
+          <div className="w-full mb-22 h-full">
             <BestSellers />
           </div>
 
-          <Footer />
+          <div className="w-full mt-10">
+            <Footer />
+          </div>
         </>
       ) : (
         productData.isError && <h1>Something went wrong.</h1>
