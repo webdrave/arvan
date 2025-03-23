@@ -10,20 +10,6 @@ import Image from "next/image";
 import React from "react";
 import { Products } from "@/components/admin/products-table";
 
-// export type SingleProduct = {
-//   id: string;
-//   category_id: string;
-//   name: string;
-//   assets: Assets[];
-//   material: string;
-//   description: string;
-//   price: number;
-//   discountPrice: number;
-//   status: string;
-//   createdAt: string;
-//   updatedAt: string;
-// };
-
 interface ProductGroup {
   success: boolean;
   products: Products[];

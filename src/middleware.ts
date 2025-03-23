@@ -7,6 +7,7 @@ const adminRoutes = ["/admin", "/api/admin"];
 export async function middleware(req: NextRequest) {
     // Extract token from NextAuth session
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    console.log("🔹 Token:", token);
 
     // If no token, redirect to login page
     if (!token) {
