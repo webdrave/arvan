@@ -7,6 +7,7 @@ import Image from "next/image";
 import GridBackground from "./GridBackground";
 import { useGSAPContext } from "@/context/GSAPContext";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -23,10 +24,12 @@ const HorizontalScroll = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
 
+  const router = useRouter();
+
   const slides = [
     {
-      image: "/slideImg.svg",
-      heading: "PRODUCT 1",
+      image: "/slides/11.png",
+      heading: "Haunted Skull",
       para: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Non facere fuga sed tempora ratione quis et nostrum hic mollitia animi.",
     },
     {
@@ -36,12 +39,12 @@ const HorizontalScroll = () => {
     },
     {
       image: "/slideImg.svg",
-      heading: "PRODUCT 3",
+      heading: "Jungle Walker",
       para: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Non facere fuga sed tempora ratione quis et nostrum hic mollitia animi.",
     },
     {
-      image: "/TheArvan.svg",
-      heading: "THE ARVAN",
+      image: "/slides/10.png",
+      heading: "Red Dragon",
       para: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Non facere fuga sed tempora ratione quis et nostrum hic mollitia animi.",
     },
   ];
@@ -471,10 +474,10 @@ const HorizontalScroll = () => {
             <div className="absolute bottom-4 left-0 w-full z-20">
               <div className="text-center">
                 <button
+                  onClick={() => router.push("/shop")}
                   className="text-sm md:text-xl font-semibold  p-5 bg-transparent
                       border border-[#c3e53ab9] bg-gradient-to-r from-[#c3e53a77]  via-[#6c7f2069]  to-[#6c7f2069] transition-all duration-300 shadow-[0px_4px_20px_#c3e53a77]"
                 >
-                  {/* <button className="text-sm md:text-xl font-semibold  p-5 bg-gradient-to-r from-[#c3e53a8a] to-[#b3d2343e] text-white uppercase shadow-[0px_0px_15px_#c3e53a] hover:shadow-[0px_0px_25px_#c3e53a] transition-all duration-300"> */}
                   BUY NOW
                 </button>
               </div>
@@ -587,6 +590,7 @@ const HorizontalScroll = () => {
 
           <div className=" text-center -translate-y-[50%]">
             <button
+              onClick={() => router.push("/shop")}
               className=" text-sm md:text-xl font-semibold p-5 bg-transparent
                       border border-[#c3e53ab9] bg-gradient-to-r from-[#c3e53a77]  via-[#6c7f2069]  to-[#6c7f2069] transition-all duration-300 shadow-[0px_4px_20px_#c3e53a77]"
             >
