@@ -90,8 +90,8 @@ export default function Testimonials() {
           onSwiper={(swiper) => {
             setTimeout(() => {
               if (
-                swiper.params.navigation &&
-                typeof swiper.params.navigation === "object"
+                swiper.params?.navigation &&
+                typeof swiper.params?.navigation === "object"
               ) {
                 swiper.params.navigation.prevEl = prevRef.current;
                 swiper.params.navigation.nextEl = nextRef.current;

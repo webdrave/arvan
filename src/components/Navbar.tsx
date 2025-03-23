@@ -18,7 +18,7 @@ const Navbar = () => {
     },
     {
       name: "Shop",
-      href: "/product",
+      href: "/shop",
     },
     {
       name: "Track Order",

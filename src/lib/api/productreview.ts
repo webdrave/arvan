@@ -9,7 +9,7 @@ export const productReviewApi = {
   },
 
     // fetch review by product id
-    getById: async (productId: string): Promise<Review> => {
+    getById: async (productId: string): Promise<Review[]> => {
         const response = await apiClient.get(`/api/reviews/${productId}`);
         return response.data;
     },
