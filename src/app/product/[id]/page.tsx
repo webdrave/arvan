@@ -6,8 +6,6 @@ export default function ProductDetail({}) {
   const productId = Array.isArray(id) ? id[0] : id || "";
 
   return (
-    <div className="">
       <ProductDetails productId={productId} />
-    </div>
   );
 }

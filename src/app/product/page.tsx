@@ -3,22 +3,64 @@ import Navigation from "@/components/navigation";
 import ProductGrid from "@/components/product-grid";
 import { Button } from "@/components/ui/button";
 import { productApi } from "@/lib/api/productdetails";
-import { useQueries } from "@tanstack/react-query";
-import { SlidersHorizontal } from "lucide-react";
-import { useRouter } from "next/navigation";
-import React from "react";
+// import { Product } from "@/types/types";
+import { useInfiniteQuery, useQueries } from "@tanstack/react-query";
+import { Loader, SlidersHorizontal } from "lucide-react";
+import React, { useEffect } from "react";
+
+interface Assets {
+  asset_url: string;
+  colorId: string | null;
+  id: string;
+  productId: string;
+  type: string;
+}
+export type SingleProduct = {
+  id: string;
+  category_id: string;
+  name: string;
+  assets: Assets[];
+  material: string;
+  description: string;
+  price: number;
+  discountPrice: number;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+};
 
 export default function ProductPage() {
-  const [{ data: products = [] }] = useQueries({
-    queries: [
-      {
-        queryKey: ["products"],
-        queryFn: () => productApi.getAll(),
-      },
-    ],
-  });
+  const fetchProducts = async ({
+    pageParam = 1,
+    search = "",
+  }: {
+    pageParam: number;
+    search?: string;
+  }) => {
+    const limit = 3;
+    const response = await productApi.getProducts(pageParam, limit, search);
 
-  const router = useRouter();
+    return response;
+  };
+
+  const {
+    data: products,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+  } = useInfiniteQuery({
+    queryKey: ["products"],
+    queryFn: ({ pageParam = 1 }) => fetchProducts({ pageParam }),
+    getNextPageParam: (lastPage) => {
+      const { pagination } = lastPage;
+      return pagination?.currentPage < pagination?.totalPages
+        ? pagination.currentPage + 1
+        : undefined;
+    },
+    initialPageParam: 1,
+  });
 
   //Test Products
   // const products = [
@@ -138,16 +180,44 @@ export default function ProductPage() {
           </div>
         </div>
 
-        <ProductGrid products={products} />
+        {isLoading ? (
+          <>
+            <div className="flex justify-center my-16">
+              <Loader className="animate-spin" />
+            </div>
+          </>
+        ) : products?.pages && products?.pages.length > 0 ? (
+          <>
+            {
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {products.pages.map((group: any, index: number) =>
+                  group.products.map((product: SingleProduct) => (
+                    <ProductGrid product={product} />
+                  ))
+                )}
+              </div>
+            }
+          </>
+        ) : isError ? (
+          <h1>Something went wrong</h1>
+        ) : null}
 
-        <div className="flex justify-center mt-16">
-          <Button
-            variant="outline"
-            className="text-white border-white/20 px-8 py-6 text-lg hover:bg-white/5"
-          >
-            LOAD MORE
-          </Button>
-        </div>
+        {hasNextPage && (
+          <div className="flex justify-center mt-16">
+            <Button
+              variant="outline"
+              className="text-white border-white/20 px-8 py-6 uppercase text-lg hover:bg-white/5"
+              onClick={() => fetchNextPage()}
+              disabled={isFetchingNextPage}
+            >
+              {isFetchingNextPage ? (
+                <Loader className="animate-spin" />
+              ) : (
+                "Load More"
+              )}
+            </Button>
+          </div>
+        )}
       </section>
     </div>
   );
