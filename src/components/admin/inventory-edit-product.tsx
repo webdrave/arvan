@@ -190,30 +190,25 @@ export function ProductInventoryEditor({ productId }: { productId: string }) {
     },
   });
 
-  // const NewColorMutation = useMutation({
-  //   mutationFn: async ( newColors: Array<{ name: string; imageUrl: string; sizes: Array<{ size: string; stock: number }> }>) => {
-  //     const promises = newColors.map((newColorData) =>
-  //       inventoryApi.addNewColor(newColorData)
-  //     );
-  //     return Promise.all(promises);
-  //   },
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries({ queryKey: ["product", productId] });
-  //     setSaving(false);
-  //   },
-  //   onError: (error) => {
-  //     console.error("Failed to update stock:", error);
-  //     setSaving(false);
-  //   },
-  // })
+  const NewColorMutation = useMutation({
+    mutationFn: async ( newColors: Array<{ name: string; imageUrl: string; sizes: Array<{ size: string; stock: number }> }>) => {
+      const promises = newColors.map((newColorData) =>
+        inventoryApi.addNewColor(productId,newColorData)
+      );
+      return Promise.all(promises);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["product", productId] });
+      setSaving(false);
+    },
+    onError: (error) => {
+      console.error("Failed to update stock:", error);
+      setSaving(false);
+    },
+  })
 
   const handleSave = async () => {
     setSaving(true);
-
-      // In a real application, this would send the updates to an API
-      console.log("Stock updates:", stockUpdates);
-      console.log("New colors:", newColors);
-      console.log("New sizes for existing colors:", newSizes);
 
       // Update the local product data with the new stock values
       if (product) {
@@ -234,35 +229,13 @@ export function ProductInventoryEditor({ productId }: { productId: string }) {
         }
 
         // Add new colors with their sizes
-        const addedColors = newColors.map((newColorData) => {
-          const colorId = `new-color-${Date.now()}-${Math.random()
-            .toString(36)
-            .substr(2, 9)}`;
-          return {
-            id: colorId,
-            color: newColorData.name,
-            productId: product.id,
-            assets: [
-              {
-                id: `new-asset-${Date.now()}-${Math.random()
-                  .toString(36)
-                  .substr(2, 9)}`,
-                asset_url: newColorData.imageUrl,
-                productId: null,
-                type: "IMAGE",
-                colorId: colorId,
-              },
-            ],
-            sizes: newColorData.sizes.map((sizeData) => ({
-              id: `new-size-${Date.now()}-${Math.random()
-                .toString(36)
-                .substr(2, 9)}`,
-              size: sizeData.size,
-              stock: sizeData.stock,
-              colorId: colorId,
-            })),
-          };
-        });
+        try {
+          await NewColorMutation.mutateAsync(newColors);
+        } catch (error) {
+          console.error("Failed to update stock:", error);
+          setSaving(false);
+          return;
+        }
       }
 
       setSuccessMessage("Inventory updated successfully!");
