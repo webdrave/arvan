@@ -10,6 +10,29 @@ import { productApi } from "@/lib/api/productdetails";
 import { useState, useEffect } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
 
+interface Size {
+  id: string
+  size: string
+  stock: number
+  colorId: string
+}
+
+interface Asset {
+  id: string
+  asset_url: string
+  productId: string | null
+  type: string
+  colorId: string | null
+}
+
+interface Color {
+  id: string
+  color: string
+  productId: string
+  assets: Asset[]
+  sizes: Size[]
+}
+
 export interface Products extends Product {
   stock: number;
   category: string;
@@ -20,6 +43,7 @@ export interface Products extends Product {
     asset_url: string;
     url: string;
   }[];
+  colors: Color[];
 }
 
 export function ProductsTable() {
