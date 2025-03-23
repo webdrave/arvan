@@ -13,137 +13,6 @@ import BestSellers from "./bestSellers";
 import Footer from "../Footer";
 import { productReviewApi } from "@/lib/api/productreview";
 
-// const productData = {
-//   success: true,
-//   data: {
-//     id: "cm8dfxycn000azvwwkn9074c2",
-//     name: "Red Leather Slippers",
-//     description: "This is for Testing purpose.",
-//     price: 3000,
-//     discountPrice: 1200,
-//     material: "Just- Simple",
-//     category_id: "cm8deaz7p0001zvwwsn3mkup0",
-//     createdAt: "2025-03-17T19:11:47.010Z",
-//     updatedAt: "2025-03-20T17:56:08.994Z",
-//     status: "PUBLISHED",
-//     assets: [
-//       {
-//         id: "cm8hnk8f80000zvegsegc12if",
-//         asset_url:
-//           "https://res.cloudinary.com/dlqooiewh/image/upload/v1742238519/uploads/xyeotlgwmyypawhbxiwm.svg",
-//         productId: "cm8dfxycn000azvwwkn9074c2",
-//         type: "IMAGE",
-//         colorId: null,
-//       },
-//       {
-//         id: "cm8hnk8f90001zveg9n1mklfv",
-//         asset_url:
-//           "https://res.cloudinary.com/dlqooiewh/image/upload/v1742493291/uploads/dnvi2h11ffz8vdwfdttt.jpg",
-//         productId: "cm8dfxycn000azvwwkn9074c2",
-//         type: "IMAGE",
-//         colorId: null,
-//       },
-//     ],
-//     colors: [
-//       {
-//         id: "cm8dfxz5k000kzvww5sxx0eel",
-//         color: "Blue",
-//         productId: "cm8dfxycn000azvwwkn9074c2",
-//         assets: [
-//           {
-//             id: "cm8hnk9q00002zvegf3pgpiws",
-//             asset_url:
-//               "https://res.cloudinary.com/dlqooiewh/image/upload/v1742238661/uploads/tzc3v4du4fdumenx9twf.jpg",
-//             productId: null,
-//             type: "IMAGE",
-//             colorId: "cm8dfxz5k000kzvww5sxx0eel",
-//           },
-//         ],
-//         sizes: [
-//           {
-//             id: "cm8hnk9q00003zvegecp1t0tm",
-//             size: "SIZE_10",
-//             stock: 6,
-//             colorId: "cm8dfxz5k000kzvww5sxx0eel",
-//           },
-//           {
-//             id: "cm8hnk9q00004zvegaw1xdp0i",
-//             size: "SIZE_11",
-//             stock: 4,
-//             colorId: "cm8dfxz5k000kzvww5sxx0eel",
-//           },
-//         ],
-//       },
-//       {
-//         id: "cm8dfxywk000dzvwwh2rf18jp",
-//         color: "Firogi",
-//         productId: "cm8dfxycn000azvwwkn9074c2",
-//         assets: [
-//           {
-//             id: "cm8hnk9s70005zvegzt60osjm",
-//             asset_url:
-//               "https://res.cloudinary.com/dlqooiewh/image/upload/v1742238576/uploads/muwd03zhsxh12woddzgd.jpg",
-//             productId: null,
-//             type: "IMAGE",
-//             colorId: "cm8dfxywk000dzvwwh2rf18jp",
-//           },
-//           {
-//             id: "cm8hnk9s70006zvegc304xzr1",
-//             asset_url:
-//               "https://res.cloudinary.com/dlqooiewh/image/upload/v1742376853/uploads/lmkuz8cz6wtivnrezm83.jpg",
-//             productId: null,
-//             type: "IMAGE",
-//             colorId: "cm8dfxywk000dzvwwh2rf18jp",
-//           },
-//         ],
-//         sizes: [
-//           {
-//             id: "cm8hnk9s80007zveg75np0qtn",
-//             size: "SIZE_12",
-//             stock: 8,
-//             colorId: "cm8dfxywk000dzvwwh2rf18jp",
-//           },
-//           {
-//             id: "cm8hnk9s80008zvegqghz636r",
-//             size: "SIZE_11",
-//             stock: 6,
-//             colorId: "cm8dfxywk000dzvwwh2rf18jp",
-//           },
-//           {
-//             id: "cm8hnk9s80009zvegzveeug3d",
-//             size: "SIZE_8",
-//             stock: 5,
-//             colorId: "cm8dfxywk000dzvwwh2rf18jp",
-//           },
-//           {
-//             id: "cm8hnk9s8000azvegn37ac2yb",
-//             size: "SIZE_10",
-//             stock: 3,
-//             colorId: "cm8dfxywk000dzvwwh2rf18jp",
-//           },
-//           {
-//             id: "cm8hnk9s8000bzvegtkfksxaz",
-//             size: "SIZE_7",
-//             stock: 4,
-//             colorId: "cm8dfxywk000dzvwwh2rf18jp",
-//           },
-//         ],
-//       },
-//     ],
-//   },
-//   isLoading: false,
-//   isError: false,
-// };
-
-// const fetchedReviews = {
-//   reviews: [
-//     {
-//       rating: 5,
-//       title: "Test",
-//       discription: "Nice Product",
-//     },
-//   ],
-// };
 const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [selectedColor, setSelectedColor] = useState("White");
@@ -160,13 +29,13 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
     setShowReviewModal(true);
   };
 
-  //Parrallel Queries
   const results = useQueries({
     queries: [
       {
         queryKey: ["products", productId],
         queryFn: ({ queryKey }) => productApi.getById(queryKey[1] as string),
       },
+
       {
         queryKey: ["reviews", productId],
         queryFn: ({ queryKey }) =>
