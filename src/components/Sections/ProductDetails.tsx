@@ -286,10 +286,11 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                           addToCart({
                             id: productData.data.id,
                             name: productData.data.name,
-                            price: productData.data.price,
+                            price: productData.data.discountPrice || productData.data.price,
                             quantity: 1,
                             color: selectedColor,
                             size: selectedSize,
+                            asset : selectedImage  ,
                             image: selectedImage,
                             // stock: stockInfo?.stock || 0,
                             material: productData.data.material,
