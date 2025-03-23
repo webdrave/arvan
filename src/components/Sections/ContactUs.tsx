@@ -51,12 +51,6 @@ export default function ContactForm() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-
-
-
-
-
-
     try {
       await apiClient.post("/api/send", {...formData , phone: formData.mobile});
       toast.success("Message sent successfully!");
