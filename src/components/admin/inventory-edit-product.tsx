@@ -49,9 +49,8 @@ export function ProductInventoryEditor({ productId }: { productId: string }) {
   const [newSizes, setNewSizes] = useState<
     Record<string, Array<{ size: string; stock: number }>>
   >({});
-  const [UploadPopUp, setUploadPopup] = useState(false);
-    const queryClient = useQueryClient();
-  
+  const [Uploadz, setUpload] = useState(false);
+  const queryClient = useQueryClient();
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["product", productId],
@@ -154,12 +153,12 @@ export function ProductInventoryEditor({ productId }: { productId: string }) {
   const handleImageUpload = (imageUrl: string) => {
     // In a real implementation, this would open a file picker and upload the image
     setNewColor({ ...newColor, imageUrl });
-    setUploadPopup(false);
+    setUpload(false);
   };
 
   const mutation = useMutation({
     mutationFn: async (updates: Record<string, number>) => {
-      const promises = Object.entries(updates).map(([variantId, stock]) => 
+      const promises = Object.entries(updates).map(([variantId, stock]) =>
         inventoryApi.updateStock(variantId, stock)
       );
       return Promise.all(promises);
@@ -175,7 +174,9 @@ export function ProductInventoryEditor({ productId }: { productId: string }) {
   });
 
   const NewSizeMutation = useMutation({
-    mutationFn: async (updates: Record<string, Array<{ size: string; stock: number }>>) => {
+    mutationFn: async (
+      updates: Record<string, Array<{ size: string; stock: number }>>
+    ) => {
       const promises = Object.entries(updates).map(([colorId, sizes]) =>
         inventoryApi.addNewSize(colorId, sizes)
       );
@@ -192,9 +193,15 @@ export function ProductInventoryEditor({ productId }: { productId: string }) {
   });
 
   const NewColorMutation = useMutation({
-    mutationFn: async ( newColors: Array<{ name: string; imageUrl: string; sizes: Array<{ size: string; stock: number }> }>) => {
+    mutationFn: async (
+      newColors: Array<{
+        name: string;
+        imageUrl: string;
+        sizes: Array<{ size: string; stock: number }>;
+      }>
+    ) => {
       const promises = newColors.map((newColorData) =>
-        inventoryApi.addNewColor(productId,newColorData)
+        inventoryApi.addNewColor(productId, newColorData)
       );
       return Promise.all(promises);
     },
@@ -206,51 +213,51 @@ export function ProductInventoryEditor({ productId }: { productId: string }) {
       console.error("Failed to update stock:", error);
       setSaving(false);
     },
-  })
+  });
 
   const handleSave = async () => {
     setSaving(true);
 
-      // Update the local product data with the new stock values
-      if (product) {
-        try {
-          await mutation.mutateAsync(stockUpdates);
-        } catch (error) {
-          console.error("Failed to update stock:", error);
-          setSaving(false);
-          return;
-        }
-
-        try {
-          await NewSizeMutation.mutateAsync(newSizes);
-        } catch (error) {
-          console.error("Failed to update stock:", error);
-          setSaving(false);
-          return;
-        }
-
-        // Add new colors with their sizes
-        try {
-          await NewColorMutation.mutateAsync(newColors);
-        } catch (error) {
-          console.error("Failed to update stock:", error);
-          setSaving(false);
-          return;
-        }
+    // Update the local product data with the new stock values
+    if (product) {
+      try {
+        await mutation.mutateAsync(stockUpdates);
+      } catch (error) {
+        console.error("Failed to update stock:", error);
+        setSaving(false);
+        return;
       }
 
-      setSuccessMessage("Inventory updated successfully!");
-      setSaving(false);
+      try {
+        await NewSizeMutation.mutateAsync(newSizes);
+      } catch (error) {
+        console.error("Failed to update stock:", error);
+        setSaving(false);
+        return;
+      }
 
-      // Clear success message after 3 seconds
-      setTimeout(() => {
-        setSuccessMessage("");
-      }, 3000);
+      // Add new colors with their sizes
+      try {
+        await NewColorMutation.mutateAsync(newColors);
+      } catch (error) {
+        console.error("Failed to update stock:", error);
+        setSaving(false);
+        return;
+      }
+    }
 
-      // Clear all updates since they're now applied
-      setStockUpdates({});
-      setNewColors([]);
-      setNewSizes({});
+    setSuccessMessage("Inventory updated successfully!");
+    setSaving(false);
+
+    // Clear success message after 3 seconds
+    setTimeout(() => {
+      setSuccessMessage("");
+    }, 3000);
+
+    // Clear all updates since they're now applied
+    setStockUpdates({});
+    setNewColors([]);
+    setNewSizes({});
   };
 
   if (isLoading) {
@@ -388,9 +395,8 @@ export function ProductInventoryEditor({ productId }: { productId: string }) {
                   Color Image
                 </label>
                 <div className="flex items-center gap-4">
-                {newColor.imageUrl !== "" ? (
-                  <div className="relative w-12 h-12 border border-gray-200 rounded-md overflow-hidden">
-                   
+                  {newColor.imageUrl !== "" ? (
+                    <div className="relative w-12 h-12 border border-gray-200 rounded-md overflow-hidden">
                       <Image
                         width={100}
                         height={100}
@@ -398,14 +404,14 @@ export function ProductInventoryEditor({ productId }: { productId: string }) {
                         alt="Color"
                         className="w-full h-full object-cover"
                       />
-                        </div>
-                    ) : (
-                      <></>
-                    )}
-                
+                    </div>
+                  ) : (
+                    <></>
+                  )}
+
                   <button
                     type="button"
-                    onClick={() => setUploadPopup(true)}
+                    onClick={() => setUpload(true)}
                     className="px-3 py-2 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 flex items-center">
                     <Upload size={16} className="mr-2" />
                     <span>Upload Image</span>
@@ -444,8 +450,8 @@ export function ProductInventoryEditor({ productId }: { productId: string }) {
                       {newColorData.imageUrl !== "" ? (
                         <div className="w-12 h-12 overflow-hidden">
                           <Image
-                          width={100}
-                          height={100}
+                            width={100}
+                            height={100}
                             src={newColorData.imageUrl}
                             alt="Color"
                             className="w-full h-full object-cover"
@@ -736,12 +742,6 @@ export function ProductInventoryEditor({ productId }: { productId: string }) {
                     ))}
                   </tbody>
                 </table>
-                {UploadPopUp && (
-                  <UploadPopup
-                    onSuccess={handleImageUpload}
-                    onClose={() => setUploadPopup(false)}
-                  />
-                )}
 
                 {/* Add new size form for existing color */}
                 {showAddSizeForm === color.id ? (
@@ -814,6 +814,12 @@ export function ProductInventoryEditor({ productId }: { productId: string }) {
           ))}
         </div>
       </div>
+      {Uploadz && (
+        <UploadPopup
+          onSuccess={handleImageUpload}
+          onClose={() => setUpload(false)}
+        />
+      )}
     </div>
   );
 }

@@ -8,7 +8,6 @@ export async function middleware(req: NextRequest) {
     // Extract token from NextAuth session
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET, secureCookie: process.env.NODE_ENV === "production" });
 
-    console.log("🟢 Token:", token);
     // If no token, redirect to login pageF
     if (!token) {
         return NextResponse.redirect(new URL("/api/auth/signin", req.url));
