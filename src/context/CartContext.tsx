@@ -6,17 +6,26 @@ import {
   useEffect,
   useState,
 } from "react";
-import { Products } from "@/components/admin/products-table";
 
-type CartItem = Products & {
+type CartItem = {
+  id: string;
+  name: string;
+  price: number;
   quantity: number;
-  size: string;
   color: string;
+  size: string;
+  image: string;
+  stock?: number;
+  material: string;
+};
+
+type AddToCartItem = Omit<CartItem, "quantity"> & {
+  quantity?: number;
 };
 
 type cartContext = {
   cart: CartItem[];
-  addToCart: (item: CartItem) => void;
+  addToCart: (item: AddToCartItem) => void;
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
@@ -38,21 +47,36 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  const addToCart = (item: CartItem) => {
-    setCart((prevCart) => {
+  const addToCart = (item: AddToCartItem) => {
+    // Ensure quantity is a number before proceeding
+    const quantityToAdd: number =
+      item.quantity !== undefined ? item.quantity : 1;
+
+    const itemWithQuantity: CartItem = {
+      ...(item as Omit<CartItem, "quantity">), // Cast to ensure all required fields are present
+      quantity: quantityToAdd,
+    };
+
+    setCart((prevCart: CartItem[]) => {
       const existingItem = prevCart.find((cartItem) => cartItem.id === item.id);
       if (existingItem) {
         return prevCart.map((c) =>
-          c.id === item.id ? { ...c, quantity: c.quantity + item.quantity } : c
+          c.id === item.id ? { ...c, quantity: c.quantity + quantityToAdd } : c
         );
       }
 
-      return [...prevCart, item];
+      return [...prevCart, itemWithQuantity];
     });
   };
 
   // Update quantity of an item in the cart
   const updateQuantity = (id: string, quantity: number) => {
+    if (quantity <= 0) {
+      // Remove item if quantity is 0 or negative
+      removeFromCart(id);
+      return;
+    }
+
     setCart((prevCart) =>
       prevCart.map((cartItem) =>
         cartItem.id === id ? { ...cartItem, quantity } : cartItem
