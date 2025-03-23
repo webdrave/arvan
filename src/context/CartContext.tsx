@@ -17,6 +17,7 @@ type CartItem = {
   image: string;
   stock?: number;
   material: string;
+  asset : string;
 };
 
 type AddToCartItem = Omit<CartItem, "quantity"> & {

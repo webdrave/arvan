@@ -58,7 +58,7 @@ export default function CartPage() {
   const subtotal =
     cart && cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const shippingCharges = 149;
-  const tax = 200;
+  const tax = subtotal * 0.18; // 18% tax
   const total = cart.length > 0 ? subtotal + shippingCharges + tax : 0;
 
   return (
@@ -110,7 +110,7 @@ export default function CartPage() {
                     <div className="flex md:hidden w-full relative">
                       <div className="w-24 h-24 bg-white rounded overflow-hidden flex-shrink-0">
                         <Image
-                          src={item.assets[0].asset_url || "/placeholder.svg"}
+                          src={item.asset || "/placeholder.svg"}
                           alt={item.name}
                           width={96}
                           height={96}
@@ -158,7 +158,7 @@ export default function CartPage() {
                     <div className="hidden md:flex md:col-span-2 items-center gap-4">
                       <div className="w-16 h-16 bg-white rounded overflow-hidden flex-shrink-0">
                         <Image
-                          src={item.assets[0].asset_url || "/placeholder.svg"}
+                          src={item.asset || "/placeholder.svg"}
                           alt={item.name}
                           width={64}
                           height={64}
