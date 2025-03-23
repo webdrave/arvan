@@ -6,6 +6,7 @@ import { SignUpSchema } from "@/types/types";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma-client";
 import bcryptjs from "bcryptjs";
+import { cookies } from "next/headers";
 
 export async function handleSignOut() {
   await signOut();
@@ -34,10 +35,14 @@ export async function handleSignup(data: z.infer<typeof SignUpSchema>) {
       },
     });
 
-    console.log(response);
     if (!response) {
       return { error: "Signup failed" };
     }
+
+    (await cookies()).set("signupData", JSON.stringify({
+      name: data.name,
+      mobileNumber: data.mobileNumber,
+    }));
 
     return { success: "Signup successful!" };
   } catch (error: any) {

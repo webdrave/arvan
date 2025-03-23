@@ -12,7 +12,7 @@ export const productApi = {
     itemsPerPage: number,
     debouncedSearchTerm: string
   ): Promise<{
-    success : boolean,
+    success: boolean,
     products: Products[];
     pagination: {
       totalPages: number;
@@ -37,7 +37,7 @@ export const productApi = {
   },
   addProduct: async (product: Product): Promise<Products> => {
     const response = await apiClient.post("/api/products", product);
-    return response.data;
+    return response.data.product;
   },
   updateProduct: async (id: string, product: Product): Promise<Products> => {
     const response = await apiClient.put(`/api/products/${id}`, product);
@@ -52,4 +52,13 @@ export const productApi = {
     });
     return response.data;
   },
+  getDashBoardOverview: async (): Promise<{
+    totalProducts: number;
+    revenue: number,
+    growth: number,
+    usersCount: number
+  }> => {
+    const response = await apiClient.get("/api/products/overview");
+    return response.data;
+  }
 };
