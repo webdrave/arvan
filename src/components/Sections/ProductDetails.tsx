@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Star, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import ReviewWritings from "../reviewWriting";
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { useQueries } from "@tanstack/react-query";
 import { productApi } from "@/lib/api/productdetails";
 import { useCart } from "@/context/CartContext";
 import Loading from "@/app/product/[id]/loading";
@@ -127,7 +127,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
         }
       }
     }
-  }, [productData.data, selectedColor]);
+  }, [productData.data, selectedColor, selectedSize]);
 
   return (
     <>
@@ -232,7 +232,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                     <div className="flex gap-3 mb-4">
                       {productData.data?.colors.map((color, index) => (
                         <Image
-                          key={color.color}
+                          key={index}
                           src={
                             color.assets[0].asset_url ||
                             productData.data.assets[0]?.asset_url

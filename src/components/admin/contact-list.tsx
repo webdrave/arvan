@@ -30,7 +30,6 @@ export function ContactList() {
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null)
   const [isMailFormOpen, setIsMailFormOpen] = useState(false)
   const [message, setMessage] = useState("")
-  const [Status, setStatus] = useState("")
 
   const queryClient = useQueryClient()
 
@@ -73,7 +72,6 @@ export function ContactList() {
         })
         queryClient.invalidateQueries({ queryKey: ["contacts"] }) // Refresh the contact list
         setIsMailFormOpen(false) // Close the mail form
-        setStatus("")
         setMessage("") // Clear the message input
       } catch (error) {
         console.error("Failed to send message:", error)

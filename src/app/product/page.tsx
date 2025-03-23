@@ -4,30 +4,36 @@ import ProductGrid from "@/components/product-grid";
 import { Button } from "@/components/ui/button";
 import { productApi } from "@/lib/api/productdetails";
 // import { Product } from "@/types/types";
-import { useInfiniteQuery, useQueries } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { Loader, SlidersHorizontal } from "lucide-react";
-import React, { useEffect } from "react";
+import Image from "next/image";
+import React from "react";
+import { Products } from "@/components/admin/products-table";
 
-interface Assets {
-  asset_url: string;
-  colorId: string | null;
-  id: string;
-  productId: string;
-  type: string;
+// export type SingleProduct = {
+//   id: string;
+//   category_id: string;
+//   name: string;
+//   assets: Assets[];
+//   material: string;
+//   description: string;
+//   price: number;
+//   discountPrice: number;
+//   status: string;
+//   createdAt: string;
+//   updatedAt: string;
+// };
+
+interface ProductGroup {
+  success: boolean;
+  products: Products[];
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+    totalItems: number;
+    itemsPerPage: number;
+  };
 }
-export type SingleProduct = {
-  id: string;
-  category_id: string;
-  name: string;
-  assets: Assets[];
-  material: string;
-  description: string;
-  price: number;
-  discountPrice: number;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-};
 
 export default function ProductPage() {
   const fetchProducts = async ({
@@ -37,7 +43,7 @@ export default function ProductPage() {
     pageParam: number;
     search?: string;
   }) => {
-    const limit = 3;
+    const limit = 10;
     const response = await productApi.getProducts(pageParam, limit, search);
 
     return response;
@@ -62,78 +68,6 @@ export default function ProductPage() {
     initialPageParam: 1,
   });
 
-  //Test Products
-  // const products = [
-  //   {
-  //     id: 1,
-  //     name: "LEATHER BLACK",
-  //     price: 499,
-  //     category: "Men's Flip Flops",
-  //     image: "/slides/1.png",
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "LEATHER WHITE",
-  //     price: 499,
-  //     category: "Men's Flip Flops",
-  //     image: "/slides/2.png",
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "HAUNTED SKULL",
-  //     price: 599,
-  //     originalPrice: 1199,
-  //     category: "Men's Flip Flops",
-  //     image: "/slides/3.png",
-  //     saleTag: "50% OFF",
-  //   },
-  //   {
-  //     id: 4,
-  //     name: "LEATHER BLACK",
-  //     price: 499,
-  //     category: "Men's Flip Flops",
-  //     image: "/slides/4.png",
-  //   },
-  //   {
-  //     id: 5,
-  //     name: "LEATHER WHITE",
-  //     price: 499,
-  //     category: "Men's Flip Flops",
-  //     image: "/slides/5.png",
-  //   },
-  //   {
-  //     id: 6,
-  //     name: "HAUNTED SKULL",
-  //     price: 599,
-  //     originalPrice: 1199,
-  //     category: "Men's Flip Flops",
-  //     image: "/slides/6.png",
-  //     saleTag: "50% OFF",
-  //   },
-  //   {
-  //     id: 7,
-  //     name: "LEATHER BLACK",
-  //     price: 499,
-  //     category: "Men's Flip Flops",
-  //     image: "/slides/7.png",
-  //   },
-  //   {
-  //     id: 8,
-  //     name: "LEATHER WHITE",
-  //     price: 499,
-  //     category: "Men's Flip Flops",
-  //     image: "/slides/12.png",
-  //   },
-  //   {
-  //     id: 9,
-  //     name: "HAUNTED SKULL",
-  //     price: 599,
-  //     originalPrice: 1199,
-  //     category: "Men's Flip Flops",
-  //     image: "/slides/9.png",
-  //     saleTag: "50% OFF",
-  //   },
-  // ];
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -151,9 +85,11 @@ export default function ProductPage() {
           <h1 className="text-[25vw] md:text-[20vw]  lg:text-[15vw]  absolute top-[45%] md:top-[45%] lg:top-[55%] -translate-y-1/2  left-[25%] lg:left-[32%] -translate-x-1/2 font-coluna font-bold tracking-wider z-10 text-center">
             STEP{" "}
           </h1>
-          <img
+          <Image
             src={"/slides/2.png"}
             alt="Hero background"
+            width={500}
+            height={500}
             className="w-full h-full object-contain relative z-[15] -rotate-12"
           />
           <h2 className="text-4xl sm:top-[45%]  md:top-[45%] lg:top-[45%] -translate-y-1/2  md:text-6xl absolute left-[75%] md:left-[80%] lg:left-[65%] -translate-x-1/2  font-coluna font-bold tracking-wider z-[20] text-center">
@@ -190,9 +126,9 @@ export default function ProductPage() {
           <>
             {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {products.pages.map((group: any, index: number) =>
-                  group.products.map((product: SingleProduct) => (
-                    <ProductGrid product={product} />
+                {products.pages.map((group: ProductGroup, index: number) =>
+                  group.products.map((product: Products) => (
+                    <ProductGrid key={index} product={product} />
                   ))
                 )}
               </div>

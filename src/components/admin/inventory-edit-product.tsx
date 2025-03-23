@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ArrowLeft, Save, Plus, Minus, X, Upload, Image } from "lucide-react";
+import { ArrowLeft, Save, Plus, Minus, X, Upload } from "lucide-react";
 import Link from "next/link";
 import { productApi } from "@/lib/api/productdetails";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Products } from "./products-table";
 import UploadPopup from "../UploadPopup";
 import { inventoryApi } from "@/lib/api/inventory";
+import Image from "next/image";
 
 // Define types based on the provided JSON structure
 interface Size {
@@ -390,7 +391,9 @@ export function ProductInventoryEditor({ productId }: { productId: string }) {
                 {newColor.imageUrl !== "" ? (
                   <div className="relative w-12 h-12 border border-gray-200 rounded-md overflow-hidden">
                    
-                      <img
+                      <Image
+                        width={100}
+                        height={100}
                         src={newColor.imageUrl || "/logo.svg"}
                         alt="Color"
                         className="w-full h-full object-cover"
@@ -440,7 +443,9 @@ export function ProductInventoryEditor({ productId }: { productId: string }) {
                     <div className="flex items-center gap-3">
                       {newColorData.imageUrl !== "" ? (
                         <div className="w-12 h-12 overflow-hidden">
-                          <img
+                          <Image
+                          width={100}
+                          height={100}
                             src={newColorData.imageUrl}
                             alt="Color"
                             className="w-full h-full object-cover"
@@ -607,7 +612,9 @@ export function ProductInventoryEditor({ productId }: { productId: string }) {
               <div className="bg-gray-50 p-4 border-b border-gray-200">
                 <div className="flex items-center gap-3">
                   {color.assets.length > 0 && (
-                    <img
+                    <Image
+                      width={100}
+                      height={100}
                       src={color.assets[0].asset_url || "/placeholder.svg"}
                       alt={color.color}
                       className="w-12 h-12 object-cover rounded-md"

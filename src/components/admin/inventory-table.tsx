@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Edit, Trash2, Search } from "lucide-react";
+import { Edit, Search } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { inventoryApi, InventoryItem } from "@/lib/api/inventory";
 import { useDebounce } from "@/hooks/useDebounce";

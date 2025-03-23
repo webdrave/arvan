@@ -285,7 +285,6 @@ export function EditProductForm({productId}: { productId: string }) {
   };
   const variantMutation = useMutation({
     mutationFn: async (variant: Varient) => {
-      //@ts-ignore
       await varientApi.updateVarient(variant.id,variant);
     }
   });
@@ -298,7 +297,6 @@ export function EditProductForm({productId}: { productId: string }) {
         // Iterate through variants and call the mutation for each one
         variants.forEach((variant) => {
           variantMutation.mutate({
-            //@ts-ignore
             id: variant.id,
             productId,
             color: variant.color,
