@@ -48,7 +48,7 @@ export default function ContactForm() {
 
 
   // Handle form submission with proper typing
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
