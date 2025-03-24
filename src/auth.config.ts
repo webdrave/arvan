@@ -130,4 +130,17 @@ export default {
       // 🚀 Redirect users to "/" after signing in
     },
   },
+
+  secret: process.env.NEXTAUTH_SECRET,
+  cookies: {
+    sessionToken: {
+      name: `__Secure-next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "none",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
+    },
+  }
 } satisfies NextAuthConfig;
