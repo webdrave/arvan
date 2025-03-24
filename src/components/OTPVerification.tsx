@@ -30,11 +30,12 @@ const OTPVerification = ({ mobileNumber }: { mobileNumber: string }) => {
         toast.success("OTP sent to your WhatsApp");
         startResendTimer();
       } catch (error) {  
+        console.error("Error sending OTP:", error);
         toast.error("Failed to send OTP");
       }
     };
     sendOTP();
-  }, []);
+  }, [mobileNumber]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -83,8 +84,9 @@ const OTPVerification = ({ mobileNumber }: { mobileNumber: string }) => {
         return;
       }
       startResendTimer();
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to resend OTP");
+    } catch (error) {
+      console.error("Error resending OTP:", error);
+      toast.error("Failed to resend OTP");
     }
   };
 

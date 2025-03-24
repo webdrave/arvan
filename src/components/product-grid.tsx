@@ -1,9 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Loader } from "lucide-react";
-import { SingleProduct } from "@/app/product/page";
-
-export default function ProductGrid({ product }: { product: SingleProduct }) {
+import { Products } from "./admin/products-table";
+export default function ProductGrid({ product }: { product: Products }) {
   return (
     <>
       <Link key={product.id} href={`/product/${product.id}`} className="group">

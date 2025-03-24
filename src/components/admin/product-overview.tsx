@@ -14,7 +14,7 @@ export function ProductOverview() {
   const [totalCustomers, setTotalCustomers] = useState(0);
 
 
-  const { data, isLoading, error } = useQuery({
+  const { data } = useQuery({
     queryKey: ["inventoryOverview"],
     queryFn: productApi.getDashBoardOverview,
   });

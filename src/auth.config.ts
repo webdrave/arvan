@@ -99,8 +99,6 @@ export default {
     },
 
     jwt({ token, user }: any) {
-      // console.log("🔵 Generating JWT Token...");
-      // console.log("🔹 User Data:", user);
 
       if (user) {
         token.id = user.id;
@@ -109,13 +107,10 @@ export default {
         token.role = process.env.ADMIN_NUMBERS?.split(",").includes(user.mobile_no) ? "admin" : "user"; // Store user role
       }
 
-      // console.log("✅ Token Created:", token);
       return token;
     },
 
     session({ session, token }: any) {
-      // console.log("🔄 Creating Session...");
-      // console.log("🔹 Token Data:", token);
 
       if (session.user) {
         session.user.id = token.id;

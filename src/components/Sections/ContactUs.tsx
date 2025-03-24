@@ -34,17 +34,8 @@ export default function ContactForm() {
     }));
   };
 
-  // Validate email format
-  const validateEmail = (email: string) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
-  };
-
   // Validate mobile number format (10 digits)
-  const validateMobile = (mobile: string) => {
-    const regex = /^\d{10}$/;
-    return regex.test(mobile);
-  };
+  
 
 
   // Handle form submission with proper typing
@@ -61,6 +52,7 @@ export default function ContactForm() {
         message: "",
       });
     } catch (error) {
+      console.error("Error sending message:", error);
       toast.error("Failed to send message. Please try again.");
     }
   };

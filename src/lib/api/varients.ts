@@ -14,7 +14,8 @@ export const varientApi = {
     const response = await apiClient.post("/api/products/color", varient);
     return response.data;
   },
-  updateVarient: async (id: string, varient: Varient): Promise<Varient> => {
+  updateVarient: async (id: string | undefined, varient: Varient): Promise<Varient> => {
+    if(!id) throw new Error("Invalid varient id");
     const response = await apiClient.put(`/api/products/color/${id}`, varient);
     return response.data;
   },

@@ -19,6 +19,7 @@ export const product = z.object({
   });
 
 export const varient = z.object({
+  id: z.string().cuid("Invalid variant ID").optional(),
   productId: z.string().cuid("Invalid product ID"),
   color: z.string().min(1, "Color is required"),
   assets: z.array(
