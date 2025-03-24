@@ -19,7 +19,7 @@ const Page = () => {
   return (
     <>
       {/* <ProfilePage user={session?.user} /> */}
-      <ProfilePage user={session?.user} />
+      {session && <ProfilePage user={session.user} />}
     </>
   );
 };

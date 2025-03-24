@@ -52,9 +52,9 @@ const Checkout: React.FC = () => {
           productVariantId: item.productVariantId as string,
           quantity: item.quantity,
           priceAtOrder: item.price,
-        }))
+        })),
       });
-      router.push("/profile")
+      router.push("/profile");
     } else {
       // Razorpay will be here
       processPayment();
@@ -126,8 +126,12 @@ const Checkout: React.FC = () => {
         name: "Arvan Footwear",
         description: "Arvan Footwear Order",
         order_id: orderId,
-        
-        handler: async function (response: any) {
+
+        handler: async function (response: {
+          razorpay_payment_id: string;
+          razorpay_order_id: string;
+          razorpay_signature: string;
+        }) {
           const data = {
             orderCreationId: orderId,
             razorpayPaymentId: response.razorpay_payment_id,
@@ -151,15 +155,14 @@ const Checkout: React.FC = () => {
                 productVariantId: item.productVariantId as string,
                 quantity: item.quantity,
                 priceAtOrder: item.price,
-              }))
+              })),
             });
-            router.push("/profile")
+            router.push("/profile");
           } else {
             alert(res.message);
           }
         },
         prefill: {
-
           name: session?.user?.name,
           contact: session?.user?.mobile_no,
         },
@@ -167,12 +170,14 @@ const Checkout: React.FC = () => {
           color: "#3399cc",
         },
       };
-      //@ts-ignore
-      const paymentObject = new window.Razorpay(options);
-      paymentObject.on("payment.failed", function (response: any) {
-        alert(response.error.description);
-      });
-      paymentObject.open();
+        const paymentObject = new window.Razorpay(options);
+        paymentObject.on(
+          "payment.failed",
+          function (response: { error: { description: string } }) {
+            alert(response.error.description);
+          }
+        );
+        paymentObject.open();
     } catch (error) {
       console.log(error);
     }

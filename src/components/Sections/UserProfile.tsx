@@ -5,9 +5,9 @@ import { Pencil, LogOut } from "lucide-react";
 import Image from "next/image";
 import { FaUser, FaShoppingBag, FaMapMarkerAlt } from "react-icons/fa"; // Importing icons from react-icons
 import { signOut } from "next-auth/react";
+import { Session } from "next-auth";
 
-export default function ProfilePage({ user }: { user: any }) {
-// export default function ProfilePage() {
+export default function ProfilePage({ user }: { user: Session["user"] }) {
   const [activeSection, setActiveSection] = useState("personal"); // Track active section
 
   const profile = {
