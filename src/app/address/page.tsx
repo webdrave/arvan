@@ -1,38 +1,48 @@
 "use client";
+import Navbar from "@/components/Navbar";
 import { AddressApi } from "@/lib/api/address";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState, ChangeEvent, FormEvent } from "react";
 
+
+import { z } from "zod";
+
+const addressSchema = z.object({
+  street: z.string().min(1, "Street is required"),
+  city: z.string().min(1, "City is required"),
+  state: z.string().min(1, "State is required"),
+  country: z.string().min(1, "Country is required"),
+  zipCode: z.string().min(1, "Zip code is required"),
+  phoneNumber: z.string().min(1, "Phone number is required"),
+});
+
 export interface AddressFormData {
   firstName: string;
   lastName: string;
-  streetAddress: string;
-  aptNumber: string;
+  street: string;
   city: string;
   zipCode: string;
   state: string;
   country: string;
   phoneNumber: string;
   addressName: string;
-  district: string;
 }
 
 const AddAddressForm: React.FC = () => {
   const [formData, setFormData] = useState<AddressFormData>({
     firstName: "",
     lastName: "",
-    streetAddress: "",
-    aptNumber: "",
+    street: "",
     city: "",
     zipCode: "",
     state: "",
     country: "",
     phoneNumber: "",
     addressName: "",
-    district: "",
   });
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -51,12 +61,26 @@ const AddAddressForm: React.FC = () => {
       ...prevState,
       [name]: value,
     }));
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: "" }));
+    }
   };
 
   const handleSubmit = (e: FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    // console.log("Form data:", formData);
-    mutation.mutate(formData);
+
+    const valid = addressSchema.safeParse(formData);
+    if (valid.success) {
+      setErrors({});
+      mutation.mutate(formData);
+    } else {
+      const formattedErrors: { [key: string]: string } = {};
+      valid.error.errors.forEach((error) => {
+        formattedErrors[error.path[0]] = error.message;
+      });
+      setErrors(formattedErrors);
+    }
   };
 
   const handleCancel = (e: FormEvent<HTMLButtonElement>) => {
@@ -65,11 +89,13 @@ const AddAddressForm: React.FC = () => {
   };
 
   const handleBack = () => {
-    router.push("/");
+    router.back();
   };
 
   return (
     <div className="relative w-full min-h-screen bg-black overflow-hidden py-5">
+
+      <Navbar />
       {/* Blurred circle in background */}
       <div className="absolute w-[80vw] h-[40vw] rounded-full bg-lime-500/15 blur-3xl left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 -z-1"></div>
 
@@ -82,7 +108,7 @@ const AddAddressForm: React.FC = () => {
 
       {/* Form container */}
 
-      <div className="w-full px-4 sm:px-10 flex flex-col relative z-10 mt-6 sm:mt-10">
+      <div className="w-full px-4 sm:px-10 flex flex-col justify-center items-center relative z-10 mt-6 sm:mt-10">
         <div className="mb-4 sm:mb-8 text-start">
           <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-1 text-white">
             ADD YOUR ADDRESS
@@ -97,7 +123,7 @@ const AddAddressForm: React.FC = () => {
                 htmlFor="addressName"
                 className="text-gray-400 text-sm sm:text-base"
               >
-                Address Name
+                Full Name
               </label>
               <div className="rounded-sm mb-3 sm:mb-4 border-2 border-lime-400 bg-gradient-to-r from-[#2e470fb4] via-[#3a5b0bc9] to-[#3a5b0b49]">
                 <input
@@ -114,21 +140,22 @@ const AddAddressForm: React.FC = () => {
             {/* Street Address */}
             <div>
               <label
-                htmlFor="streetAddress"
+                htmlFor="street"
                 className="text-gray-400 text-sm sm:text-base"
               >
-                Street Address
+                Street
               </label>
               <div className="mb-3 sm:mb-4 rounded-sm border-2 border-lime-400 bg-gradient-to-r from-[#2e470fb4] via-[#3a5b0bc9] to-[#3a5b0b49]">
                 <input
                   type="text"
-                  name="streetAddress"
-                  value={formData.streetAddress}
+                  name="street"
+                  value={formData.street}
                   onChange={handleChange}
                   placeholder="Street and Number"
                   className="w-full p-3 sm:p-4 text-white bg-transparent outline-none text-sm sm:text-base"
                 />
               </div>
+              {errors.street && <p className="text-red-500 text-sm mt-1">{errors.street}</p>}
             </div>
 
             {/* City */}
@@ -149,6 +176,7 @@ const AddAddressForm: React.FC = () => {
                   className="w-full p-3 sm:p-4 text-white bg-transparent outline-none text-sm sm:text-base"
                 />
               </div>
+              {errors.city && <p className="text-red-500 text-sm mt-1">{errors.city}</p>}
             </div>
 
             {/* PinCode */}
@@ -169,6 +197,7 @@ const AddAddressForm: React.FC = () => {
                   className="w-full p-3 sm:p-4 text-white bg-transparent outline-none text-sm sm:text-base"
                 />
               </div>
+              {errors.zipCode && <p className="text-red-500 text-sm mt-1">{errors.zipCode}</p>}
             </div>
 
             {/* State */}
@@ -189,26 +218,28 @@ const AddAddressForm: React.FC = () => {
                   className="w-full p-3 sm:p-4 text-white bg-transparent outline-none text-sm sm:text-base"
                 />
               </div>
+              {errors.state && <p className="text-red-500 text-sm mt-1">{errors.state}</p>}
             </div>
 
-            {/*  District*/}
+            {/*  Country */}
             <div>
               <label
-                htmlFor="district"
+                htmlFor="country"
                 className="text-gray-400 text-sm sm:text-base"
               >
-                District
+                Country
               </label>
               <div className="mb-3 sm:mb-4 rounded-sm border-2 border-lime-400 bg-gradient-to-r from-[#2e470fb4] via-[#3a5b0bc9] to-[#3a5b0b49]">
                 <input
                   type="text"
-                  name="district"
-                  value={formData.district}
+                  name="country" 
+                  value={formData.country}
                   onChange={handleChange}
-                  placeholder="District"
+                  placeholder="Country"
                   className="w-full p-3 sm:p-4 text-white bg-transparent outline-none text-sm sm:text-base"
                 />
               </div>
+              {errors.country && <p className="text-red-500 text-sm mt-1">{errors.country}</p>}
             </div>
 
             {/* Mobile Number  */}
@@ -229,12 +260,13 @@ const AddAddressForm: React.FC = () => {
                   className="w-full p-3 sm:p-4 text-white bg-transparent outline-none text-sm sm:text-base"
                 />
               </div>
+              {errors.phoneNumber && <p className="text-red-500 text-sm mt-1">{errors.phoneNumber}</p>}
             </div>
           </div>
 
           <div className="flex items-center gap-4 sm:gap-10 w-full sm:w-3/4 md:w-1/2 mt-3 sm:mt-5">
             <button
-              className="relative w-full py-2 sm:py-3 text-black font-bold text-base sm:text-lg rounded-xl bg-lime-400 shadow-[0_4px_20px_rgba(255,255,255,0.6)]"
+              className="relative justify-center items-center flex w-full py-2 sm:py-3 text-black font-bold text-base sm:text-lg rounded-xl bg-lime-400 shadow-[0_4px_20px_rgba(255,255,255,0.6)]"
               onClick={handleSubmit}
             >
               {mutation.isPending ? (
