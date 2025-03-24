@@ -60,6 +60,21 @@ export const category = z.object({
 
 export type Category = z.infer<typeof category>;
 
+export const addressSchema = z.object({
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  streetAddress: z.string().min(1, "Street address is required"),
+  aptNumber: z.string().optional(),
+  city: z.string().min(1, "City is required"),
+  zipCode: z.string().regex(/^\d{6}$/, "Invalid pincode format (6 digits)"),
+  state: z.string().min(1, "State is required"),
+  country: z.string().optional(),
+  phoneNumber: z.string().regex(/^\d{10}$/, "Invalid mobile number format (10 digits)"),
+  addressName: z.string().min(1, "Address name is required"),
+  district: z.string().min(1, "District is required"),
+});
+
+export type AddressType = z.infer<typeof addressSchema>;
 
 export const LoginSchema = z.object({
 
