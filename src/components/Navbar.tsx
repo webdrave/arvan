@@ -5,11 +5,14 @@ import { FiUser } from "react-icons/fi";
 import { IoMenu } from "react-icons/io5";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { useCart } from "@/context/CartContext";
 
 const Navbar = () => {
   const { data: session } = useSession();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const { cart } = useCart();
 
   const navItems = [
     {
@@ -51,8 +54,11 @@ const Navbar = () => {
             {item.name}
           </Link>
         ))}
-        <Link href="/cart">
+        <Link href="/cart" className="relative">
           <IoCartOutline className="text-lg text-white cursor-pointer hover:text-[#CCFF00]" />
+          <div className="absolute bg-[#c2e53a]  w-4 h-4 -top-2 -right-2 text-xs text-black  flex justify-center items-center rounded-full p-1">
+            {cart.length > 0 ? cart.length : 0}
+          </div>
         </Link>
         {session?.user ? (
           <Link href={session.user?.role === "admin" ? "/admin" : "/profile"}>
@@ -68,8 +74,11 @@ const Navbar = () => {
       {/* Mobile Hamburger Menu */}
       <div className="md:hidden flex w-full items-center p-2 justify-end">
         <div className="flex gap-4">
-          <Link href="/cart">
+          <Link href="/cart" className="relative">
             <IoCartOutline className="text-lg text-white cursor-pointer hover:text-[#CCFF00]" />
+            <div className="absolute bg-[#c2e53a]  w-full h-full -top-2 -right-3 text-xs text-black  flex justify-center items-center rounded-full p-1">
+              {cart.length > 0 ? cart.length : 0}
+            </div>
           </Link>
           {session ? (
             <Link href="/profile">

@@ -1,7 +1,11 @@
 "use client";
+
+import { useCart } from "@/context/CartContext";
+import { AddressApi } from "@/lib/api/address";
+import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PiPencilSimple } from "react-icons/pi";
 
 interface Address {
@@ -12,93 +16,111 @@ interface Address {
 }
 
 const Checkout: React.FC = () => {
-  const [addresses, setAddresses] = useState<Address[]>([
-    {
-      id: "1",
-      name: "Home",
-      details: "123 Main St, Cityville",
-      isSelected: true,
-    },
-  ]);
-
+  const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
   const [paymentMethod, setPaymentMethod] = useState("credit");
+  const { cart } = useCart();
 
-  // Sample checkout data
-  const subtotal = 599;
-  const shippingCharges = 5999;
-  const total = subtotal + shippingCharges;
+  // Fetch addresses from API
+  const { data: addresses, isLoading, isError } = useQuery({
+    queryKey: ["address"],
+    queryFn: async ()  => {
+      const rawAddress = await AddressApi.getAddress();
+      return rawAddress.map((addr: any) => ({
+        id: addr.id,
+        name: "Home", // Static name for now
+        details: `${addr.street}, ${addr.city}, ${addr.state}, ${addr.country} - ${addr.zipCode}`,
+        isSelected: addr.isSelected || true,
+      }));
+    },
+  });
+
+  const handleSubmit = () => {
+      if(!selectAddress){
+        alert("Select an address first..")
+      }
+  }
+
+  // Sync selected address with fetched data
+  useEffect(() => {
+    if (addresses && addresses.length > 0) {
+      const selected = addresses.find((address) => address.isSelected);
+      if (selected) {
+        setSelectedAddress(selected.id);
+      } else {
+        setSelectedAddress(addresses[0].id); // Default to first address
+      }
+    }
+  }, [addresses]);
 
   const selectAddress = (id: string) => {
-    setAddresses(
-      addresses.map((address) => ({
-        ...address,
-        isSelected: address.id === id,
-      }))
-    );
+    setSelectedAddress(id);
+    // Optionally, update backend state if needed
+    // AddressApi.updateSelectedAddress(id);
   };
+
+  // Checkout calculations
+  const subtotal = cart?.reduce((sum, item) => sum + item.price * item.quantity, 0) || 0;
+  const shippingCharges = 149;
+  const tax = subtotal * 0.18; // 18% tax
+  const total = cart.length > 0 ? subtotal + shippingCharges + tax : 0;
 
   return (
     <div className="min-h-screen bg-black text-white p-6 flex items-center justify-center">
-      <div className="container  mx-auto max-w-6xl relative">
-        {/* Blurred circle in background */}
+      <div className="container mx-auto max-w-6xl relative">
+        {/* Blurred Background */}
         <div className="absolute w-[80vw] h-[40vw] rounded-full bg-lime-600/15 blur-3xl left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 -z-1"></div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 items-center relative z-10">
-          {/* Left column - Address and Payment */}
+          {/* Left Section: Address & Payment Methods */}
           <div className="lg:col-span-2 space-y-6">
             {/* Delivery Address Section */}
             <div>
               <h2 className="text-4xl font-bold mb-4">Delivery To</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
-                {/* Home Address Card */}
-                {addresses.map((address) => (
-                  <div
-                    key={address.id}
-                    className={`p-4 rounded-lg flex justify-between items-center cursor-pointer ${
-                      address.isSelected
-                        ? " border border-lime-400"
-                        : "border-none"
-                    }`}
-                    style={{
-                      backdropFilter: "blur(100px)",
-                      backgroundColor: "rgba(255, 255, 255, 0.1)",
-                    }}
-                    onClick={() => selectAddress(address.id)}
-                  >
-                    <div className="flex items-start space-x-2">
-                      {address.isSelected && (
-                        <div className="bg-lime-400 rounded-full p-1 mt-1">
-                          <div className="h-2 w-2 rounded-full bg-white"></div>
-                        </div>
-                      )}
-                      <div>
-                        <h3 className="font-medium">{address.name}</h3>
-                        <p className="text-gray-400 text-sm">
-                          {address.details}
-                        </p>
-                      </div>
-                    </div>
+              {/* {isLoading && <p>Loading addresses...</p>}
+              {isError && <p>Error fetching addresses.</p>} */}
 
-                    <button className="text-gray-200 hover:text-white">
-                      <PiPencilSimple size={20} />
-                    </button>
-                  </div>
-                ))}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Address Cards */}
+                {addresses &&
+                  addresses.map((address) => (
+                    <div
+                      key={address.id}
+                      className={`p-4 rounded-lg flex justify-between items-center cursor-pointer ${
+                        selectedAddress === address.id ? "border border-lime-400" : "border-none"
+                      }`}
+                      style={{
+                        backdropFilter: "blur(100px)",
+                        backgroundColor: "rgba(255, 255, 255, 0.1)",
+                      }}
+                      onClick={() => selectAddress(address.id)}
+                    >
+                      <div className="flex items-start space-x-2">
+                        {selectedAddress === address.id && (
+                          <div className="bg-lime-400 rounded-full p-1 mt-1">
+                            <div className="h-2 w-2 rounded-full bg-white"></div>
+                          </div>
+                        )}
+                        <div>
+                          <h3 className="font-medium">{address.name}</h3>
+                          <p className="text-gray-400 text-sm">{address.details}</p>
+                        </div>
+                      </div>
+                      <button className="text-gray-200 hover:text-white">
+                        <PiPencilSimple size={20} />
+                      </button>
+                    </div>
+                  ))}
 
                 {/* Add New Address Button */}
                 <Link
-                  href={"/address"}
+                  href="/address"
                   className="p-4 rounded-lg bg-transparent border-2 border-lime-900 flex items-center justify-center cursor-pointer h-full"
                   style={{
                     backdropFilter: "blur(100px)",
                     backgroundColor: "rgba(255, 255, 255, 0.1)",
                   }}
-                  //   onClick={addNewAddress}
                 >
-                  <div className="flex items-center text-lime-400">
-                    {/* <PiPencilSimple size={20} color="white"/> */}
-                    <span className="ml-2">Add New Address</span>
-                  </div>
+                  <span className="text-lime-400">Add New Address</span>
                 </Link>
               </div>
             </div>
@@ -107,121 +129,43 @@ const Checkout: React.FC = () => {
             <div>
               <h2 className="text-4xl font-bold mb-4">Payment Methods</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                {/* UPI Option */}
-                <div
-                  className={`p-4 rounded-lg bg-[#6c8118] border flex justify-between items-center cursor-pointer ${
-                    paymentMethod === "upi"
-                      ? "border-lime-400"
-                      : "border-gray-800"
-                  }`}
-                  onClick={() => setPaymentMethod("upi")}
-                >
-                  <div className="flex items-center">
-                    <div className="bg-white p-2 rounded mr-3">
-                      <Image
-                        src="/upi.svg"
-                        alt="UPI"
-                        width={200}
-                        height={200}
-                        className="h-10 w-10"
-                      />
+                {[
+                  { id: "upi", label: "UPI (Unified Payments Interface)", icon: "/upi.svg" },
+                  { id: "cod", label: "Cash On Delivery", icon: "/money.svg" },
+                  { id: "credit", label: "Credit Card", icon: "/wallet.svg" },
+                ].map(({ id, label, icon }) => (
+                  <div
+                    key={id}
+                    className={`p-4 rounded-lg bg-[#6c8118] border flex justify-between items-center cursor-pointer ${
+                      paymentMethod === id ? "border-lime-400" : "border-gray-800"
+                    }`}
+                    onClick={() => setPaymentMethod(id)}
+                  >
+                    <div className="flex items-center">
+                      <div className="bg-white p-2 rounded mr-3">
+                        <Image src={icon} alt={label} width={40} height={40} />
+                      </div>
+                      <label htmlFor={`${id}-radio`} className="cursor-pointer">
+                        {label}
+                      </label>
                     </div>
-                    <label htmlFor="upi-radio" className="cursor-pointer">
-                      UPI (UNIFIED PAYMENTS INTERFACE)
-                    </label>
-                  </div>
-                  <div className="radio-button">
                     <input
                       type="radio"
-                      id="upi-radio"
+                      id={`${id}-radio`}
                       name="payment-method"
-                      value="upi"
-                      checked={paymentMethod === "upi"}
-                      onChange={() => setPaymentMethod("upi")}
-                      className="w-5 h-5 accent-lime-500 appearance-none checked:bg-lime-400 checked:border-lime-800 border-2  border-lime-400 rounded-full"
-                      aria-label="Select UPI payment method"
+                      value={id}
+                      checked={paymentMethod === id}
+                      onChange={() => setPaymentMethod(id)}
+                      className="w-5 h-5 accent-lime-500 appearance-none checked:bg-lime-400 checked:border-lime-800 border-2 border-lime-400 rounded-full"
+                      aria-label={`Select ${label} payment method`}
                     />
                   </div>
-                </div>
-
-                {/* Cash on Delivery Option */}
-                <div
-                  className={`p-4 rounded-lg bg-[#6c8118] border flex justify-between items-center cursor-pointer ${
-                    paymentMethod === "cod"
-                      ? "border-lime-400"
-                      : "border-gray-800"
-                  }`}
-                  onClick={() => setPaymentMethod("cod")}
-                >
-                  <div className="flex items-center">
-                    <div className="bg-white p-2 rounded mr-3">
-                      <Image
-                        src="/money.svg"
-                        alt="COD"
-                        width={200}
-                        height={200}
-                        className="h-10 w-10"
-                      />
-                    </div>
-                    <label htmlFor="cod-radio" className="cursor-pointer">
-                      Cash On Delivery
-                    </label>
-                  </div>
-                  <div className="radio-button">
-                    <input
-                      type="radio"
-                      id="cod-radio"
-                      name="payment-method"
-                      value="cod"
-                      checked={paymentMethod === "cod"}
-                      onChange={() => setPaymentMethod("cod")}
-                      className="w-5 h-5 accent-lime-500 appearance-none checked:bg-lime-400 checked:border-lime-800 border-2  border-lime-400 rounded-full"
-                      aria-label="Select Cash on Delivery payment method"
-                    />
-                  </div>
-                </div>
-
-                {/* Credit Card Option */}
-                <div
-                  className={`p-4 rounded-lg bg-[#6c8118] border flex justify-between items-center cursor-pointer ${
-                    paymentMethod === "credit"
-                      ? "border-lime-400"
-                      : "border-gray-800"
-                  }`}
-                  onClick={() => setPaymentMethod("credit")}
-                >
-                  <div className="flex items-center">
-                    <div className="bg-white p-2 rounded mr-3">
-                      <Image
-                        src="/wallet.svg"
-                        alt="Credit Card"
-                        width={200}
-                        height={200}
-                        className="h-10 w-10"
-                      />
-                    </div>
-                    <label htmlFor="credit-radio" className="cursor-pointer">
-                      Credit Card
-                    </label>
-                  </div>
-                  <div className="radio-button">
-                    <input
-                      type="radio"
-                      id="credit-radio"
-                      name="payment-method"
-                      value="credit"
-                      checked={paymentMethod === "credit"}
-                      onChange={() => setPaymentMethod("credit")}
-                      className="w-5 h-5 accent-lime-500 appearance-none checked:bg-lime-400 checked:border-lime-800 border-2  border-lime-400 rounded-full"
-                      aria-label="Select Credit Card payment method"
-                    />
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
 
-          {/* Right column - Payment Details */}
+          {/* Right Section: Order Summary */}
           <div className="lg:col-span-1">
             <div
               className="border-2 border-lime-500 rounded-lg lg:mt-5 p-6"
@@ -231,40 +175,28 @@ const Checkout: React.FC = () => {
               }}
             >
               <h2 className="text-xl font-bold mb-6">Payment Details</h2>
-
               <div className="space-y-4">
                 <div className="flex justify-between">
                   <span className="text-gray-300">Subtotal</span>
                   <span>₹{subtotal}</span>
                 </div>
-
                 <div className="flex justify-between">
-                  <span className="text-gray-300">Shipping Charges</span>
+                  <span className="text-gray-300">Shipping</span>
                   <span>₹{shippingCharges}</span>
                 </div>
-
-                <div className="mt-4 relative">
-                  <input
-                    type="text"
-                    placeholder="Enter Gift Code"
-                    className="w-full bg-transparent border-b border-gray-600 pb-2 pr-10 focus:outline-none focus:border-lime-400"
-                  />
-                  <button className="absolute right-0 top-0 text-gray-400 hover:text-white">
-                    <span>→</span>
-                  </button>
+                <div className="flex justify-between">
+                  <span className="text-gray-300">Tax (18%)</span>
+                  <span>₹{tax.toFixed(2)}</span>
                 </div>
-
-                <div className="pt-4 border-t border-gray-700 mt-6">
-                  <div className="flex justify-between font-bold">
-                    <span>Total</span>
-                    <span>₹{total}</span>
-                  </div>
+                <hr className="border-gray-600" />
+                <div className="flex justify-between font-bold text-lg">
+                  <span>Total</span>
+                  <span>₹{total.toFixed(2)}</span>
                 </div>
-
-                <button className="w-full bg-[#748a1d] hover:bg-[#546415] rounded-lg py-3 font-bold mt-6 uppercase">
-                  Checkout
-                </button>
               </div>
+              <button onClick={() => handleSubmit()} className="w-full mt-4 p-3 bg-lime-500 text-black font-bold rounded-lg">
+                Proceed to Payment
+              </button>
             </div>
           </div>
         </div>

@@ -1,7 +1,11 @@
 "use client";
+import { AddressApi } from "@/lib/api/address";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Loader } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React, { useState, ChangeEvent, FormEvent } from "react";
 
-interface AddressFormData {
+export interface AddressFormData {
   firstName: string;
   lastName: string;
   streetAddress: string;
@@ -30,6 +34,17 @@ const AddAddressForm: React.FC = () => {
     district: "",
   });
 
+  const queryClient = useQueryClient();
+  const router = useRouter();
+
+  const mutation = useMutation({
+    mutationFn: (formData: AddressFormData) => AddressApi.addAddress(formData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["address"] });
+      router.push("/checkout");
+    },
+  });
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -40,17 +55,17 @@ const AddAddressForm: React.FC = () => {
 
   const handleSubmit = (e: FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    alert("Save button clicked: Form data will be saved");
-    console.log("Form data:", formData);
+    // console.log("Form data:", formData);
+    mutation.mutate(formData);
   };
 
   const handleCancel = (e: FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    alert("Cancel button clicked: Operation cancelled");
+    router.push("/checkout");
   };
 
   const handleBack = () => {
-    alert("Back button clicked: Navigating back");
+    router.push("/");
   };
 
   return (
@@ -222,7 +237,11 @@ const AddAddressForm: React.FC = () => {
               className="relative w-full py-2 sm:py-3 text-black font-bold text-base sm:text-lg rounded-xl bg-lime-400 shadow-[0_4px_20px_rgba(255,255,255,0.6)]"
               onClick={handleSubmit}
             >
-              Save
+              {mutation.isPending ? (
+                <Loader className="animate-spin" />
+              ) : (
+                "Save"
+              )}
             </button>
             <button
               className="relative w-full py-2 sm:py-3 text-white border-2 border-white font-bold text-base sm:text-lg md:text-xl rounded-xl bg-transparent"
