@@ -18,12 +18,13 @@ export async function middleware(req: NextRequest) {
         }
 
         console.log("🟢 Session Token Received:", sessionToken);
+        console.log("NextAuthh Secret:", process.env.NEXTAUTH_SECRET);
 
         const token = await decode({
             token: sessionToken,
             secret: process.env.NEXTAUTH_SECRET as string,
             salt: process.env.NODE_ENV === "production"
-                ? "__Secure-authjs.session-token"
+                ? "__Secure-next-auth.session-token"
                 : "authjs.session-token",
         });
         
