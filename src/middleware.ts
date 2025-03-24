@@ -9,7 +9,7 @@ export async function middleware(req: NextRequest) {
         console.log("🟢 Middleware Executed")
         console.log(" cookie: ", req.cookies)
 
-        const sessionToken = process.env.NODE_ENV === "production" ? req.cookies.get("__Secure-authjs.session-token")?.value : req.cookies.get("authjs.session-token")?.value;
+        const sessionToken = process.env.NODE_ENV === "production" ? req.cookies.get("__Secure-next-auth.session-token")?.value : req.cookies.get("authjs.session-token")?.value;
         
         console.log("🟢 Session Token Received:", sessionToken);
 
