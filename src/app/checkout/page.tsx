@@ -3,22 +3,29 @@
 import Navbar from "@/components/Navbar";
 import { useCart } from "@/context/CartContext";
 import { Address, AddressApi } from "@/lib/api/address";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { PiPencilSimple } from "react-icons/pi";
-
+import Script from "next/script";
+import { useSession } from "next-auth/react";
+import { Order, orderApi } from "@/lib/api/orders";
+import { useRouter } from "next/navigation";
 
 const Checkout: React.FC = () => {
-  const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
+  const [selectedAddress, setSelectedAddress] = useState<string>("");
   const [paymentMethod, setPaymentMethod] = useState("credit");
   const { cart } = useCart();
+
+  const { data: session } = useSession();
+
+  const router = useRouter();
 
   // Fetch addresses from API
   const { data: addresses } = useQuery({
     queryKey: ["address"],
-    queryFn: async ()  => {
+    queryFn: async () => {
       const rawAddress = await AddressApi.getAddress();
       return rawAddress.map((addr: Address) => ({
         id: addr.id,
@@ -29,10 +36,42 @@ const Checkout: React.FC = () => {
   });
 
   const handleSubmit = () => {
-      if(!selectAddress){
-        alert("Select an address first..")
-      }
-  }
+    console.log("Selected Address:", selectedAddress);
+    if (!selectAddress) {
+      alert("Select an address first..");
+    }
+    if (!paymentMethod) {
+      alert("Select a payment method first..");
+    }
+    if (paymentMethod === "cod") {
+      orderMutaion.mutate({
+        userId: session?.user?.id as string,
+        addressId: selectedAddress,
+        total,
+        items: cart.map((item) => ({
+          productVariantId: item.productVariantId as string,
+          quantity: item.quantity,
+          priceAtOrder: item.price,
+        }))
+      });
+      router.push("/profile")
+    } else {
+      // Razorpay will be here
+      processPayment();
+    }
+  };
+
+  const orderMutaion = useMutation({
+    mutationFn: (order: Order) => {
+      return orderApi.createOrder(order);
+    },
+    onSuccess: (data) => {
+      console.log("Order Created:", data);
+    },
+    onError: (error) => {
+      console.error("Error creating order:", error);
+    },
+  });
 
   // Sync selected address with fetched data
   useEffect(() => {
@@ -48,13 +87,102 @@ const Checkout: React.FC = () => {
   };
 
   // Checkout calculations
-  const subtotal = cart?.reduce((sum, item) => sum + item.price * item.quantity, 0) || 0;
+  const subtotal =
+    cart?.reduce((sum, item) => sum + item.price * item.quantity, 0) || 0;
   const shippingCharges = 149;
   const tax = subtotal * 0.18; // 18% tax
   const total = cart.length > 0 ? subtotal + shippingCharges + tax : 0;
 
+  const createOrderId = async () => {
+    try {
+      const response = await fetch("/api/order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount: total * 100,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      return data.orderId;
+    } catch (error) {
+      console.error("There was a problem with your fetch operation:", error);
+    }
+  };
+
+  const processPayment = async () => {
+    try {
+      const orderId: string = await createOrderId();
+      const options = {
+        key: process.env.RAZORPAY_KEY_ID,
+        amount: total * 100,
+        currency: "INR",
+        name: "Arvan Footwear",
+        description: "Arvan Footwear Order",
+        order_id: orderId,
+        
+        handler: async function (response: any) {
+          const data = {
+            orderCreationId: orderId,
+            razorpayPaymentId: response.razorpay_payment_id,
+            razorpayOrderId: response.razorpay_order_id,
+            razorpaySignature: response.razorpay_signature,
+          };
+
+          const result = await fetch("/api/verify", {
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: { "Content-Type": "application/json" },
+          });
+          const res = await result.json();
+          if (res.isOk) {
+            orderMutaion.mutate({
+              userId: session?.user?.id as string,
+              addressId: selectedAddress,
+              total,
+              paid: true,
+              items: cart.map((item) => ({
+                productVariantId: item.productVariantId as string,
+                quantity: item.quantity,
+                priceAtOrder: item.price,
+              }))
+            });
+            router.push("/profile")
+          } else {
+            alert(res.message);
+          }
+        },
+        prefill: {
+
+          name: session?.user?.name,
+          contact: session?.user?.mobile_no,
+        },
+        theme: {
+          color: "#3399cc",
+        },
+      };
+      //@ts-ignore
+      const paymentObject = new window.Razorpay(options);
+      paymentObject.on("payment.failed", function (response: any) {
+        alert(response.error.description);
+      });
+      paymentObject.open();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="min-h-screen bg-black text-white p-6 flex items-center justify-center">
+      <Script
+        id="razorpay-checkout-js"
+        src="https://checkout.razorpay.com/v1/checkout.js"
+      />
       <Navbar />
       <div className="container mx-auto max-w-6xl relative">
         {/* Blurred Background */}
@@ -76,14 +204,15 @@ const Checkout: React.FC = () => {
                     <div
                       key={address.id}
                       className={`p-4 rounded-lg flex justify-between items-center cursor-pointer ${
-                        selectedAddress === address.id ? "border border-lime-400" : "border-none"
+                        selectedAddress === address.id
+                          ? "border border-lime-400"
+                          : "border-none"
                       }`}
                       style={{
                         backdropFilter: "blur(100px)",
                         backgroundColor: "rgba(255, 255, 255, 0.1)",
                       }}
-                      onClick={() => selectAddress(address.id)}
-                    >
+                      onClick={() => selectAddress(address.id)}>
                       <div className="flex items-start space-x-2">
                         {selectedAddress === address.id && (
                           <div className="bg-lime-400 rounded-full p-1 mt-1">
@@ -92,7 +221,9 @@ const Checkout: React.FC = () => {
                         )}
                         <div>
                           <h3 className="font-medium">{address.name}</h3>
-                          <p className="text-gray-400 text-sm">{address.details}</p>
+                          <p className="text-gray-400 text-sm">
+                            {address.details}
+                          </p>
                         </div>
                       </div>
                       <button className="text-gray-200 hover:text-white">
@@ -108,8 +239,7 @@ const Checkout: React.FC = () => {
                   style={{
                     backdropFilter: "blur(100px)",
                     backgroundColor: "rgba(255, 255, 255, 0.1)",
-                  }}
-                >
+                  }}>
                   <span className="text-lime-400">Add New Address</span>
                 </Link>
               </div>
@@ -120,17 +250,22 @@ const Checkout: React.FC = () => {
               <h2 className="text-4xl font-bold mb-4">Payment Methods</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {[
-                  { id: "upi", label: "UPI (Unified Payments Interface)", icon: "/upi.svg" },
+                  {
+                    id: "upi",
+                    label: "UPI (Unified Payments Interface)",
+                    icon: "/upi.svg",
+                  },
                   { id: "cod", label: "Cash On Delivery", icon: "/money.svg" },
                   { id: "credit", label: "Credit Card", icon: "/wallet.svg" },
                 ].map(({ id, label, icon }) => (
                   <div
                     key={id}
                     className={`p-4 rounded-lg bg-[#6c8118] border flex justify-between items-center cursor-pointer ${
-                      paymentMethod === id ? "border-lime-400" : "border-gray-800"
+                      paymentMethod === id
+                        ? "border-lime-400"
+                        : "border-gray-800"
                     }`}
-                    onClick={() => setPaymentMethod(id)}
-                  >
+                    onClick={() => setPaymentMethod(id)}>
                     <div className="flex items-center">
                       <div className="bg-white p-2 rounded mr-3">
                         <Image src={icon} alt={label} width={40} height={40} />
@@ -162,8 +297,7 @@ const Checkout: React.FC = () => {
               style={{
                 backdropFilter: "blur(100px)",
                 backgroundColor: "rgba(255, 255, 255, 0.1)",
-              }}
-            >
+              }}>
               <h2 className="text-xl font-bold mb-6">Payment Details</h2>
               <div className="space-y-4">
                 <div className="flex justify-between">
@@ -184,7 +318,9 @@ const Checkout: React.FC = () => {
                   <span>₹{total.toFixed(2)}</span>
                 </div>
               </div>
-              <button onClick={() => handleSubmit()} className="w-full mt-4 p-3 bg-lime-500 text-black font-bold rounded-lg">
+              <button
+                onClick={() => handleSubmit()}
+                className="w-full mt-4 p-3 bg-lime-500 text-black font-bold rounded-lg">
                 Proceed to Payment
               </button>
             </div>

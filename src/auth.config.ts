@@ -76,17 +76,6 @@ export default {
   pages: {
     signIn: "/signin",
   },
-  cookies: {
-    sessionToken: {
-      name: '__Secure-next-auth.session-token',
-      options: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'none', 
-        path: '/',
-      }
-    }
-  },
 
   callbacks: {
     authorized({ request: { nextUrl }, auth }) {
@@ -110,6 +99,8 @@ export default {
     },
 
     jwt({ token, user }: any) {
+      console.log("🔵 Generating JWT Token...");
+      console.log("🔹 User Data:", user);
 
       if (user) {
         token.id = user.id;
@@ -118,10 +109,13 @@ export default {
         token.role = process.env.ADMIN_NUMBERS?.split(",").includes(user.mobile_no) ? "admin" : "user"; // Store user role
       }
 
+      console.log("✅ Token Created:", token);
       return token;
     },
 
     session({ session, token }: any) {
+      console.log("🔄 Creating Session...");
+      console.log("🔹 Token Data:", token);
 
       if (session.user) {
         session.user.id = token.id;
@@ -129,8 +123,9 @@ export default {
         session.user.mobile_no = token.mobile_no;
         session.user.role = token.role as "admin" | "user"; 
       }
+      console.log("✅ Session Created:", session);
+
       return session;
-      // console.log("✅ Session Created:", session);
 
       // 🚀 Redirect users to "/" after signing in
     },

@@ -4,15 +4,16 @@ import { useState } from "react";
 import { Pencil, LogOut } from "lucide-react";
 import Image from "next/image";
 import { FaUser, FaShoppingBag, FaMapMarkerAlt } from "react-icons/fa"; // Importing icons from react-icons
+import { signOut } from "next-auth/react";
 
-// export default function ProfilePage({ user }: { user: any }) {
-export default function ProfilePage() {
+export default function ProfilePage({ user }: { user: any }) {
+// export default function ProfilePage() {
   const [activeSection, setActiveSection] = useState("personal"); // Track active section
 
   const profile = {
-    fullName: "Abhishek Chaudhary",
-    email: "example@gmail.com",
-    phone: "9876543210",
+    fullName: user?.name,
+    email: user?.mobile_no,
+    phone: user?.mobile_no,
     address1: "Hno 2, Indore-458441, Madhya Pradesh",
     address2: "Add",
     avatar: "/userProfile.png",
@@ -310,7 +311,7 @@ export default function ProfilePage() {
 
       {/* Logout Button */}
       <div className="mt-6 self-center sm:self-end w-full flex justify-center sm:justify-end">
-        <button className="flex items-center space-x-2 bg-[#B22B2B] text-white px-6 py-2 rounded-sm hover:bg-red-500/20 transition">
+        <button onClick={() => signOut()} className="flex items-center space-x-2 bg-[#B22B2B] text-white px-6 py-2 rounded-sm hover:bg-red-500/20 transition">
           <span>Log Out</span>
           <LogOut className="w-4 h-4" />
         </button>
