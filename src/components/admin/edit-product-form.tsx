@@ -9,6 +9,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { productApi } from "@/lib/api/productdetails";
 import { varientApi } from "@/lib/api/varients";
+import { categoryApi } from "@/lib/api/categories";
 
 export function EditProductForm({productId}: { productId: string }) {
   const [isUploadPopupOpen, setIsUploadPopupOpen] = useState(false);
@@ -122,51 +123,54 @@ export function EditProductForm({productId}: { productId: string }) {
   const { data, isLoading, error: productError } = useQuery({
     queryKey: ["product", productId],
     queryFn: async () => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/${productId}`,
-        {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      const data = await response.json();
-      return data;
+      const res = await productApi.getById(productId);
+      return res
     },
   });
 
   useEffect(() => {
     if (data) {
       const product = {
-        ...data.product,
-        discountPrice: data.product.discountPrice ?? 1,
-        assets: data.product.assets?.map((asset: { asset_url: string; }) => ({
+        name: data.name,
+        description: data.description,
+        price: data.price,
+        category_id: data.category_id,
+        material: data.material,
+        status: data.status,
+        discountPrice: data.discountPrice ?? 1,
+        assets: data.assets?.map((asset: { asset_url: string; type?: "IMAGE" | "VIDEO" }) => ({
           ...asset,
           url: asset.asset_url || "",
+          type: asset.type || "IMAGE", // Ensuring type is present
         })),
-      }
+      };
+  
       setProduct(product);
       setPrice(product.price);
       setDiscountPrice(product.discountPrice);
-
-      const varients = data.product.colors.map((color: { assets: { asset_url: string; }[]; sizes: { size: string; stock: number; }[]; }) => ({
-        ...color,
+  
+      const variants = data.colors.map((color: { id: string; color: string; assets: { asset_url: string, }[]; sizes: {id:string, size: string; stock: number }[] }) => ({
+        id: color.id, 
+        color: color.color, 
         isOpen: false,
-        customColor:true,
+        customColor: true,
         images: color.assets?.map((asset) => ({
           ...asset,
           url: asset.asset_url || "",
+          type: "IMAGE" as "IMAGE" | "VIDEO",
         })),
         sizes: color.sizes?.map((size) => ({
           ...size,
+          id: size.id,
           name: size.size,
-          quantity: size.stock,
+          quantity: size.stock
         })),
       }));
-      setVariants(varients);  
-          
+  
+      setVariants(variants);
     }
-
   }, [data]);
+  
 
   const addVariant = () => {
     setVariants([
@@ -255,16 +259,9 @@ export function EditProductForm({productId}: { productId: string }) {
   const categoryQuery = useQuery({
     queryKey: ["categories"],
     queryFn: async () => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/category`,
-        {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      const data = await response.json();
-      return data;
-    },
+      const response = await categoryApi.getAll()
+      return response;
+    }
   });
 
   const handleAddImage = (imageUrl: string) => {
@@ -765,7 +762,7 @@ export function EditProductForm({productId}: { productId: string }) {
                     Loading...
                   </div>
                 ) : (
-                  categoryQuery.data?.categories?.map((category: Category) => (
+                  categoryQuery.data?.map((category: Category) => (
                     <div
                       key={category.id}
                       onClick={() =>
