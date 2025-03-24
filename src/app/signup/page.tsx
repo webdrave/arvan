@@ -38,7 +38,7 @@ const SignUp = () => {
     try {
       const promise = handleSignup(values);
 
-      const data = await toast.promise(promise, {
+      toast.promise(promise, {
         loading: "Signing up...", // Show while waiting
         success: (response) => {
           if (response?.error) {
@@ -48,9 +48,11 @@ const SignUp = () => {
         },
         error: (error) => error.message || "Something went wrong", // Show on error
       });
+      const response = await promise;
+      console.log(response);
 
-      if (!data?.error) {
-        router.push("/signin"); // Redirect if signup is successful
+      if (response.jwt) {
+        router.push(`/otp/${response.jwt}`); // Redirect if signup is successful
       }
     } catch (error) {
       console.log(error);

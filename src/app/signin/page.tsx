@@ -102,7 +102,7 @@ const Signin = () => {
             />
 
             <div className="text-end mt-3 mb-6">
-              <Link href="/forget-password" onClick={() => router.push("/forgot-password")} className="text-sm text-lime-400">
+              <Link href="/forgot-password" className="text-sm text-lime-400">
                 Forget Password?
               </Link>
             </div>

@@ -6,6 +6,7 @@ import {  SignUpSchema } from "@/types/types";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma-client";
 import bcryptjs from "bcryptjs";
+import { apiClient } from "@/lib/axiosClient";
 
 
 
@@ -38,12 +39,13 @@ export async function handleSignup(data: z.infer<typeof SignUpSchema>) {
         },
       });
   
-      console.log(response);
-      if (!response) {
-        return { error: "Signup failed" };
-      }
+      const otpResponse = await apiClient.post("/api/customers/otp", { mobile_no: response.mobile_no,type:"verifyemail" });
   
-      return { success: "Signup successful!" };
+      console.log(otpResponse.data);
+     
+      
+      
+      return {  jwt: otpResponse.data.jwt };
     } catch (error: any) {
       return { error: error.message || "Something went wrong" };
     }

@@ -17,7 +17,7 @@ export default {
         mobileNumber: { label: "Mobile Number", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      authorize: async (credentials) => {
+      authorize: async (credentials:any) => {
         console.log("🟢 Credentials Received:", credentials);
 
         const { mobileNumber, password } = credentials;
@@ -78,7 +78,7 @@ export default {
   },
 
   callbacks: {
-    authorized({ request: { nextUrl }, auth }) {
+    authorized({ request: { nextUrl }, auth }:any) {
       const isLoggedIn = !!auth?.user;
       console.log(auth);
       console.log(isLoggedIn);
