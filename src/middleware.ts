@@ -5,6 +5,7 @@ import { getToken } from "next-auth/jwt";
 const adminRoutes = ["/admin", "/api/admin"];
 
 export async function middleware(req: NextRequest) {
+    console.log("🟢 Request Cookies:", req.cookies.getAll());
     // Extract token from NextAuth session
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET, secureCookie: process.env.NODE_ENV === "production" });
     console.log("🟢 Token Received:", token);

@@ -81,8 +81,8 @@ export default {
       name: '__Secure-next-auth.session-token',
       options: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // Secure in production
-        sameSite: 'none', // Required for cross-site requests
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'none', 
         path: '/',
       }
     }
