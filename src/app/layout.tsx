@@ -33,7 +33,7 @@ export default function RootLayout({
 }>) {
   return (
     <SessionProvider>
-      <html lang="en">
+      <html lang="en" className="dark">
         <head>
           <meta name="color-scheme" content="dark" />
         </head>
