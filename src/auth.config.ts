@@ -77,19 +77,6 @@ export default {
     signIn: "/signin",
   },
 
-  cookies: {
-    sessionToken: {
-      name: `__Secure-next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "none",  
-        domain: undefined, 
-        path: "/",
-      },
-    },
-  },
-
   callbacks: {
     authorized({ request: { nextUrl }, auth }) {
       const isLoggedIn = !!auth?.user;
