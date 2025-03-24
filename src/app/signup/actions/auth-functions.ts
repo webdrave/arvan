@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
-import {  signOut } from "@/auth";
+import { signOut } from "@/auth";
 
-import {  SignUpSchema } from "@/types/types";
+import { SignUpSchema } from "@/types/types";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma-client";
 import bcryptjs from "bcryptjs";

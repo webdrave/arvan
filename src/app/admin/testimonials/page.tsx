@@ -1,211 +1,253 @@
-"use client";
-import React, { useState, ChangeEvent, FormEvent, useRef } from "react";
-import Image from 'next/image';
-import { Upload } from "lucide-react";
+import { TestimonialsManager } from "@/components/admin/testimonials-manager"
 
-// Define types for form data
-interface TestimonialFormData {
-  username: string;
-  role: string;
-  description: string;
-  image: File | null;
-  ratings: string;
+export default function TestimonialsPage() {
+  return (
+    <div className="p-6">
+      <h1 className="text-2xl font-semibold text-[#1c1c1c] mb-6">Testimonials Management</h1>
+      <TestimonialsManager />
+    </div>
+  )
 }
 
-const TestimonialForm: React.FC = () => {
-  const [formData, setFormData] = useState<TestimonialFormData>({
-    username: "",
-    role: "",
-    description: "",
-    image: null,
-    ratings: "",
-  });
-  const [loading, setLoading] = useState<boolean>(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Handle input changes
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+// "use client";
+// import React, { useState, ChangeEvent, FormEvent } from "react";
+// import Image from 'next/image';
+// import { Upload } from "lucide-react";
+// import UploadPopup from "@/components/UploadPopup";
 
-  // Handle image upload
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFormData({ ...formData, image: e.target.files[0] });
-    }
-  };
+// // Define types for form data
+// interface TestimonialFormData {
+//   username: string;
+//   role: string;
+//   description: string;
+//   image: string;
+//   ratings: string;
+// }
 
-  const handleImageUploadClick = () => {
-    fileInputRef.current?.click();
-  };
+// const TestimonialForm: React.FC = () => {
+//   const [formData, setFormData] = useState<TestimonialFormData>({
+//     username: "",
+//     role: "",
+//     description: "",
+//     image: "",
+//     ratings: "",
+//   });
+//   const [loading, setLoading] = useState<boolean>(false);
+//   const [showUploadPopup, setShowUploadPopup] = useState<boolean>(false);
 
-  // Handle form submission
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+//   // Handle input changes
+//   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+//     const { name, value } = e.target;
+//     setFormData({ ...formData, [name]: value });
+//   };
 
-    const { username, role, description, image, ratings } = formData;
+//   // Handle image upload
+//   // const handleImageUpload = (file: File) => {
+//   //   setFormData({ ...formData, image: file });
+//   //   setShowUploadPopup(false);
+//   // };
 
-    if (!username || !role || !description || !image || !ratings) {
-      alert("All fields are required!");
-      return;
-    }
+//   const handleImageUpload = async (imageUrl: string) => {
+//     setFormData({ ...formData, image: imageUrl });
+//     setShowUploadPopup(false);
+//   };
 
-    const rating = parseInt(ratings, 10);
-    if (isNaN(rating) || rating < 1 || rating > 5) {
-      alert("Ratings must be between 1 and 5");
-      return;
-    }
+//   // Handle form submission
+//   const handleSubmit = async (e: FormEvent) => {
+//     e.preventDefault();
 
-    try {
-      setLoading(true);
+//     const { username, role, description, image, ratings } = formData;
 
-      // Upload image
-      const imageData = new FormData();
-      imageData.append("file", image);
+//     if (!username || !role || !description || !image || !ratings) {
+//       alert("All fields are required!");
+//       return;
+//     }
 
-      const imageUploadResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/upload`, {
-        method: "POST",
-        body: imageData,
-      });
+//     const rating = parseInt(ratings, 10);
+//     if (isNaN(rating) || rating < 1 || rating > 5) {
+//       alert("Ratings must be between 1 and 5");
+//       return;
+//     }
 
-      if (!imageUploadResponse.ok) {
-        throw new Error("Image upload failed");
-      }
+//     try {
+//       setLoading(true);
 
-      const imageUploadData = await imageUploadResponse.json();
-      const imageUrl = imageUploadData.url;
+//       // Upload image
+//       const imageData = new FormData();
+//       imageData.append("file", image);
 
-      // Create testimonial
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/testimonials`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username,
-          role,
-          description,
-          ratings: rating,
-          image: imageUrl,
-        }),
-      });
+//       const imageUploadResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/upload`, {
+//         method: "POST",
+//         body: imageData,
+//       });
 
-      if (response.ok) {
-        alert("Testimonial created successfully!");
-        setFormData({
-          username: "",
-          role: "",
-          description: "",
-          image: null,
-          ratings: "",
-        });
-      } else {
-        const errorData = await response.json();
-        alert("Error: " + errorData.message);
-      }
-    } catch (error) {
-      console.error("Error submitting testimonial:", error);
-      alert("Failed to submit testimonial. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+//       if (!imageUploadResponse.ok) {
+//         throw new Error("Image upload failed");
+//       }
 
-  return (
-    <div className="max-w-md mx-auto mt-10 p-6 border border-gray-300 rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold text-center mb-4">Create Testimonial</h2>
-      <form onSubmit={handleSubmit} className="flex flex-col">
-        {/* Username */}
-        <label className="font-semibold">Username:</label>
-        <input
-          type="text"
-          name="username"
-          value={formData.username}
-          onChange={handleChange}
-          required
-          className="mt-1 p-2 border rounded-md focus:ring-2 bg-white focus:ring-blue-500"
-        />
+//       const imageUploadData = await imageUploadResponse.json();
+//       const imageUrl = imageUploadData.url;
 
-        {/* Role */}
-        <label className="font-semibold mt-2">Role:</label>
-        <input
-          type="text"
-          name="role"
-          value={formData.role}
-          onChange={handleChange}
-          required
-          className="mt-1 p-2 border rounded-md focus:ring-2 bg-white focus:ring-blue-500"
-        />
+//       // Create testimonial
+//       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/testimonials`, {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({
+//           username,
+//           role,
+//           description,
+//           ratings: rating,
+//           image: imageUrl,
+//         }),
+//       });
 
-        {/* Description */}
-        <label className="font-semibold mt-2">Description:</label>
-        <textarea
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          required
-          rows={4}
-          className="mt-1 p-2 border rounded-md focus:ring-2 bg-white focus:ring-blue-500"
-        />
+//       if (response.ok) {
+//         alert("Testimonial created successfully!");
+//         setFormData({
+//           username: "",
+//           role: "",
+//           description: "",
+//           image: "",
+//           ratings: "",
+//         });
+//       } else {
+//         const errorData = await response.json();
+//         alert("Error: " + errorData.message);
+//       }
+//     } catch (error) {
+//       console.error("Error submitting testimonial:", error);
+//       alert("Failed to submit testimonial. Please try again.");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
 
-        {/* Image Upload */}
-        <label className="font-semibold mt-2">Image Upload:</label>
-        <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
-          <div className="flex items-center justify-center space-x-4">
-            {formData.image && (
-              <div className="relative w-32 h-32 border border-gray-200 rounded-md overflow-hidden">
-                <Image
-                  src={URL.createObjectURL(formData.image)}
-                  alt="Product image"
-                  layout="fill"
-                  objectFit="contain"
-                />
-              </div>
-            )}
-            <button
-              type="button"
-              onClick={handleImageUploadClick}
-              className="flex flex-col items-center justify-center w-32 h-32 border-2 border-dashed border-gray-300 rounded-md text-gray-500 hover:text-blue-500 hover:border-blue-500 transition-colors">
-              <Upload size={24} />
-              <span className="mt-2 text-sm">Add Image</span>
-            </button>
-            <input
-              type="file"
-              ref={fileInputRef}
-              accept="image/*"
-              onChange={handleImageChange}
-              className="hidden"
-            />
-          </div>
-        </div>
+//   return (
+//     <div className="container mx-auto px-4 py-8">
+//       <div className="bg-white rounded-lg shadow-md p-6">
+//         <h2 className="text-2xl font-bold mb-6 text-gray-800">Add New Testimonial</h2>
+        
+//         <form onSubmit={handleSubmit} className="space-y-6">
+//           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//             {/* Username */}
+//             <div>
+//               <label className="block text-sm font-medium text-gray-700 mb-1">
+//                 Username
+//               </label>
+//               <input
+//                 type="text"
+//                 name="username"
+//                 value={formData.username}
+//                 onChange={handleChange}
+//                 required
+//                 className="w-full px-4 py-2 bg-white border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+//               />
+//             </div>
 
-        {/* Ratings */}
-        <label className="font-semibold mt-2">Rating (1 to 5):</label>
-        <select
-          name="ratings"
-          value={formData.ratings}
-          onChange={handleChange}
-          required
-          className="mt-1 p-2 border rounded-md focus:ring-2 bg-white focus:ring-blue-500"
-        >
-          <option value="" disabled>Select Rating</option>
-          {[1, 2, 3, 4, 5].map((rating) => (
-            <option key={rating} value={rating.toString()}>{rating}</option>
-          ))}
-        </select>
+//             {/* Role */}
+//             <div>
+//               <label className="block text-sm font-medium text-gray-700 mb-1">
+//                 Role
+//               </label>
+//               <input
+//                 type="text"
+//                 name="role"
+//                 value={formData.role}
+//                 onChange={handleChange}
+//                 required
+//                 className="w-full px-4 py-2 bg-white border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+//               />
+//             </div>
+//           </div>
 
-        {/* Submit Button */}
-        <button
-          type="submit"
-          disabled={loading}
-          className={`mt-4 p-2 text-white font-semibold rounded-md ${
-            loading ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600"
-          }`}
-        >
-          {loading ? "Submitting..." : "Submit"}
-        </button>
-      </form>
-    </div>
-  );
-};
+//           {/* Description */}
+//           <div>
+//             <label className="block text-sm font-medium text-gray-700 mb-1">
+//               Description
+//             </label>
+//             <textarea
+//               name="description"
+//               value={formData.description}
+//               onChange={handleChange}
+//               required
+//               rows={4}
+//               className="w-full px-4 py-2 bg-white border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+//             />
+//           </div>
 
-export default TestimonialForm;
+//           {/* Ratings */}
+//           <div>
+//             <label className="block text-sm font-medium text-gray-700 mb-1">
+//               Rating (1 to 5)
+//             </label>
+//             <select
+//               name="ratings"
+//               value={formData.ratings}
+//               onChange={handleChange}
+//               required
+//               className="w-full px-4 py-2 bg-white border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+//             >
+//               <option value="" disabled>Select Rating</option>
+//               {[1, 2, 3, 4, 5].map((rating) => (
+//                 <option key={rating} value={rating.toString()}>{rating}</option>
+//               ))}
+//             </select>
+//           </div>
+
+//           {/* Image Upload */}
+//           <div>
+//             <label className="block text-sm font-medium text-gray-700 mb-2">
+//               Image Upload
+//             </label>
+//             <div className="mt-1 flex items-center space-x-4">
+//               {formData.image ? (
+//                 <div className="relative w-32 h-32 border border-gray-200 rounded-md overflow-hidden">
+//                   <Image
+//                     src={formData.image}
+//                     alt="Testimonial image"
+//                     layout="fill"
+//                     objectFit="cover"
+//                   />
+//                 </div>
+//               ) : (
+//                 <div className="w-32 h-32 border-2 border-dashed border-gray-300 rounded-md flex items-center justify-center">
+//                   <span className="text-gray-500">No image</span>
+//                 </div>
+//               )}
+              
+//               <button
+//                 type="button"
+//                 onClick={() => setShowUploadPopup(true)}
+//                 className="px-4 py-2 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 flex items-center"
+//               >
+//                 <Upload size={18} className="mr-2" />
+//                 <span>{formData.image ? "Change Image" : "Upload Image"}</span>
+//               </button>
+//             </div>
+//           </div>
+
+//           {/* Submit Button */}
+//           <div className="flex justify-end mt-4">
+//             <button
+//               type="submit"
+//               disabled={loading}
+//               className={` bg-[#4f507f] text-white py-2 px-4 rounded-md hover:bg-[#3e3f63] transition-colors duration-300 ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+//             >
+//               {loading ? "Submitting..." : "Add Testimonial"}
+//             </button>
+//           </div>        </form>
+//       </div>
+
+//       {/* Upload Popup Component */}
+//       {showUploadPopup && (
+//         <UploadPopup
+//           onSuccess={handleImageUpload}
+//           onClose={() => setShowUploadPopup(false)}
+//         />
+//       )}
+//     </div>
+//   );
+// };
+
+// export default TestimonialForm;

@@ -7,7 +7,7 @@ import { NextAuthConfig } from "next-auth";
 import bcryptjs from "bcryptjs";
 
 const homeRoute = ["/", "/feature", "/pricing", "/contact"];
-const authRoute = ["/signIn", "/signUp"];
+const authRoute = ["/signin", "/signup"];
 
 export default {
   providers: [
@@ -31,13 +31,13 @@ export default {
           throw new CredentialsSignin({ cause: "Required fields missing" });
         }
 
-        console.log("✅ Validation Passed:", data);
+        // console.log("✅ Validation Passed:", data);
 
         const user = await prisma.user.findUnique({
           where: { mobile_no: data.mobileNumber },
         });
 
-        console.log("🔍 User Found:", user);
+        // console.log("🔍 User Found:", user);
 
         if (!user) {
           console.error("❌ User Not Found");
@@ -57,8 +57,8 @@ export default {
           });
         }
 
-        const isPasswordValid = bcryptjs.compare(data.password, user.password);
-        console.log("🔐 Password Check:", isPasswordValid);
+        const isPasswordValid = await bcryptjs.compare(data.password, user.password);
+        // console.log("🔐 Password Check:", isPasswordValid);
 
         if (!isPasswordValid) {
           console.error("❌ Invalid Password");
@@ -67,21 +67,21 @@ export default {
           });
         }
 
-        console.log("✅ Authentication Successful");
+        // console.log("✅ Authentication Successful");
         return user;
       },
     }),
   ],
 
   pages: {
-    signIn: "/signIn",
+    signIn: "/signin",
   },
 
   callbacks: {
     authorized({ request: { nextUrl }, auth }:any) {
       const isLoggedIn = !!auth?.user;
-      console.log(auth);
-      console.log(isLoggedIn);
+      // console.log(auth);
+      // console.log(isLoggedIn);
       const { pathname } = nextUrl;
 
       // Allow access to the home route for all users
@@ -99,8 +99,8 @@ export default {
     },
 
     jwt({ token, user }: any) {
-      console.log("🔵 Generating JWT Token...");
-      console.log("🔹 User Data:", user);
+      // console.log("🔵 Generating JWT Token...");
+      // console.log("🔹 User Data:", user);
 
       if (user) {
         token.id = user.id;
@@ -109,26 +109,24 @@ export default {
         token.role = process.env.ADMIN_NUMBERS?.split(",").includes(user.mobile_no) ? "admin" : "user"; // Store user role
       }
 
-      console.log("✅ Token Created:", token);
+      // console.log("✅ Token Created:", token);
       return token;
     },
 
     session({ session, token }: any) {
-      console.log("🔄 Creating Session...");
-      console.log("🔹 Token Data:", token);
+      // console.log("🔄 Creating Session...");
+      // console.log("🔹 Token Data:", token);
 
-      session.user.id = token.id;
-      session.user.image = token.picture;
-      session.user.mobile_no = token.mobile_no;
-      session.user.role = process.env.ADMIN_NUMBERS?.split(",").includes(token.mobile_no) ? "admin" : "user"; 
-
-      console.log("✅ Session Created:", session);
+      if (session.user) {
+        session.user.id = token.id;
+        session.user.image = token.picture;
+        session.user.mobile_no = token.mobile_no;
+        session.user.role = token.role as "admin" | "user"; 
+      }
+      return session;
+      // console.log("✅ Session Created:", session);
 
       // 🚀 Redirect users to "/" after signing in
-      return {
-        ...session,
-        redirect: "/",
-      };
     },
   },
 } satisfies NextAuthConfig;
