@@ -76,6 +76,17 @@ export default {
   pages: {
     signIn: "/signin",
   },
+  cookies: {
+    sessionToken: {
+      name: '__Secure-next-auth.session-token',
+      options: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', // Secure in production
+        sameSite: 'none', // Required for cross-site requests
+        path: '/',
+      }
+    }
+  },
 
   callbacks: {
     authorized({ request: { nextUrl }, auth }) {
