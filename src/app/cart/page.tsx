@@ -270,9 +270,11 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                <button className="w-full bg-[#c2e53a] text-black text-xl font-montserrat rounded-xl py-3 font-semibold mt-6 uppercase">
-                  Checkout
-                </button>
+                <Link href={"/checkout"}>
+                  <button className="w-full bg-[#c2e53a] text-black text-xl font-montserrat rounded-xl py-3 font-semibold mt-6 uppercase">
+                    Checkout
+                  </button>
+                </Link>
               </div>
             </div>
           </div>
@@ -326,9 +328,11 @@ export default function CartPage() {
                   <span>₹{total}</span>
                 </div>
 
-                <Button className="w-full h-12 bg-[#CCFF00] text-black hover:bg-[#CCFF00]/90 font-bold">
-                  CHECKOUT
-                </Button>
+                <Link href={"/checkout"}>
+                  <Button className="w-full h-12 bg-[#CCFF00] text-black hover:bg-[#CCFF00]/90 font-bold">
+                    CHECKOUT
+                  </Button>
+                </Link>
               </div>
             </div>
           ) : (
@@ -345,9 +349,11 @@ export default function CartPage() {
                 >
                   <Plus className="w-5 h-5" />
                 </Button>
-                <Button className="h-12 bg-[#CCFF00] text-black hover:bg-[#CCFF00]/90 font-bold px-8">
-                  CHECKOUT
-                </Button>
+                <Link href={"/checkout"}>
+                  <Button className="h-12 bg-[#CCFF00] text-black hover:bg-[#CCFF00]/90 font-bold px-8">
+                    CHECKOUT
+                  </Button>
+                </Link>
               </div>
             </div>
           )}
