@@ -2,19 +2,13 @@
 
 import Navbar from "@/components/Navbar";
 import { useCart } from "@/context/CartContext";
-import { AddressApi } from "@/lib/api/address";
+import { Address, AddressApi } from "@/lib/api/address";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { PiPencilSimple } from "react-icons/pi";
 
-interface Address {
-  id: string;
-  name: string;
-  details: string;
-  isSelected: boolean;
-}
 
 const Checkout: React.FC = () => {
   const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
@@ -22,15 +16,14 @@ const Checkout: React.FC = () => {
   const { cart } = useCart();
 
   // Fetch addresses from API
-  const { data: addresses, isLoading, isError } = useQuery({
+  const { data: addresses } = useQuery({
     queryKey: ["address"],
     queryFn: async ()  => {
       const rawAddress = await AddressApi.getAddress();
-      return rawAddress.map((addr: any) => ({
+      return rawAddress.map((addr: Address) => ({
         id: addr.id,
         name: "Home", // Static name for now
         details: `${addr.street}, ${addr.city}, ${addr.state}, ${addr.country} - ${addr.zipCode}`,
-        isSelected: addr.isSelected || true,
       }));
     },
   });
@@ -43,15 +36,10 @@ const Checkout: React.FC = () => {
 
   // Sync selected address with fetched data
   useEffect(() => {
-    if (addresses && addresses.length > 0) {
-      const selected = addresses.find((address) => address.isSelected);
-      if (selected) {
-        setSelectedAddress(selected.id);
-      } else {
-        setSelectedAddress(addresses[0].id); // Default to first address
-      }
+    if (addresses && addresses.length > 0 && !selectedAddress) {
+      setSelectedAddress(addresses[0].id); // Only set default if no address is selected
     }
-  }, [addresses]);
+  }, [addresses, selectedAddress]);
 
   const selectAddress = (id: string) => {
     setSelectedAddress(id);

@@ -1,12 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Package, AlertTriangle, TrendingUp, TrendingDown, Box } from "lucide-react";
+import { AlertTriangle, TrendingUp, TrendingDown, Box } from "lucide-react";
 import Link from "next/link";
 import { inventoryApi } from "@/lib/api/inventory";
 
 export function InventoryAlerts() {
-  const [totalProducts, setTotalProducts] = useState(0);
   const [lowStockItems, setLowStockItems] = useState(0);
   const [outOfStock, setOutOfStock] = useState(0);
   const [inStock, setInStock] = useState(0);
@@ -18,8 +17,6 @@ export function InventoryAlerts() {
 
   useEffect(() => {
     if (inve) {
-      console.log("Data received:", inve); // Log the received data
-      setTotalProducts(inve.totalProducts);
       setLowStockItems(inve.lowStockItems);
       setOutOfStock(inve.outOfStock);
       setInStock(inve.restockAlerts); // assuming restockAlerts indicates In Stock
