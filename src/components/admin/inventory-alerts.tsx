@@ -1,41 +1,97 @@
-import Link from "next/link"
-import { AlertTriangle } from "lucide-react"
+"use client";
+import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Package, AlertTriangle, TrendingUp, TrendingDown, Box } from "lucide-react";
+import Link from "next/link";
+import { inventoryApi } from "@/lib/api/inventory";
 
 export function InventoryAlerts() {
-  const alerts = [
-    { product: "Product A", stock: 5, threshold: 10 },
-    { product: "Product B", stock: 3, threshold: 15 },
-    { product: "Product C", stock: 8, threshold: 20 },
-    { product: "Product D", stock: 2, threshold: 5 },
-  ]
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [lowStockItems, setLowStockItems] = useState(0);
+  const [outOfStock, setOutOfStock] = useState(0);
+  const [inStock, setInStock] = useState(0);
+
+  const { data:inve, isLoading } = useQuery({
+    queryKey: ["inventoryOverview"],
+    queryFn: inventoryApi.getInventoryOverview,
+  });
+
+  useEffect(() => {
+    if (inve) {
+      console.log("Data received:", inve); // Log the received data
+      setTotalProducts(inve.totalProducts);
+      setLowStockItems(inve.lowStockItems);
+      setOutOfStock(inve.outOfStock);
+      setInStock(inve.restockAlerts); // assuming restockAlerts indicates In Stock
+    }
+  }, [inve]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!inve) {
+    return <div>No data</div>;
+  }
+
+  const metrics = [
+   
+    {
+      title: "Low Stock Items",
+      value: lowStockItems,
+      icon: AlertTriangle,
+      bgColor: "bg-[#fff5e6]",
+      iconColor: "text-[#d97706]",
+    },
+    {
+      title: "Out of Stock",
+      value: outOfStock,
+      icon: TrendingDown,
+      bgColor: "bg-[#ffe6e6]",
+      iconColor: "text-[#ff4d4d]",
+    },
+    {
+      title: "In Stock",
+      value: inStock,
+      icon: TrendingUp,
+      bgColor: "bg-[#e6fdf1]",
+      iconColor: "text-[#4fc48a]",
+    },
+  ];
 
   return (
-    <div className="bg-white rounded-lg p-6 shadow-sm">
-      <h2 className="text-lg font-medium mb-4 text-[#4f507f]">Inventory Alerts</h2>
-      <div className="space-y-4">
-        {alerts.map((alert, index) => (
-          <div key={index} className="flex items-center justify-between p-3 bg-red-50 rounded-md">
-            <div className="flex items-center gap-3">
-              <AlertTriangle size={20} className="text-red-500" />
-              <div>
-                <p className="font-medium text-gray-900">{alert.product}</p>
-                <p className="text-sm text-gray-500">
-                  Stock: {alert.stock} (Threshold: {alert.threshold})
-                </p>
-              </div>
+    <div className="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300">
+      <h2 className="text-xl font-semibold mb-6 text-[#4f507f] border-b pb-3">
+        Inventory Overview
+      </h2>
+      <div className="grid grid-cols-2 gap-6">
+        {metrics.map((metric, index) => (
+          <div
+            key={index}
+            className="flex items-center gap-4 p-4 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+          >
+            <div className={`p-4 ${metric.bgColor} rounded-xl shadow-sm`}>
+              <metric.icon size={28} className={metric.iconColor} />
             </div>
-            <Link href={`/admin/products/edit/${index}`} className="text-[#4f507f] hover:underline text-sm">
-              Update Stock
-            </Link>
+            <div>
+              <p className="text-sm font-medium text-gray-500">{metric.title}</p>
+              <p className="text-2xl font-bold text-gray-800">{metric.value}</p>
+            </div>
           </div>
         ))}
-      </div>
-      <div className="mt-4">
-        <Link href="/admin/products/inventory" className="text-[#4f507f] hover:underline text-sm">
-          View all inventory
+        <Link
+          href="/admin/inventory"
+          className="flex items-center gap-4 p-4 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+        >
+          <div className="p-4 bg-[#e6f3ff] rounded-xl shadow-sm">
+            <Box size={28} className="text-[#3b82f6]" />
+          </div>
+          <div>
+            <p className="text-sm font-medium text-gray-500">View All</p>
+            <p className="text-2xl font-bold text-gray-800">Inventory</p>
+          </div>
         </Link>
       </div>
     </div>
-  )
+  );
 }
-

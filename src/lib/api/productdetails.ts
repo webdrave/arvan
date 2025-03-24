@@ -55,7 +55,7 @@ export const productApi = {
   getDashBoardOverview: async (): Promise<{
     totalProducts: number;
     revenue: number,
-    growth: number,
+    growth: string,
     usersCount: number
   }> => {
     const response = await apiClient.get("/api/products/overview");
