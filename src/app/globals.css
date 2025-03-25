@@ -119,7 +119,15 @@ body.admin-panel {
 
 @media (width: 1024px) {
   .shop {
-    height: 40vh;
+    height: 40vh !important;
+  }
+
+  .clippath1 {
+    display: none !important;
+  }
+
+  .mainText {
+    font-size: 20vw !important;
   }
 }
 

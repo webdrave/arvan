@@ -30,22 +30,17 @@ const HorizontalScroll = () => {
     {
       image: "/slides/11.png",
       heading: "Haunted Skull",
-      para: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Non facere fuga sed tempora ratione quis et nostrum hic mollitia animi.",
+      para: "Step into the bold with Haunted Skull Slides – crafted for comfort and designed to turn heads.",
     },
     {
-      image: "/TheArvan.svg",
-      heading: "THE ARVAN",
-      para: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Non facere fuga sed tempora ratione quis et nostrum hic mollitia animi.",
-    },
-    {
-      image: "/slideImg.svg",
-      heading: "Jungle Walker",
-      para: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Non facere fuga sed tempora ratione quis et nostrum hic mollitia animi.",
+      image: "/shoe5.png",
+      heading: "Cube",
+      para: "Elevate your style with the Cube Slides – a perfect fusion of futuristic design and everyday comfort.",
     },
     {
       image: "/slides/10.png",
       heading: "Red Dragon",
-      para: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Non facere fuga sed tempora ratione quis et nostrum hic mollitia animi.",
+      para: "A fierce blend of style and comfort, the Red Dragon slides feature a striking emblem on a sleek black base.",
     },
   ];
 
@@ -82,21 +77,30 @@ const HorizontalScroll = () => {
       //@ts-expect-error: Property 'offsetWidth' does not exist on type 'HTMLElement'.
       const totalWidth = innerDivRef?.current?.offsetWidth - window.innerWidth;
 
-      // Main horizontal scroll timeline
+      // Modified ScrollTrigger configuration
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: wrapperRef.current,
           pin: true,
-          scrub: 1,
+          anticipatePin: 1,
           start: "top top",
           end: `+=${totalWidth}`,
+          scrub: true,
           invalidateOnRefresh: true,
+          pinSpacing: true,
+          fastScrollEnd: true,
         },
       });
 
       tl.to(innerDivRef.current, {
         x: -totalWidth,
         ease: "none",
+      });
+
+      // Make scroll restoration smoother
+      ScrollTrigger.normalizeScroll(true);
+      ScrollTrigger.config({
+        autoRefreshEvents: "visibilitychange,DOMContentLoaded,load",
       });
 
       // Heading animations
@@ -209,7 +213,10 @@ const HorizontalScroll = () => {
       };
     });
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+      ScrollTrigger.normalizeScroll(false);
+    };
   }, [isMobile]);
 
   // Mobile setup - initialize positions
@@ -400,7 +407,7 @@ const HorizontalScroll = () => {
       <div className={`${isMobile ? "hidden" : "block"}`}>
         <div
           ref={wrapperRef}
-          className="wrapper relative w-screen h-screen  overflow-hidden"
+          className="wrapper relative w-screen h-screen font-montserrat  overflow-hidden"
         >
           <GridBackground />
 
@@ -422,6 +429,7 @@ const HorizontalScroll = () => {
                       width={1000}
                       height={500}
                       priority={index < 2}
+                      className={`${index > 0 && "pb-[10%]"}`}
                       loading={index < 2 ? "eager" : "lazy"}
                     />
                   </div>
@@ -490,13 +498,13 @@ const HorizontalScroll = () => {
       <div
         className={`${
           isMobile ? "block" : "hidden"
-        } relative w-screen min-h-screen   overflow-hidden`}
+        } relative w-screen min-h-screen font-montserrat  overflow-hidden`}
       >
         <GridBackground />
         <div className="relative ">
           <div
             ref={mobileInnerRef}
-            className="mobile-inner relative z-10 flex  flex-nowrap will-change-transform transform-gpu h-full"
+            className="mobile-inner relative z-10 flex   flex-nowrap will-change-transform transform-gpu h-full"
             style={{ width: `${slides.length * 100}vw` }}
           >
             {slides.map((slide, index) => (
@@ -510,6 +518,7 @@ const HorizontalScroll = () => {
                     alt={`Slide image ${index + 1}`}
                     width={1000}
                     height={500}
+                    className={`${index > 0 && "pb-[10%]"}`}
                     priority={index === activeSlide}
                   />
                 </div>
@@ -531,7 +540,7 @@ const HorizontalScroll = () => {
                   height: "10vh",
                 }}
               >
-                <span className="text-[12vw] md:text-[8vw] font-bold text-white tracking-widest whitespace-nowrap">
+                <span className="text-[10vw] px-2 md:text-[8vw] font-bold text-white tracking-widest whitespace-nowrap">
                   {slide.heading}
                 </span>
               </div>
