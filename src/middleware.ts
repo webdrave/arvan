@@ -9,6 +9,7 @@ const authRoutes = ['/signin', '/signup', '/otp', '/new-password', '/forgot-pass
 
 const { auth } = NextAuth(authConfig);
 
+
 export default auth(async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const session = (await auth()) as any;

@@ -9,13 +9,13 @@ import { useEffect, useState } from "react";
 export function ProductOverview() {
 
   const [totalProducts, setTotalProducts] = useState(0);
-  const [totalSales, setTotalSales] = useState(0);
+  const [totalSales, setTotalSales] = useState("0%");
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [totalCustomers, setTotalCustomers] = useState(0);
 
 
   const { data } = useQuery({
-    queryKey: ["inventoryOverview"],
+    queryKey: ["ProductOverview"],
     queryFn: productApi.getDashBoardOverview,
   });
 
@@ -29,51 +29,50 @@ export function ProductOverview() {
   }, [data]);
 
   return (
-    <div className="bg-white rounded-lg p-6 shadow-sm">
-      <h2 className="text-lg font-medium mb-4 text-[#4f507f]">Product Overview</h2>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="flex items-center gap-3">
-          <div className="p-3 bg-[#edeefc] rounded-full">
-            <Package size={24} className="text-[#4f507f]" />
+    <div className="bg-white rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300">
+      <h2 className="text-xl font-semibold mb-6 text-[#4f507f] border-b pb-3">Product Overview</h2>
+      <div className="grid grid-cols-2 gap-6">
+        <div className="flex items-center gap-4 p-4 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+          <div className="p-4 bg-[#edeefc] rounded-xl shadow-sm">
+            <Package size={28} className="text-[#4f507f]" />
           </div>
           <div>
-            <p className="text-sm text-gray-500">Total Products</p>
-            <p className="text-xl font-semibold">{totalProducts}</p>
+            <p className="text-sm font-medium text-gray-500">Total Products</p>
+            <p className="text-2xl font-bold text-gray-800">{totalProducts}</p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="p-3 bg-[#e6f1fd] rounded-full">
-            <DollarSign size={24} className="text-[#7094f4]" />
+        <div className="flex items-center gap-4 p-4 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+          <div className="p-4 bg-[#e6f1fd] rounded-xl shadow-sm">
+            <DollarSign size={28} className="text-[#7094f4]" />
           </div>
           <div>
-            <p className="text-sm text-gray-500">Revenue</p>
-            <p className="text-xl font-semibold">{totalRevenue}</p>
+            <p className="text-sm font-medium text-gray-500">Revenue</p>
+            <p className="text-2xl font-bold text-gray-800">{totalRevenue}</p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="p-3 bg-[#e6fdf1] rounded-full">
-            {totalSales >= 0 ? (
-              <TrendingUp size={24} className="text-[#4fc48a]" />
+        <div className="flex items-center gap-4 p-4 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+          <div className="p-4 bg-[#e6fdf1] rounded-xl shadow-sm">
+            {parseFloat(totalSales.split("%")[0]) >= 0 ? (
+              <TrendingUp size={28} className="text-[#4fc48a]" />
             ) : (
-              <TrendingDown size={24} className="text-[#ff4d4d]" />
+              <TrendingDown size={28} className="text-[#ff4d4d]" />
             )}
           </div>
           <div>
-            <p className="text-sm text-gray-500">Growth</p>
-            <p className="text-xl font-semibold">{totalSales}%</p>
+            <p className="text-sm font-medium text-gray-500">Growth</p>
+            <p className="text-2xl font-bold text-gray-800">{totalSales}</p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="p-3 bg-[#fdf1e6] rounded-full">
-            <Users size={24} className="text-[#f4a970]" />
+        <div className="flex items-center gap-4 p-4 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+          <div className="p-4 bg-[#fdf1e6] rounded-xl shadow-sm">
+            <Users size={28} className="text-[#f4a970]" />
           </div>
           <div>
-            <p className="text-sm text-gray-500">Users</p>
-            <p className="text-xl font-semibold">{totalCustomers}</p>
+            <p className="text-sm font-medium text-gray-500">Users</p>
+            <p className="text-2xl font-bold text-gray-800">{totalCustomers}</p>
           </div>
         </div>
       </div>
     </div>
   )
 }
-

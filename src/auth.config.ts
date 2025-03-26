@@ -139,8 +139,6 @@ export default {
 ,    
 
     jwt({ token, user }: any) {
-    
-    
 
       if (user) {
         token.id = user.id;
@@ -148,12 +146,12 @@ export default {
         token.mobile_no = user.mobile_no;
         token.role = user.role; // Store user role
       }
-
-    
       return token;
     },
 
     session({ session, token }: any) {
+      console.log("🔄 Creating Session...");
+      console.log("🔹 Token Data:", token);
 
       if (session.user) {
         session.user.id = token.id;
@@ -161,10 +159,24 @@ export default {
         session.user.mobile_no = token.mobile_no;
         session.user.role = token.role as "admin" | "user"; 
       }
+      console.log("✅ Session Created:", session);
+
       return session;
-      // console.log("✅ Session Created:", session);
 
       // 🚀 Redirect users to "/" after signing in
     },
   },
+
+  secret: process.env.NEXTAUTH_SECRET,
+  cookies: {
+    sessionToken: {
+      name: `__Secure-next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "none",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
+    },
+  }
 } satisfies NextAuthConfig;

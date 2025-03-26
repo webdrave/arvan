@@ -2,6 +2,7 @@
 import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { Eye, Mail, Phone } from "lucide-react"
+import { apiClient } from "@/lib/axiosClient"
 
 interface Customer {
   id: string
@@ -19,16 +20,8 @@ export function CustomerTable() {
   const { data: customers, isLoading, error } = useQuery({
     queryKey: ["customers"],
     queryFn: async () => {
-      const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/customers/allcustomers`;
-      if (!url) {
-        throw new Error("NEXT_PUBLIC_BACKEND_URL is not defined");
-      }
-
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error("Failed to fetch customers");
-      }
-      return response.json();
+      const response = await apiClient.get("/api/customers/allcustomers");
+      return response.data;
     },
   });
 

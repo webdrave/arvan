@@ -8,6 +8,8 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Navigation, Pagination } from "swiper/modules";
+import { apiClient } from "@/lib/axiosClient";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Testimonials() {
   const prevRef = useRef(null);
@@ -21,29 +23,19 @@ export default function Testimonials() {
   }
 
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
-
-  const [isLoading , setIsLoading] = useState<boolean>(true); 
+  const {data, isLoading} = useQuery({
+    queryKey: ["testimonials"],
+    queryFn: async () => {
+      const response = await apiClient.get("/api/testimonials");
+      return response.data.testimonials;
+    }
+  });
 
   useEffect(() => {
-    const fetchTestimonials = async () => {
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/testimonials`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch testimonials");
-        }
-        const data = await response.json();
-        setTestimonials(data.testimonials);
-        console.log(data.testimonials);
-      } catch (error) {
-        console.error("Error fetching testimonials:", error);
-      }
-      finally{
-        setIsLoading(false);
-      }
-    };
-
-    fetchTestimonials();
-  }, []);
+    if (data) {
+      setTestimonials(data);
+    }
+  }, [data]);
 
   if (isLoading) {
     return (

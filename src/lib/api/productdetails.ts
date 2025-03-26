@@ -10,7 +10,8 @@ export const productApi = {
   getProducts: async (
     currentPage: number,
     itemsPerPage: number,
-    debouncedSearchTerm: string
+    debouncedSearchTerm: string,
+    status?: string
   ): Promise<{
     success: boolean,
     products: Products[];
@@ -26,11 +27,11 @@ export const productApi = {
         page: currentPage,
         limit: itemsPerPage,
         search: debouncedSearchTerm,
+        ...(status && { status }),
       },
     });
     return response.data;
   },
-
   getById: async (id: string): Promise<Products> => {
     const response = await apiClient.get(`/api/products/${id}`);
     return response.data.product;
@@ -55,7 +56,7 @@ export const productApi = {
   getDashBoardOverview: async (): Promise<{
     totalProducts: number;
     revenue: number,
-    growth: number,
+    growth: string,
     usersCount: number
   }> => {
     const response = await apiClient.get("/api/products/overview");

@@ -66,7 +66,7 @@ export default function ProductPage() {
     search?: string;
   }) => {
     const limit = 10;
-    const response = await productApi.getProducts(pageParam, limit, search);
+    const response = await productApi.getProducts(pageParam, limit, search, "PUBLISHED");
 
     return response;
   };

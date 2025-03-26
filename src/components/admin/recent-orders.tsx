@@ -1,48 +1,93 @@
+"use client";
+import { apiClient } from "@/lib/axiosClient";
+import { useQuery } from "@tanstack/react-query";
 import Link from "next/link"
+import { useEffect, useState } from "react";
+
 
 export function RecentOrders() {
-  const orders = [
-    { id: "1234", customer: "John Doe", total: 99.99, status: "Pending" },
-    { id: "1235", customer: "Jane Smith", total: 149.99, status: "Shipped" },
-    { id: "1236", customer: "Bob Johnson", total: 79.99, status: "Delivered" },
-    { id: "1237", customer: "Alice Brown", total: 199.99, status: "Pending" },
+  const oldorders = [
+    { id: "1234", customer: "John Doe", total: 99.99, status: "Pending" }
   ]
 
+  const [orders, setOrders] = useState(oldorders);
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["orders"],
+    queryFn: () => apiClient.get("/api/orders?limit=5"),
+    refetchInterval: 5000,
+  })
+
+  useEffect(() => {
+    if (data) {
+      setOrders(data.data.orders);
+    }
+  }, [data]);
+
+  
+
+  if (isError) {
+    return (
+      <div className="bg-white rounded-lg p-6 shadow-sm min-h-[400px] flex items-center justify-center text-red-500">
+        Error fetching data. Please try again later.
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-white rounded-lg p-6 shadow-sm">
-      <h2 className="text-lg font-medium mb-4 text-[#4f507f]">Recent Orders</h2>
-      <div className="overflow-x-auto">
+    <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-semibold text-[#4f507f]">Recent Orders</h2>
+        <Link href="/admin/orders" className="text-[#4f507f] hover:text-[#6365a3] transition-colors duration-200 text-sm font-medium">
+          View all orders →
+        </Link>
+      </div>
+      <div className="overflow-x-auto rounded-lg border border-gray-200">
         <table className="min-w-full divide-y divide-gray-200">
-          <thead>
+          <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Order ID
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Customer
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                Total
+              </th>
+              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                Status
+              </th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {orders.map((order) => (
-              <tr key={order.id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{order.id}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{order.customer}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${order.total.toFixed(2)}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{order.status}</td>
+            {isLoading || orders.length === 0 && (
+              <tr className="hover:bg-gray-50 transition-colors duration-200">
+                <td colSpan={4} className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  No orders found.
+                </td>
+              </tr>
+            )}
+
+            {!isLoading && orders.map((order) => (
+              <tr key={order.id} className="hover:bg-gray-50 transition-colors duration-200">
+                <td className="px-6 py-2 whitespace-nowrap text-sm font-medium text-[#4f507f]">#{order.id}</td>
+                <td className="px-6 py-2 whitespace-nowrap text-sm text-gray-700">{order.customer}</td>
+                <td className="px-6 py-2 whitespace-nowrap text-sm text-gray-700">${order.total.toFixed(2)}</td>
+                <td className="px-6 py-2 whitespace-nowrap">
+                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    order.status === "Delivered" ? "bg-green-100 text-green-800" :
+                    order.status === "Shipped" ? "bg-blue-100 text-blue-800" :
+                    "bg-yellow-100 text-yellow-800"
+                  }`}>
+                    {order.status}
+                  </span>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <div className="mt-4">
-        <Link href="/admin/orders" className="text-[#4f507f] hover:underline text-sm">
-          View all orders
-        </Link>
-      </div>
     </div>
   )
 }
-
