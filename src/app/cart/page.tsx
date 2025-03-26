@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { X, Plus, Minus, ArrowLeft } from "lucide-react";
 import Navigation from "@/components/navigation";
 import { useCart } from "@/context/CartContext";
+import { useRouter } from "next/navigation";
 
 // Sample cart data
 // const initialCartItems = [
@@ -54,6 +55,8 @@ export default function CartPage() {
   const [showSummary, setShowSummary] = useState(false);
 
   const { cart, updateQuantity, removeFromCart } = useCart();
+
+  const router = useRouter();
 
   const subtotal =
     cart && cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -270,11 +273,13 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                <Link href={"/checkout"}>
-                  <button className="w-full bg-[#c2e53a] text-black text-xl font-montserrat rounded-xl py-3 font-semibold mt-6 uppercase">
-                    Checkout
-                  </button>
-                </Link>
+                <Button
+                  className="w-full bg-[#c2e53a] text-black text-xl font-montserrat rounded-lg py-3 font-semibold mt-6 uppercase cursor-pointer hover:bg-[#aecc34]"
+                  disabled={total === 0}
+                  onClick={() => router.push("/checkout")}
+                >
+                  Checkout
+                </Button>
               </div>
             </div>
           </div>
@@ -327,12 +332,13 @@ export default function CartPage() {
                   <span>Total</span>
                   <span>₹{total}</span>
                 </div>
-
-                <Link href={"/checkout"}>
-                  <Button className="w-full h-12 bg-[#CCFF00] text-black hover:bg-[#CCFF00]/90 font-bold">
-                    CHECKOUT
-                  </Button>
-                </Link>
+                <Button
+                  disabled={total === 0}
+                  className="w-full h-12 bg-[#CCFF00] text-black hover:bg-[#CCFF00]/90 font-bold"
+                  onClick={() => router.push("/checkout")}
+                >
+                  CHECKOUT
+                </Button>
               </div>
             </div>
           ) : (
@@ -349,11 +355,13 @@ export default function CartPage() {
                 >
                   <Plus className="w-5 h-5" />
                 </Button>
-                <Link href={"/checkout"}>
-                  <Button className="h-12 bg-[#CCFF00] text-black hover:bg-[#CCFF00]/90 font-bold px-8">
-                    CHECKOUT
-                  </Button>
-                </Link>
+                <Button
+                  disabled={total === 0}
+                  className="h-12 bg-[#CCFF00] text-black hover:bg-[#CCFF00]/90 font-bold px-8"
+                  onClick={() => router.push("/checkout")}
+                >
+                  CHECKOUT
+                </Button>
               </div>
             </div>
           )}
