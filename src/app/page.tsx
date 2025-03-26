@@ -21,7 +21,9 @@ export default function Home() {
       <Section2></Section2>
       <NewArrivals></NewArrivals>
       <BestSellers></BestSellers>
-      <WhoWeAre></WhoWeAre>
+      <section className="mt-20">
+        <WhoWeAre></WhoWeAre>
+      </section>
       <ShopNowAt></ShopNowAt>
       <Testimonials></Testimonials>
       <ContactForm></ContactForm>

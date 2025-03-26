@@ -207,7 +207,7 @@ const Checkout: React.FC = () => {
               <div className="space-y-4">
                 <div className="flex justify-between">
                   <span className="text-gray-300">Subtotal</span>
-                  <span>₹{subtotal}</span>
+                  <span>₹{subtotal?.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-300">Shipping</span>
@@ -215,12 +215,12 @@ const Checkout: React.FC = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-300">Tax (18%)</span>
-                  <span>₹{tax.toFixed(2)}</span>
+                  <span>₹{tax?.toFixed(2)}</span>
                 </div>
                 <hr className="border-gray-600" />
                 <div className="flex justify-between font-bold text-lg">
                   <span>Total</span>
-                  <span>₹{total.toFixed(2)}</span>
+                  <span>₹{total?.toFixed(2)}</span>
                 </div>
               </div>
               <button

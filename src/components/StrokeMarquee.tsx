@@ -46,7 +46,7 @@ const StrokeMarquee: React.FC<StrokeMarqueeProps> = ({
           {[...Array(4)].map((_, i) => (
             <h1
               key={i}
-              className="marquee-stroke text-[15vw] sm:text-[10vw] md:text-[6vw] leading-none font-semibold  uppercase pr-1"
+              className="marquee-stroke text-[15vw] sm:text-[10vw] md:text-[6vw] leading-none font-semibold transform-gpu   uppercase pr-1"
               style={{
                 WebkitTextStroke: `${StrokeColor}`,
                 color: "transparent",
