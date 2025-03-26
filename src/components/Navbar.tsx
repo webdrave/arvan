@@ -29,11 +29,11 @@ const Navbar = () => {
     },
     {
       name: "About",
-      href: "/",
+      href: "/about",
     },
     {
       name: "Contact",
-      href: "/",
+      href: "/contact",
     },
   ];
 

@@ -237,12 +237,12 @@ export default function CartPage() {
               <div className="space-y-4">
                 <div className="flex justify-between">
                   <span className="text-gray-300">Subtotal</span>
-                  <span>₹{subtotal}</span>
+                  <span>₹{subtotal.toFixed(2)}</span>
                 </div>
 
                 <div className="flex justify-between">
                   <span className="text-gray-300">Tax</span>
-                  <span>₹{tax}</span>
+                  <span>₹{tax.toFixed(2)}</span>
                 </div>
 
                 <div className="flex justify-between">
@@ -266,7 +266,7 @@ export default function CartPage() {
                 <div className="pt-4 border-t border-gray-700 mt-6">
                   <div className="flex justify-between font-bold">
                     <span>Total</span>
-                    <span>₹{total}</span>
+                    <span>₹{total.toFixed(2)}</span>
                   </div>
                 </div>
 
@@ -297,12 +297,12 @@ export default function CartPage() {
               <div className="space-y-4">
                 <div className="flex justify-between">
                   <span className="text-gray-300">Subtotal</span>
-                  <span>₹{subtotal}</span>
+                  <span>₹{subtotal.toFixed(2)}</span>
                 </div>
 
                 <div className="flex justify-between">
                   <span className="text-gray-300">Tax</span>
-                  <span>₹{tax}</span>
+                  <span>₹{tax.toFixed(2)}</span>
                 </div>
 
                 <div className="flex justify-between">
@@ -325,7 +325,7 @@ export default function CartPage() {
 
                 <div className="flex justify-between pt-4 border-t border-gray-800 text-xl font-bold">
                   <span>Total</span>
-                  <span>₹{total}</span>
+                  <span>₹{total.toFixed(2)}</span>
                 </div>
 
                 <Link href={"/checkout"}>
@@ -339,7 +339,7 @@ export default function CartPage() {
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-sm text-gray-400">Total</div>
-                <div className="text-xl font-bold">₹{"total"}</div>
+                <div className="text-xl font-bold">₹{total.toFixed(2)}</div>
               </div>
               <div className="flex gap-2">
                 <Button

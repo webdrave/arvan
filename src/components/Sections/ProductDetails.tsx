@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Star, ShoppingCart } from "lucide-react";
+import { Star, ShoppingCart, Plus, Minus } from "lucide-react";
 import Image from "next/image";
 import ReviewWritings from "../reviewWriting";
 import { useQueries } from "@tanstack/react-query";
@@ -12,6 +12,7 @@ import Navigation from "../navigation";
 import BestSellers from "./bestSellers";
 import Footer from "../Footer";
 import { productReviewApi } from "@/lib/api/productreview";
+import toast from "react-hot-toast";
 
 const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
   const [showReviewModal, setShowReviewModal] = useState(false);
@@ -20,6 +21,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
   const [selectedImage, setSelectedImage] = useState("");
   const [images, setImages] = useState<string[]>([]);
   const [availableSizes, setAvailableSizes] = useState<string[]>([]);
+  const [quantity, setQuantity] = useState<number>(1);
   const { addToCart } = useCart();
 
   const handlecloseReviewModal = () => {
@@ -185,10 +187,10 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                         {productData.data.price}
                       </p>
                       <div className="text-black text-normal border font-montserrat  rounded-xl  bg-[#C2E53A] font-bold px-2">
-                        {((productData.data.price -
+                        {(((productData.data.price -
                           productData.data.discountPrice!) /
                           productData.data.price) *
-                          100}
+                          100).toFixed(2)}
                         %
                       </div>
                     </div>
@@ -280,25 +282,57 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                       <button className="w-full h-10 bg-[#c2e53a] rounded-xl text-black text-xl font-medium uppercase font-montserrat">
                         Buy Now
                       </button>
-                      <button
-                        className="w-full h-10 border border-[#c2e53a] text-white  text-sm md:text-xl font-normal uppercase font-montserrat flex items-center justify-center gap-2 rounded-xl"
-                        onClick={() => {
-                          addToCart({
-                            id: productData.data.id,
-                            name: productData.data.name,
-                            price: productData.data.discountPrice || productData.data.price,
-                            quantity: 1,
-                            color: selectedColor,
-                            size: selectedSize,
-                            asset : selectedImage  ,
-                            image: selectedImage,
-                            // stock: stockInfo?.stock || 0,
-                            material: productData.data.material,
-                          });
-                        }}
-                      >
-                        <ShoppingCart className="h-5 w-5" /> Add to Cart
-                      </button>
+                      <div className="w-full flex items-center  justify-center gap-1">
+                        <button
+                          className="border border-[#c2e53a] w-10 flex  items-center justify-center h-10 text-white rounded-lg"
+                          onClick={() => setQuantity((prev) => prev + 1)}
+                        >
+                          <Plus size={18} />
+                        </button>
+                        <button
+                          className="w-full h-10 border border-[#c2e53a] text-white  text-sm md:text-xl font-normal uppercase font-montserrat flex items-center justify-center gap-2 rounded-lg"
+                          onClick={() => {
+                            addToCart({
+                              id: productData.data.id,
+                              name: productData.data.name,
+                              price:
+                                productData.data.discountPrice ||
+                                productData.data.price,
+                              quantity: quantity,
+                              color: selectedColor,
+                              size: selectedSize,
+                              asset: selectedImage,
+                              image: selectedImage,
+                              // stock: stockInfo?.stock || 0,
+                              material: productData.data.material,
+                            });
+
+                            toast.success(
+                              `${productData.data.name} has been added to your cart.`,
+                              {
+                                duration: 2500,
+                              }
+                            );
+                          }}
+                        >
+                          <ShoppingCart className="h-5 w-5" /> Add to Cart :{" "}
+                          {quantity}
+                        </button>
+
+                        <button
+                          className="border border-[#c2e53a] w-10 flex  items-center justify-center h-10 text-white rounded-lg"
+                          onClick={() => {
+                            setQuantity((prev) => {
+                              if (prev === 1) {
+                                return 1;
+                              }
+                              return prev - 1;
+                            });
+                          }}
+                        >
+                          <Minus size={18} />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>

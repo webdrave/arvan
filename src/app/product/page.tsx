@@ -191,13 +191,13 @@ export default function ProductPage() {
       {/* Products Section */}
       <section className="container mx-auto px-4 py-16">
         <div className="flex justify-between items-center mb-8">
-          <h2 className="text-xl font-medium">All Products</h2>
-          <div className="grid grid-cols-1  md:grid-cols-2 gap-4">
+          <h2 className="text-md md:text-xl font-medium">All Products</h2>
+          <div className="flex items-center justify-end gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
-                  className="text-white border-white/20"
+                  className="text-white border-white/20 text-xs"
                 >
                   SORT BY:{" "}
                   {sortOptions.find((option) => option.value === sortBy)?.label}
@@ -220,10 +220,10 @@ export default function ProductPage() {
               <DialogTrigger asChild aria-describedby="Filter Trigger">
                 <Button
                   variant="outline"
-                  className="text-white border-white/20"
+                  className="text-white w-fit flex items-center justify-center border-white/20"
                 >
-                  <SlidersHorizontal className="w-4 h-4 mr-2" />
-                  FILTER {filters.priceRanges.length > 0 && "(Active)"}
+                  <SlidersHorizontal className="w-4 h-4 " />
+                  {/* {filters.priceRanges.length > 0 && "(Active)"} */}
                 </Button>
               </DialogTrigger>
               <DialogContent

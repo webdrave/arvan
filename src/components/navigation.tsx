@@ -1,3 +1,4 @@
+"use client"
 import Link from "next/link";
 import { Search, ShoppingCart, User } from "lucide-react";
 import Image from "next/image";
@@ -19,11 +20,11 @@ export default function Navigation() {
     },
     {
       name: "About",
-      href: "/",
+      href: "/about",
     },
     {
       name: "Contact",
-      href: "/",
+      href: "/contact",
     },
   ];
 
