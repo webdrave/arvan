@@ -6,8 +6,7 @@ import { CredentialsSignin } from "next-auth";
 import { NextAuthConfig } from "next-auth";
 import bcryptjs from "bcryptjs";
 
-const publicRoute = ["/", "/contact", "/product", "/about"];
-const authRoute = ["/signin", "/signup","/otp","/new-password","forgot-password"];
+
 
 
 
@@ -80,63 +79,63 @@ export default {
   },
 
   callbacks: {
-    authorized({ request: { nextUrl }, auth }: any) {
-      const isLoggedIn = !!auth?.user;
-      const { pathname } = nextUrl;
-      console.log("Authorize callback called with:");
-      console.log("Pathname:", pathname);
-      console.log("Auth:", auth);
-      console.log("isLoggedIn:", isLoggedIn);
+    // authorized({ request: { nextUrl }, auth }: any) {
+    //   const isLoggedIn = !!auth?.user;
+    //   const { pathname } = nextUrl;
+    //   console.log("Authorize callback called with:");
+    //   console.log("Pathname:", pathname);
+    //   console.log("Auth:", auth);
+    //   console.log("isLoggedIn:", isLoggedIn);
     
-      // 1. Admin routes: if the URL starts with "/admin"
-      if (pathname.startsWith("/admin")) {
-        console.log("Route starts with /admin");
-        if (!isLoggedIn) {
-          console.log("User not logged in; redirecting to /signIn");
-          return Response.redirect(new URL("/signIn", nextUrl));
-        }
-        if (auth.user.role !== "admin") {
-          console.log("User logged in but not admin; redirecting to /");
-          return Response.redirect(new URL("/", nextUrl));
-        }
-        console.log("Admin access granted");
-        return true; // Allow admin access
-      }
+    //   // 1. Admin routes: if the URL starts with "/admin"
+    //   if (pathname.startsWith("/admin")) {
+    //     console.log("Route starts with /admin");
+    //     if (!isLoggedIn) {
+    //       console.log("User not logged in; redirecting to /signIn");
+    //       return Response.redirect(new URL("/signIn", nextUrl));
+    //     }
+    //     if (auth.user.role !== "admin") {
+    //       console.log("User logged in but not admin; redirecting to /");
+    //       return Response.redirect(new URL("/", nextUrl));
+    //     }
+    //     console.log("Admin access granted");
+    //     return true; // Allow admin access
+    //   }
     
-      // 2. Public routes: Allow routes like "/", "/contact", "/product", "/about"
-      if (
-        publicRoute.some((route) =>
-          pathname === route || pathname.startsWith(`${route}/`)
-        )
-      ) {
-        console.log("Route is public; access granted");
-        return true;
-      }
+    //   // 2. Public routes: Allow routes like "/", "/contact", "/product", "/about"
+    //   if (
+    //     publicRoute.some((route) =>
+    //       pathname === route || pathname.startsWith(`${route}/`)
+    //     )
+    //   ) {
+    //     console.log("Route is public; access granted");
+    //     return true;
+    //   }
     
-      // 3. Auth routes: accessible to non–logged-in users.
-      if (
-        authRoute.some((route) =>
-          pathname === route || pathname.startsWith(`${route}/`)
-        )
-      ) {
-        if (isLoggedIn) {
-          console.log("Logged-in user trying to access an auth route; redirecting to /");
-          return Response.redirect(new URL("/", nextUrl));
-        } else {
-          console.log("Auth route accessible to non-logged-in user; access granted");
-          return true;
-        }
-      }
+    //   // 3. Auth routes: accessible to non–logged-in users.
+    //   if (
+    //     authRoute.some((route) =>
+    //       pathname === route || pathname.startsWith(`${route}/`)
+    //     )
+    //   ) {
+    //     if (isLoggedIn) {
+    //       console.log("Logged-in user trying to access an auth route; redirecting to /");
+    //       return Response.redirect(new URL("/", nextUrl));
+    //     } else {
+    //       console.log("Auth route accessible to non-logged-in user; access granted");
+    //       return true;
+    //     }
+    //   }
     
-      // 4. For all other routes, require user to be logged in.
-      if (!isLoggedIn) {
-        console.log("User not logged in; redirecting to /signIn for protected route");
-        return Response.redirect(new URL("/signIn", nextUrl));
-      }
-      console.log("User logged in; access granted");
-      return true;
-    }
-,    
+    //   // 4. For all other routes, require user to be logged in.
+    //   if (!isLoggedIn) {
+    //     console.log("User not logged in; redirecting to /signIn for protected route");
+    //     return Response.redirect(new URL("/signIn", nextUrl));
+    //   }
+    //   console.log("User logged in; access granted");
+    //   return true;
+    // }
+   
 
     jwt({ token, user }: any) {
 

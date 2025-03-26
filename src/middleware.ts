@@ -46,13 +46,14 @@ export default auth(async function middleware(req: NextRequest) {
       },
     });
   }
+
   /** 🔹 Handle Admin Routes */
   if (pathname.startsWith('/admin')) {
     if (!session) {
       console.log('User not authenticated. Redirecting to /signin.');
       return NextResponse.redirect(new URL('/signin', req.url));
     }
-    if (session.user?.role !== 'admin' && session.role !== 'admin') {
+    if (session.user?.role !== 'ADMIN') {
       console.log('User is not an admin. Redirecting to home.');
       return NextResponse.redirect(new URL('/', req.url));
     }
@@ -66,15 +67,11 @@ export default auth(async function middleware(req: NextRequest) {
     }
   }
 
-  /** 🔹 Handle Backend Routes */
- 
-
-  /** 🔹 Redirect Unauthenticated Users from Non-Public Routes */
-  if (!publicRoutes.includes(pathname) && !session) {
+  /** 🔹 Redirect Unauthenticated Users from Non-Public & Non-Auth Routes */
+  if (!publicRoutes.includes(pathname) && !authRoutes.includes(pathname) && !session) {
     console.log('Protected route accessed without authentication. Redirecting to /signin.');
     return NextResponse.redirect(new URL('/signin', req.url));
   }
-
 
   return NextResponse.next();
 });
