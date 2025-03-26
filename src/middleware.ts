@@ -20,12 +20,11 @@ export function middleware(req: NextRequest,) {
 
     const token = req.cookies.get(cookieName)?.value;
     console.log('Token found:', token);
-    
+    const requestHeaders = new Headers(req.headers);
     if (token) {
       // Clone the request headers and add the Authorization header
-      const requestHeaders = new Headers(req.headers);
       requestHeaders.set('Authorization', `Bearer ${token}`);
-
+    }
       // Forward the request with the updated headers
       return NextResponse.rewrite(url.toString(),{
         request: {
@@ -33,11 +32,11 @@ export function middleware(req: NextRequest,) {
         },
       });
     }
-  }
+  
   
   return NextResponse.next();
-}
 
+  }
 // Ensure middleware runs only on routes starting with /backend
 export const config = {
   matcher: '/backend/:path*',
