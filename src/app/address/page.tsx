@@ -104,18 +104,18 @@ const AddAddressForm: React.FC = () => {
             </label>
             <div
               className={`mb-1 sm:mb-2 rounded-sm border-2 ${
-                errors.streetAddress ? "border-red-700" : "border-lime-400"
+                errors.street ? "border-red-700" : "border-lime-400"
               } bg-gradient-to-r from-[#2e470fb4] via-[#3a5b0bc9] to-[#3a5b0b49]`}
             >
               <Input
-                {...register("streetAddress")}
+                {...register("street")}
                 placeholder="Street and Number"
                 className="w-full p-3 sm:p-6 text-white bg-transparent outline-none text-sm sm:text-base border-0"
               />
             </div>
-            {errors.streetAddress && (
+            {errors.street && (
               <p className="text-red-700 text-xs mt-1">
-                {errors.streetAddress.message}
+                {errors.street.message}
               </p>
             )}
           </div>
@@ -218,6 +218,31 @@ const AddAddressForm: React.FC = () => {
             {errors.district && (
               <p className="text-red-700 text-xs mt-1">
                 {errors.district.message}
+              </p>
+            )}
+          </div>
+          {/*  Country*/}
+          <div>
+            <label
+              htmlFor="country"
+              className="text-gray-400 text-sm sm:text-base"
+            >
+              Country
+            </label>
+            <div
+              className={`mb-1 sm:mb-2 rounded-sm border-2 ${
+                errors.country ? "border-red-700" : "border-lime-400"
+              } bg-gradient-to-r from-[#2e470fb4] via-[#3a5b0bc9] to-[#3a5b0b49]`}
+            >
+              <Input
+                {...register("country")}
+                placeholder="District"
+                className="w-full p-3 sm:p-6 text-white bg-transparent outline-none text-sm sm:text-base border-0"
+              />
+            </div>
+            {errors.country && (
+              <p className="text-red-700 text-xs mt-1">
+                {errors.country.message}
               </p>
             )}
           </div>
