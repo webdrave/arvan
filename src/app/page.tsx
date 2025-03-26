@@ -1,3 +1,6 @@
+"use client";
+import { useEffect, useState } from "react";
+import Loader from "@/components/Loader";
 import ContactForm from "@/components/Sections/ContactUs";
 import Section2 from "@/components/Sections/Section2";
 import ShopNowAt from "@/components/Sections/ShopNowAt";
@@ -11,8 +14,25 @@ import BestSellers from "@/components/Sections/bestSellers";
 import Landing_overlay from "@/components/Sections/landing_overlay";
 
 export default function Home() {
+  const [pageLoaded, setPageLoaded] = useState(false);
+
+  useEffect(() => {
+    // Handle initial page load
+    if (document.readyState === "complete") {
+      setPageLoaded(true);
+    } else {
+      window.addEventListener("load", () => setPageLoaded(true));
+    }
+
+    return () => window.removeEventListener("load", () => setPageLoaded(true));
+  }, []);
+
+  if (!pageLoaded) {
+    return <Loader />;
+  }
+
   return (
-    <div className="overflow-x-hidden">
+    <div className={`overflow-x-hidden ${!pageLoaded && 'overflow-hidden'}`}>
       <Landing_overlay></Landing_overlay>
       <div className="px-1 pt-1 md:px-2 md:pt-2">
         <LandingPage></LandingPage>

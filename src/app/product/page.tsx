@@ -1,4 +1,5 @@
 "use client";
+import PageLoader from "@/components/Loader";
 import Navigation from "@/components/navigation";
 import ProductGrid from "@/components/product-grid";
 import { Button } from "@/components/ui/button";
@@ -6,7 +7,7 @@ import { productApi } from "@/lib/api/productdetails";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Loader, SlidersHorizontal } from "lucide-react";
 import Image from "next/image";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Products } from "@/components/admin/products-table";
 import {
   DropdownMenu,
@@ -53,10 +54,21 @@ const filterOptions = {
 };
 
 export default function ProductPage() {
+  const [pageLoaded, setPageLoaded] = useState(false);
   const [sortBy, setSortBy] = useState<string>("newest");
   const [filters, setFilters] = useState<FilterOptions>({
     priceRanges: [],
   });
+
+  useEffect(() => {
+    if (document.readyState === "complete") {
+      setPageLoaded(true);
+    } else {
+      window.addEventListener("load", () => setPageLoaded(true));
+    }
+
+    return () => window.removeEventListener("load", () => setPageLoaded(true));
+  }, []);
 
   const fetchProducts = async ({
     pageParam = 1,
@@ -66,7 +78,12 @@ export default function ProductPage() {
     search?: string;
   }) => {
     const limit = 10;
-    const response = await productApi.getProducts(pageParam, limit, search, "PUBLISHED");
+    const response = await productApi.getProducts(
+      pageParam,
+      limit,
+      search,
+      "PUBLISHED"
+    );
 
     return response;
   };
@@ -155,6 +172,10 @@ export default function ProductPage() {
         : [...prev[type], value],
     }));
   };
+
+  if (!pageLoaded) {
+    return <PageLoader />;
+  }
 
   return (
     <div className="min-h-screen font-montserrat bg-black text-white overflow-x-hidden">

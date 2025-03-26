@@ -17,10 +17,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { handleSignup } from "./actions/auth-functions";
 import toast from "react-hot-toast";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+import { useState } from "react";
 // Define the form schema with Zod
 
 const SignUp = () => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   // Initialize react-hook-form with Zod resolver
   const form = useForm<z.infer<typeof SignUpSchema>>({
@@ -36,6 +40,7 @@ const SignUp = () => {
   // Form submission handler
   async function onSubmit(values: z.infer<typeof SignUpSchema>) {
     try {
+      setIsLoading(true);
       const promise = handleSignup(values);
 
       toast.promise(promise, {
@@ -56,6 +61,8 @@ const SignUp = () => {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   }
   return (
@@ -95,14 +102,24 @@ const SignUp = () => {
             <FormField
               control={form.control}
               name="mobileNumber"
-              render={({ field }) => (
+              render={({ field: { onChange, ...field } }) => (
                 <FormItem>
                   <FormControl>
                     <div className="rounded-xl border-2 border-lime-400 bg-gradient-to-r from-[#2e470fb4] via-[#3a5b0bc9] to-[#3a5b0b49]">
-                      <Input
-                        placeholder="Mobile Number"
-                        className="w-full p-4 sm:p-5 text-white bg-transparent border-0 rounded-xl outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
-                        {...field}
+                      <PhoneInput
+                        country={"in"}
+                        value={field.value}
+                        onChange={(phone) => onChange(phone)}
+                        disabled={isLoading}
+                        inputClass="!w-full !p-5 !px-10 !sm:p-5 !text-white !bg-transparent !border-0 !rounded-xl !outline-none !ring-0"
+                        containerClass="!bg-transparent"
+                        buttonClass="!bg-transparent !border-0"
+                        dropdownClass="!bg-[#1a1a1a] !text-white text-black"
+                        searchClass="!bg-[#1a1a1a] !text-white"
+                        inputProps={{
+                          required: true,
+                          placeholder: "Mobile Number",
+                        }}
                       />
                     </div>
                   </FormControl>
@@ -121,6 +138,7 @@ const SignUp = () => {
                       <Input
                         type="password"
                         placeholder="Password"
+                        disabled={isLoading}
                         className="w-full p-4 sm:p-5 text-white bg-transparent border-0 rounded-xl outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
                         {...field}
                       />
@@ -141,6 +159,7 @@ const SignUp = () => {
                       <Input
                         type="password"
                         placeholder="Confirm Password"
+                        disabled={isLoading}
                         className="w-full p-4 sm:p-5 text-white bg-transparent border-0 rounded-xl outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
                         {...field}
                       />
