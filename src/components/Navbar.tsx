@@ -5,26 +5,60 @@ import { FiUser } from "react-icons/fi";
 import { IoMenu } from "react-icons/io5";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { useCart } from "@/context/CartContext";
 
 const Navbar = () => {
   const { data: session } = useSession();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const navitems = ["Home", "Shop", "track order", "about", "contact"];
+  const { cart } = useCart();
+
+  const navItems = [
+    {
+      name: "Home",
+      href: "/",
+    },
+    {
+      name: "Shop",
+      href: "/shop",
+    },
+    {
+      name: "Track Order",
+      href: "/",
+    },
+    {
+      name: "About",
+      href: "/about",
+    },
+    {
+      name: "Contact",
+      href: "/contact",
+    },
+  ];
+
   return (
     <nav className="fixed top-0 flex p-6 w-full z-30">
       <div className="w-full hidden md:flex  bg-transparent justify-end  gap-6 uppercase  z-30">
-        {navitems.map((item, i) => (
+        {navItems.map((item, i) => (
           <Link
             key={i}
-            href={`/${item.toLowerCase().replace(" ", "-")}`}
-            className="hover:underline underline-offset-1 font-montserrat font-normal text-md hover:text-[#CCFF00] text-white">
-            {item}
+            href={item.href}
+            className="relative font-montserrat font-normal text-md transition-colors duration-300
+             after:content-[''] after:absolute after:left-0 after:bottom-0 
+             after:h-[2.5px] after:bg-[#CCFF00] after:transform-gpu  after:w-0 hover:after:w-full
+             after:transition-all after:duration-300
+             "
+            //  hover:text-[#CCFF00]
+          >
+            {item.name}
           </Link>
         ))}
-        <Link href="/cart">
+        <Link href="/cart" className="relative">
           <IoCartOutline className="text-lg text-white cursor-pointer hover:text-[#CCFF00]" />
+          <div className="absolute bg-[#c2e53a]  w-4 h-4 -top-2 -right-2 text-xs text-black  flex justify-center items-center rounded-full p-1">
+            {cart.length > 0 ? cart.length : 0}
+          </div>
         </Link>
         {session?.user ? (
           <Link href={session.user?.role === "admin" ? "/admin" : "/profile"}>
@@ -40,8 +74,11 @@ const Navbar = () => {
       {/* Mobile Hamburger Menu */}
       <div className="md:hidden flex w-full items-center p-2 justify-end">
         <div className="flex gap-4">
-          <Link href="/cart">
+          <Link href="/cart" className="relative">
             <IoCartOutline className="text-lg text-white cursor-pointer hover:text-[#CCFF00]" />
+            <div className="absolute bg-[#c2e53a]  w-full h-full -top-2 -right-3 text-xs text-black  flex justify-center items-center rounded-full p-1">
+              {cart.length > 0 ? cart.length : 0}
+            </div>
           </Link>
           {session ? (
             <Link href="/profile">
@@ -54,7 +91,8 @@ const Navbar = () => {
           )}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="text-white focus:outline-none ml-auto">
+            className="text-white focus:outline-none ml-auto"
+          >
             <IoMenu className="text-lg text-white cursor-pointer hover:text-[#CCFF00]" />
           </button>
         </div>
@@ -62,13 +100,14 @@ const Navbar = () => {
       {isMenuOpen && (
         <div className="md:hidden fixed top-16 left-0 right-0 bg-transparent p-4 z-40 backdrop-blur-lg">
           <div className="flex flex-col space-y-4">
-            {navitems.map((navItem, idx) => (
+            {navItems.map((navItem, idx) => (
               <Link
                 key={idx}
-                href={`/${navItem.toLowerCase().replace(" ", "-")}`}
+                href={navItem.href}
                 className="px-4 py-2 text-sm font-medium rounded-full transition-all text-white hover:text-[#CCFF00]"
-                onClick={() => setIsMenuOpen(false)}>
-                {navItem}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {navItem.name}
               </Link>
             ))}
           </div>

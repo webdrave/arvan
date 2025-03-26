@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
@@ -29,7 +30,7 @@ const ForgotPasswordSchema = z.object({
       ),
 });
 
-const ForgotPassword = ({id}:{id:string}) => {
+const ForgotPassword = () => {
   const router = useRouter();
   const { mutate } = useForgotPassword();
   const form = useForm<z.infer<typeof ForgotPasswordSchema>>({

@@ -14,14 +14,16 @@ export default function Home() {
   return (
     <div className="overflow-x-hidden">
       <Landing_overlay></Landing_overlay>
-      <div className="px-2 pt-2">
+      <div className="px-1 pt-1 md:px-2 md:pt-2">
         <LandingPage></LandingPage>
       </div>
       <Navbar></Navbar>
       <Section2></Section2>
       <NewArrivals></NewArrivals>
       <BestSellers></BestSellers>
-      <WhoWeAre></WhoWeAre>
+      <section className="mt-20">
+        <WhoWeAre></WhoWeAre>
+      </section>
       <ShopNowAt></ShopNowAt>
       <Testimonials></Testimonials>
       <ContactForm></ContactForm>

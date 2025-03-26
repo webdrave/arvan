@@ -14,15 +14,10 @@ type OTPInputProps = {
 const OTPInput: React.FC<OTPInputProps> = ({ otp, onChangeOtp }) => {
   const inputRefs = useRef<HTMLInputElement[]>([]);
 
-  // Handle input change
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement>,
-    index: number
-  ): void => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>, index: number) => {
     const value = e.target.value;
     if (isNaN(Number(value))) return;
 
-    // Update the OTP array
     const newOtp = [...otp];
     newOtp[index] = value.substring(value.length - 1);
     onChangeOtp(newOtp);
@@ -33,11 +28,7 @@ const OTPInput: React.FC<OTPInputProps> = ({ otp, onChangeOtp }) => {
     }
   };
 
-  // Handle backspace key
-  const handleKeyDown = (
-    e: KeyboardEvent<HTMLInputElement>,
-    index: number
-  ): void => {
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>, index: number) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       // Focus previous input when backspace is pressed on empty input
       inputRefs.current[index - 1]?.focus();

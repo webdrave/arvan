@@ -7,7 +7,7 @@ interface Customer {
   id: string
   name: string
   email: string
-  phone: string
+  mobile_no: string
   totalOrders: number
   totalSpent: number
   lastOrderDate: string
@@ -19,10 +19,11 @@ export function CustomerTable() {
   const { data: customers, isLoading, error } = useQuery({
     queryKey: ["customers"],
     queryFn: async () => {
-      const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/allcustomers`;
+      const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/customers/allcustomers`;
       if (!url) {
         throw new Error("NEXT_PUBLIC_BACKEND_URL is not defined");
-      } 
+      }
+
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error("Failed to fetch customers");
@@ -34,13 +35,15 @@ export function CustomerTable() {
   if (isLoading) return <p>Loading customers...</p>
   if (error) return <p>Failed to load customers</p>
 
+  const customerList = Array.isArray(customers?.data) ? customers.data : [];
+
   return (
     <div className="bg-white shadow-sm rounded-lg overflow-hidden">
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Total Orders
             </th>
@@ -54,10 +57,10 @@ export function CustomerTable() {
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {customers?.map((customer: Customer) => (
+          {customerList.map((customer: Customer) => (
             <tr key={customer.id}>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{customer.name}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{customer.email}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{customer.mobile_no}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{customer.totalOrders}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${customer.totalSpent.toFixed(2)}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{customer.lastOrderDate}</td>
@@ -85,7 +88,7 @@ export function CustomerTable() {
               <div className="mt-2 px-7 py-3">
                 <p className="text-sm text-gray-500">Name: {selectedCustomer.name}</p>
                 <p className="text-sm text-gray-500">Email: {selectedCustomer.email}</p>
-                <p className="text-sm text-gray-500">Phone: {selectedCustomer.phone}</p>
+                <p className="text-sm text-gray-500">Phone: {selectedCustomer.mobile_no}</p>
                 <p className="text-sm text-gray-500">Total Orders: {selectedCustomer.totalOrders}</p>
                 <p className="text-sm text-gray-500">Total Spent: ${selectedCustomer.totalSpent.toFixed(2)}</p>
                 <p className="text-sm text-gray-500">Last Order Date: {selectedCustomer.lastOrderDate}</p>

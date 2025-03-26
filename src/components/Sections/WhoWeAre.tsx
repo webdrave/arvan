@@ -2,7 +2,7 @@ import Image from "next/image";
 
 const WhoWeAre = () => {
   return (
-    <section className="px-6 sm:px-8 md:px-10 mt-20">
+    <section className="px-6 sm:px-8 md:px-10  font-montserrat">
       {/* Centered Heading */}
       <div className="text-center relative py-10 sm:py-16 md:py-20">
         <h2 className="text-2xl sm:text-4xl md:text-6xl font-bold">
@@ -21,17 +21,22 @@ const WhoWeAre = () => {
       </div>
 
       {/* Flex/Grid Layout Below */}
-      <div className="flex w-full h-full flex-col-reverse lg:flex-row items-center justify-center lg:items-start gap-8">
+      <div className="flex w-full h-full flex-col-reverse lg:flex-row items-start justify-center lg:items-start gap-8">
         {/* Left Content */}
         <div className="w-full md:w-[85%] text-center lg:text-left px-4 sm:px-6">
           <h3 className="text-5xl sm:text-6xl md:text-7xl font-bold">ARVAN</h3>
-          <p className="text-gray-300 mt-2 text-xs sm:text-sm md:text-base leading-relaxed">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos
-            commodi, debitis repellat aut rem doloribus ipsam fugiat ratione
-            quibusdam. Mollitia aspernatur corporis consequuntur repudiandae
-            nemo inventore culpa, eius expedita quibusdam facere a voluptatum
-            enim, at delectus? Perferendis, culpa officia, nobis nam obcaecati
-            quisquam, officiis qui accusamus aspernatur earum maxime autem?
+          <p className="text-gray-300  text-xs sm:text-sm md:text-lg leading-relaxed font-sans ">
+            At The Arvan, we’re all about keeping it comfy without sacrificing
+            style. We believe the right pair of slippers can totally elevate
+            your day whether you’re relaxing at home, running errands, or just
+            doing you in style. That’s why we’ve crafted slippers that blend
+            coziness with the perfect amount of flair. we keep things simple,
+            yet stylish. No over-the-top trends—just clean, classic designs that
+            you can rock every day. We’re here for the laid-back moments, but
+            with that little extra something that makes you feel like you’ve got
+            it all together. <br /> Ready to level up your comfort game? Slip
+            into The Arvan, and feel the difference. We’ve got the perfect pair
+            waiting for you.
           </p>
           <button className="relative text-lg sm:text-xl font-light px-6 sm:px-8 py-2 sm:py-3 bg-gradient-to-r from-[#c3e53a8a] to-[#b3d2343e] text-white uppercase shadow-[0px_0px_2px_#c3e53a] hover:shadow-[0px_0px_5px_#c3e53a] transition-all duration-300 mt-4 sm:mt-5">
             EXPLORE

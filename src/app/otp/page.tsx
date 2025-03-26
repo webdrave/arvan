@@ -1,9 +1,10 @@
-import React from 'react'
+import OTPVerification from "@/components/OTPVerification";
+import { cookies } from "next/headers";
 
-function page() {
-  return (
-    <div>page</div>
-  )
+export default async function OTPPage() {
+  const cookieStore = await cookies();
+  const signupData = cookieStore.get("signupData");
+  const mobileNumber = signupData ? JSON.parse(signupData.value).mobileNumber : "";
+
+  return <OTPVerification mobileNumber={mobileNumber} />;
 }
-
-export default page

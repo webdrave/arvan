@@ -33,6 +33,7 @@ export default function Testimonials() {
         }
         const data = await response.json();
         setTestimonials(data.testimonials);
+        console.log(data.testimonials);
       } catch (error) {
         console.error("Error fetching testimonials:", error);
       }
@@ -89,8 +90,8 @@ export default function Testimonials() {
           onSwiper={(swiper) => {
             setTimeout(() => {
               if (
-                swiper.params.navigation &&
-                typeof swiper.params.navigation === "object"
+                swiper.params?.navigation &&
+                typeof swiper.params?.navigation === "object"
               ) {
                 swiper.params.navigation.prevEl = prevRef.current;
                 swiper.params.navigation.nextEl = nextRef.current;

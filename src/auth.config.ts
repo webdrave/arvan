@@ -114,8 +114,6 @@ export default {
     },
 
     session({ session, token }: any) {
-      // console.log("🔄 Creating Session...");
-      // console.log("🔹 Token Data:", token);
 
       if (session.user) {
         session.user.id = token.id;

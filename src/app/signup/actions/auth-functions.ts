@@ -39,7 +39,7 @@ export async function handleSignup(data: z.infer<typeof SignUpSchema>) {
         },
       });
   
-      const otpResponse = await apiClient.post("/api/customers/otp", { mobile_no: response.mobile_no,type:"verifyemail" });
+      const otpResponse = await apiClient.post("/api/customers/otp", { mobile_no: response.mobile_no,type:"verify" });
   
       console.log(otpResponse.data);
      

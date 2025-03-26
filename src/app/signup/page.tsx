@@ -44,7 +44,7 @@ const SignUp = () => {
           if (response?.error) {
             throw new Error(response.error); // Throw error to trigger rejection
           }
-          return "Signup successful!"; // Success message
+          return "Verify Mobile Number"; // Success message
         },
         error: (error) => error.message || "Something went wrong", // Show on error
       });

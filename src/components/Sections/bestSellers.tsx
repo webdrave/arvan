@@ -85,7 +85,7 @@ const BestSellers: React.FC = () => {
     };
   }, []);
   return (
-    <div className="w-full h-[500px] mt-16">
+    <div className="w-full min-h-[50dvh] mt-16">
       <div className="flex sm:flex-row gap-4 items-center justify-start w-full px-6">
         <div className="w-full sm:w-fit p-2 flex items-center gap-4 max-sm:gap-1 sm:justify-start">
           <h5 className="font-general_sans text-2xl max-sm:text-xl font-semibold whitespace-nowrap">
@@ -114,6 +114,7 @@ const BestSellers: React.FC = () => {
           autoplay={{
             delay: autoplayDelay, // Delay between slides in milliseconds
             disableOnInteraction: true, // Continue autoplay even after user interaction
+            reverseDirection: true,
           }}
           loop={true}
           speed={1000}
