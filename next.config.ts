@@ -1,8 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  images : {
-    domains : ['res.cloudinary.com'],
+  images :  {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        pathname: '/**', // '**' is a glob pattern to match any path under /v/
+      },
+    ]
   }
   /* config options here */
 };

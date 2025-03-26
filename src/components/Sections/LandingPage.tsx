@@ -17,10 +17,10 @@ const LandingPage = () => {
   const slidestext = ["JUNGLE WALKER", "LIFE IS GOOD", "A4 BLACK"];
 
   return (
-    <div className="relative h-screen overflow-hidden ">
+    <div className="relative h-[100dvh] overflow-hidden ">
       {/* Top ClipPath with logo */}
       <div
-        className="absolute max-sm:hidden -top-1 left-0  z-[20] bg-[#121212] w-full h-full  justify-center items-start  object-cover hidden lg:flex "
+        className="clippath1 absolute max-sm:hidden -top-1 left-0  z-[20] bg-[#121212] w-full h-full  justify-center items-start  object-cover hidden lg:flex "
         style={{
           clipPath:
             "polygon(0px 0px, 40% 0px, 45% 4%, 55% 4%, 60% 0px, 100% 0px)",
@@ -36,27 +36,33 @@ const LandingPage = () => {
       </div>
       {/* Right ClipPath */}
       <div
-        className=" max-sm:hidden absolute top-0 right-0 z-[20] bg-[#121212] w-full h-full hidden lg:block "
+        className="clippath1 max-sm:hidden absolute top-0 right-0 z-[20] bg-[#121212] w-full h-full hidden lg:block "
         style={{
           clipPath:
             "polygon(100% 0%, 100% 25%, 98% 35%, 98% 55%, 100% 65%, 100% 100%)",
           // "polygon(100% 0%, 100% 25%, 98% 35%, 98% 55%, 100% 65%, 100% 100%)",
         }}
       >
-        {/* <h2 className="w-fit  absolute top-[47%] -translate-y-1/2 -right-12 font-semibold text-xl rotate-90  ">
+        <button
+          onClick={(e) => {
+            e.stopPropagation(); // Prevent event bubbling (optional)
+            animateOverlay(true);
+          }}
+          className="w-fit  absolute top-[45%] -translate-y-1/2 -right-14 font-semibold text-xl rotate-90  "
+        >
           BEST SELLER
-        </h2> */}
+        </button>
       </div>
       {/* Left side */}
       <div
-        className=" max-sm:hidden absolute top-0 left-0 z-[20] bg-[#121212] w-full h-full hidden lg:block "
+        className="clippath1 max-sm:hidden absolute top-0 left-0 z-[20] bg-[#121212] w-full h-full hidden lg:block "
         style={{
           clipPath: "polygon(0% 0%, 0% 25%, 2% 35%, 2% 55%, 0% 65%,0% 100%)",
         }}
       ></div>
       {/* Bottom CLipPath */}
       <div
-        className=" max-sm:hidden absolute top-0 z-[20] right-0 bg-[#121212] text-white w-full h-full hidden lg:block "
+        className="clippath1 max-sm:hidden absolute top-0 z-[20] right-0 bg-[#121212] text-white w-full h-full hidden lg:block "
         style={{
           clipPath: "polygon(0% 100%, 40% 100%, 45% 96%, 55% 96%, 60% 100%)",
         }}
@@ -68,14 +74,55 @@ const LandingPage = () => {
 
       {/* Mobile Bottom ClipPath */}
       <div
-        className=" absolute top-0 z-[20] right-0 bg-[#121212] text-white w-full h-full block md:hidden "
+        className=" absolute top-0 z-[20] right-0 bg-[#121212] text-white w-full h-full block lg:hidden "
         style={{
           clipPath: "polygon(0% 100%, 30% 100%, 35% 96%, 65% 96%, 70% 100%)",
         }}
       >
-        <h2 className="w-fit  absolute font-montserrat bottom-1 left-1/2 -translate-x-1/2 text-xs  block md:hidden">
+        <h2 className="w-fit  absolute font-montserrat bottom-1 left-1/2 -translate-x-1/2 text-xs md:text-xl  block lg:hidden">
           SCROLL DOWN
         </h2>
+      </div>
+
+      <div
+        className="absolute top-0 left-0 z-[30] bg-[#121212] w-full h-full block lg:hidden "
+        style={{
+          clipPath: "polygon(0% 0%, 0% 40%, 5% 45%, 5% 55%, 0% 60%,0% 100%)",
+        }}
+      ></div>
+
+      <div
+        className="clippath1  absolute top-0 right-0 z-[20] bg-[#121212] w-full h-full block lg:hidden "
+        style={{
+          clipPath:
+            "polygon(100% 0%, 100% 40%, 95% 45%, 95% 55%, 100% 60%, 100% 100%)",
+        }}
+      >
+        <button
+          onClick={(e) => {
+            e.stopPropagation(); // Prevent event bubbling (optional)
+            animateOverlay(true);
+          }}
+          className="w-fit  absolute top-[50%] lg:hidden -translate-y-1/2 -right-7 md:-right-12  font-semibold text-sm md:text-lg rotate-90  "
+        >
+          BEST SELLER
+        </button>
+      </div>
+
+      <div
+        className="clippath1 absolute  -top-1 left-0  z-[20] bg-[#121212] w-full h-full  justify-center items-start  object-cover flex md:hidden "
+        style={{
+          clipPath:
+            "polygon(0px 0px, 35% 0px, 40% 5%,60% 5%, 65% 0px, 100% 0px)",
+        }}
+      >
+        <Image
+          src={"/logo.svg"}
+          width={20}
+          height={80}
+          alt="logo"
+          className="object-cover absolute top-2 sm:top-3 left-1/2 -translate-x-1/2"
+        />
       </div>
 
       {/* Swiper for Background Images */}
@@ -112,7 +159,7 @@ const LandingPage = () => {
               e.stopPropagation(); // Prevent event bubbling (optional)
               animateOverlay(true);
             }}
-            className="absolute sm:left-28 md:left-10 text-[25vw] md:text-[20vw] lg:text-[12vw] leading-none font-bold font-coluna tracking-wide max-sm:relative max-sm:left-4"
+            className="mainText absolute sm:left-28 md:left-10 text-[25vw] md:text-[20vw] lg:text-[12vw] leading-none font-bold font-coluna tracking-wide max-sm:relative max-sm:left-4"
           >
             THE <br />
             ARVAN
@@ -124,36 +171,18 @@ const LandingPage = () => {
           </p>
         </div>
       </main>
-      <button
+
+      {/* <button
         onClick={(e) => {
           e.stopPropagation();
           animateOverlay(true);
         }}
-        className="px-2 py-1 top-4 md:top-3 lg:top-6 left-3 md:left-10 absolute border-2 border-white cursor-pointer w-42 lg:w-52 z-[50] "
+        className="px-2 lg:hidden py-1 top-4 md:top-3 lg:top-6 left-3 md:left-10 absolute border-2 border-white cursor-pointer w-42 lg:w-52 z-[50] "
       >
         <span className="text-center font-montserrat text-white text-xs md:text-md transition-all">
-          {slidestext[activeIndex]}
+          {"Best Sellers"}
         </span>
-      </button>
-
-      {/* <div className="absolute bottom-4 right-8   z-10 flex flex-col items-center space-y-2  w-[35vw]">
-        <div className="text-white text-sm font-semibold font-montserrat  relative h-3  w-full">
-          <span className="absolute right-10">
-            {activeIndex + 1}/{backgroundImages.length}
-          </span>
-        </div>
-
-        <div className="flex space-x-2 w-full">
-          {backgroundImages.map((_, index) => (
-            <span
-              key={index}
-              className={`block w-[30%] h-[3px] rounded-md  transition-colors ${
-                index === activeIndex ? "bg-white" : "bg-gray-500"
-              }`}
-            ></span>
-          ))}
-        </div>
-      </div> */}
+      </button> */}
     </div>
   );
 };

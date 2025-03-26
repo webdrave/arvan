@@ -18,10 +18,11 @@ const Landing_overlay = forwardRef<HTMLDivElement>((_, ref) => {
     { name: "the arvan", image: "/Menu-Images/img-8.jpg" },
     // { name: "fancy", image: "/Menu-Images/img-9.jpg" },
   ];
+
   return (
     <div
       ref={ref}
-      className="w-full h-screen bg-black lg:block fixed top-0 left-0 z-50"
+      className="w-full h-[100dvh] bg-black lg:block fixed top-0 left-0 z-50"
       style={{ transform: "translateY(-100%)", visibility: "hidden" }}
     >
       <div className="w-full h-full flex flex-col gap-2 relative items-center justify-center">
@@ -51,7 +52,7 @@ const Landing_overlay = forwardRef<HTMLDivElement>((_, ref) => {
             onMouseLeave={() => setHoveredIndex(null)} // Reset hovered index
           >
             <h3
-              className={`text-6xl font-coluna font-bold hover:scale-110 cursor-pointer
+              className={`text-5xl  md:text-6xl font-coluna font-medium md:font-bold hover:scale-110 cursor-pointer
                     after:content-[''] after:absolute  after:left-[-5%]  after:right-[-5%]  after:top-[42%] after:-translate-y-1/2 after:h-[7px] after:bg-[#C2E53A] after:scale-x-0 hover:after:scale-x-100 after:transition-all after:duration-500 after:origin-left transition-opacity duration-400 ${
                       hoveredIndex === null || hoveredIndex === i
                         ? "opacity-100"
@@ -67,7 +68,6 @@ const Landing_overlay = forwardRef<HTMLDivElement>((_, ref) => {
         <button
           className="absolute z-20 top-8 right-8 text-white hover:scale-110 cursor-pointer"
           onClick={() => {
-            console.log("IN");
             animateOverlay(false);
           }} // Slide back up when clicked
         >

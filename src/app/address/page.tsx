@@ -48,7 +48,7 @@ const AddAddressForm: React.FC = () => {
   const router = useRouter();
 
   const mutation = useMutation({
-    mutationFn: (formData: AddressFormData) => AddressApi.addAddress(formData),
+    mutationFn: (formData: AddressType) => AddressApi.addAddress(formData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["address"] });
       router.push("/checkout");
@@ -97,7 +97,7 @@ const AddAddressForm: React.FC = () => {
 
       <Navbar />
       {/* Blurred circle in background */}
-      <div className="absolute w-[80vw] h-[40vw] rounded-full bg-lime-500/15 blur-3xl left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 -z-1"></div>
+      <div className="absolute w-[80vw] h-[40vw] rounded-full bg-lime-500/15 blur-3xl left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 -z-10"></div>
 
       <button
         onClick={handleBack}
@@ -136,6 +136,12 @@ const AddAddressForm: React.FC = () => {
                 />
               </div>
             </div>
+            {errors.addressName && (
+              <p className="text-red-700 text-xs mt-1">
+                {errors.addressName.message}
+              </p>
+            )}
+          </div>
 
             {/* Street Address */}
             <div>
@@ -156,7 +162,14 @@ const AddAddressForm: React.FC = () => {
                 />
               </div>
               {errors.street && <p className="text-red-500 text-sm mt-1">{errors.street}</p>}
+
             </div>
+            {errors.street && (
+              <p className="text-red-700 text-xs mt-1">
+                {errors.street.message}
+              </p>
+            )}
+          </div>
 
             {/* City */}
             <div>
@@ -178,6 +191,10 @@ const AddAddressForm: React.FC = () => {
               </div>
               {errors.city && <p className="text-red-500 text-sm mt-1">{errors.city}</p>}
             </div>
+            {errors.city && (
+              <p className="text-red-700 text-xs mt-1">{errors.city.message}</p>
+            )}
+          </div>
 
             {/* PinCode */}
             <div>
@@ -198,7 +215,14 @@ const AddAddressForm: React.FC = () => {
                 />
               </div>
               {errors.zipCode && <p className="text-red-500 text-sm mt-1">{errors.zipCode}</p>}
+
             </div>
+            {errors.zipCode && (
+              <p className="text-red-700 text-xs mt-1">
+                {errors.zipCode.message}
+              </p>
+            )}
+          </div>
 
             {/* State */}
             <div>
@@ -220,6 +244,12 @@ const AddAddressForm: React.FC = () => {
               </div>
               {errors.state && <p className="text-red-500 text-sm mt-1">{errors.state}</p>}
             </div>
+            {errors.state && (
+              <p className="text-red-700 text-xs mt-1">
+                {errors.state.message}
+              </p>
+            )}
+          </div>
 
             {/*  Country */}
             <div>
@@ -262,6 +292,11 @@ const AddAddressForm: React.FC = () => {
               </div>
               {errors.phoneNumber && <p className="text-red-500 text-sm mt-1">{errors.phoneNumber}</p>}
             </div>
+            {errors.country && (
+              <p className="text-red-700 text-xs mt-1">
+                {errors.country.message}
+              </p>
+            )}
           </div>
 
           <div className="flex items-center gap-4 sm:gap-10 w-full sm:w-3/4 md:w-1/2 mt-3 sm:mt-5">
@@ -269,21 +304,42 @@ const AddAddressForm: React.FC = () => {
               className="relative justify-center items-center flex w-full py-2 sm:py-3 text-black font-bold text-base sm:text-lg rounded-xl bg-lime-400 shadow-[0_4px_20px_rgba(255,255,255,0.6)]"
               onClick={handleSubmit}
             >
-              {mutation.isPending ? (
-                <Loader className="animate-spin" />
-              ) : (
-                "Save"
-              )}
-            </button>
-            <button
-              className="relative w-full py-2 sm:py-3 text-white border-2 border-white font-bold text-base sm:text-lg md:text-xl rounded-xl bg-transparent"
-              onClick={handleCancel}
+              Mobile Number
+            </label>
+            <div
+              className={`rounded-sm mb-1 sm:mb-2 border-2 ${
+                errors.phoneNumber ? "border-red-700" : "border-lime-400"
+              } bg-gradient-to-r from-[#2e470fb4] via-[#3a5b0bc9] to-[#3a5b0b49]`}
             >
-              Cancel
-            </button>
+              <Input
+                {...register("phoneNumber")}
+                placeholder="Mobile Number"
+                className="w-full p-3 sm:p-6 text-white bg-transparent outline-none text-sm sm:text-base border-0"
+              />
+            </div>
+            {errors.phoneNumber && (
+              <p className="text-red-700 text-xs mt-1">
+                {errors.phoneNumber.message}
+              </p>
+            )}
           </div>
-        </form>
-      </div>
+        </div>
+
+        <div className="flex items-center gap-4 sm:gap-10 w-full sm:w-3/4 md:w-1/2 mt-3 sm:mt-5">
+          <button
+            className="relative w-full py-2 sm:py-3 text-black flex items-center justify-center font-bold text-base sm:text-lg rounded-xl bg-lime-400 shadow-[0_4px_20px_rgba(255,255,255,0.6)]"
+            type="submit"
+          >
+            {mutation.isPending ? <Loader className="animate-spin" /> : "Save"}
+          </button>
+          <button
+            className="relative w-full py-2 sm:py-3 text-white border-2 border-white font-bold text-base sm:text-lg md:text-xl rounded-xl bg-transparent"
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

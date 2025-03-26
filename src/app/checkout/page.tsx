@@ -6,6 +6,7 @@ import { Address, AddressApi } from "@/lib/api/address";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { PiPencilSimple } from "react-icons/pi";
 import Script from "next/script";
@@ -34,6 +35,8 @@ const Checkout: React.FC = () => {
       }));
     },
   });
+
+  const router = useRouter();
 
   const handleSubmit = () => {
     console.log("Selected Address:", selectedAddress);
@@ -72,6 +75,7 @@ const Checkout: React.FC = () => {
       console.error("Error creating order:", error);
     },
   });
+
 
   // Sync selected address with fetched data
   useEffect(() => {
@@ -189,6 +193,7 @@ const Checkout: React.FC = () => {
         src="https://checkout.razorpay.com/v1/checkout.js"
       />
       <Navbar />
+
       <div className="container mx-auto max-w-6xl relative">
         {/* Blurred Background */}
         <div className="absolute w-[80vw] h-[40vw] rounded-full bg-lime-600/15 blur-3xl left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 -z-1"></div>
@@ -307,7 +312,7 @@ const Checkout: React.FC = () => {
               <div className="space-y-4">
                 <div className="flex justify-between">
                   <span className="text-gray-300">Subtotal</span>
-                  <span>₹{subtotal}</span>
+                  <span>₹{subtotal?.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-300">Shipping</span>
@@ -315,12 +320,12 @@ const Checkout: React.FC = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-300">Tax (18%)</span>
-                  <span>₹{tax.toFixed(2)}</span>
+                  <span>₹{tax?.toFixed(2)}</span>
                 </div>
                 <hr className="border-gray-600" />
                 <div className="flex justify-between font-bold text-lg">
                   <span>Total</span>
-                  <span>₹{total.toFixed(2)}</span>
+                  <span>₹{total?.toFixed(2)}</span>
                 </div>
               </div>
               <button

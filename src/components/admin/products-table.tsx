@@ -36,7 +36,6 @@ interface Color {
 export interface Products extends Product {
   stock: number;
   category: string;
-  discountPrize: number;
   id: string;
   assets: {
     type: "IMAGE" | "VIDEO";
@@ -44,6 +43,7 @@ export interface Products extends Product {
     url: string;
   }[];
   colors: Color[];
+  createdAt : string
 }
 
 export function ProductsTable() {

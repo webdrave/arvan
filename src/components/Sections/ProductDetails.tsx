@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Star, ShoppingCart } from "lucide-react";
+import { Star, ShoppingCart, Plus, Minus } from "lucide-react";
 import Image from "next/image";
 import ReviewWritings from "../reviewWriting";
 import { useQueries } from "@tanstack/react-query";
@@ -14,6 +14,7 @@ import Footer from "../Footer";
 import { productReviewApi } from "@/lib/api/productreview";
 import { useRouter } from "next/navigation";
 
+
 const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [selectedColor, setSelectedColor] = useState("White");
@@ -21,6 +22,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
   const [selectedImage, setSelectedImage] = useState("");
   const [images, setImages] = useState<string[]>([]);
   const [availableSizes, setAvailableSizes] = useState<string[]>([]);
+  const [quantity, setQuantity] = useState<number>(1);
   const { addToCart } = useCart();
 
   const handlecloseReviewModal = () => {
@@ -187,10 +189,10 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                         {productData.data.price}
                       </p>
                       <div className="text-black text-normal border font-montserrat  rounded-xl  bg-[#C2E53A] font-bold px-2">
-                        {((productData.data.price -
+                        {(((productData.data.price -
                           productData.data.discountPrice!) /
                           productData.data.price) *
-                          100}
+                          100).toFixed(2)}
                         %
                       </div>
                     </div>
@@ -326,8 +328,25 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                             material: productData.data.material,
                           });
                         }}>
-                        <ShoppingCart className="h-5 w-5" /> Add to Cart
-                      </button>
+                     
+                          <ShoppingCart className="h-5 w-5" /> Add to Cart :{" "}
+                          {quantity}
+                        </button>
+
+                        <button
+                          className="border border-[#c2e53a] w-10 flex  items-center justify-center h-10 text-white rounded-lg"
+                          onClick={() => {
+                            setQuantity((prev) => {
+                              if (prev === 1) {
+                                return 1;
+                              }
+                              return prev - 1;
+                            });
+                          }}
+                        >
+                          <Minus size={18} />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
