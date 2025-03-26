@@ -42,7 +42,7 @@ const ForgotPassword = () => {
     // Handle the forgot password logic (e.g., sending an OTP)
     mutate(values.mobileNumber,{
         onSuccess: (data:any) => {
-          toast.success("an otp was sent to your email");
+          toast.success("An otp was sent to your whatsapp");
           console.log(data);
           // Navigate to the OTP screen with the JWT token
           router.push(`/otp/${data.jwt}`);

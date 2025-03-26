@@ -1,12 +1,11 @@
 "use client";
 import Navbar from "@/components/Navbar";
 import { AddressApi } from "@/lib/api/address";
+import { AddressType } from "@/types/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState, ChangeEvent, FormEvent } from "react";
-
-
 import { z } from "zod";
 
 const addressSchema = z.object({
@@ -16,6 +15,8 @@ const addressSchema = z.object({
   country: z.string().min(1, "Country is required"),
   zipCode: z.string().min(1, "Zip code is required"),
   phoneNumber: z.string().min(1, "Phone number is required"),
+  addressName: z.string().min(1, "Address name is required"),
+  district: z.string().min(1, "District is required"),
 });
 
 export interface AddressFormData {
@@ -28,6 +29,7 @@ export interface AddressFormData {
   country: string;
   phoneNumber: string;
   addressName: string;
+  district: string;
 }
 
 const AddAddressForm: React.FC = () => {
@@ -41,6 +43,7 @@ const AddAddressForm: React.FC = () => {
     country: "",
     phoneNumber: "",
     addressName: "",
+    district: "",
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
@@ -48,7 +51,7 @@ const AddAddressForm: React.FC = () => {
   const router = useRouter();
 
   const mutation = useMutation({
-    mutationFn: (formData: AddressType) => AddressApi.addAddress(formData),
+    mutationFn: (formData : AddressFormData) => AddressApi.addAddress(formData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["address"] });
       router.push("/checkout");
@@ -61,13 +64,12 @@ const AddAddressForm: React.FC = () => {
       ...prevState,
       [name]: value,
     }));
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: "" }));
     }
   };
 
-  const handleSubmit = (e: FormEvent<HTMLButtonElement>) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const valid = addressSchema.safeParse(formData);
@@ -94,9 +96,7 @@ const AddAddressForm: React.FC = () => {
 
   return (
     <div className="relative w-full min-h-screen bg-black overflow-hidden py-5">
-
       <Navbar />
-      {/* Blurred circle in background */}
       <div className="absolute w-[80vw] h-[40vw] rounded-full bg-lime-500/15 blur-3xl left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 -z-10"></div>
 
       <button
@@ -106,8 +106,6 @@ const AddAddressForm: React.FC = () => {
         Back
       </button>
 
-      {/* Form container */}
-
       <div className="w-full px-4 sm:px-10 flex flex-col justify-center items-center relative z-10 mt-6 sm:mt-10">
         <div className="mb-4 sm:mb-8 text-start">
           <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-1 text-white">
@@ -115,14 +113,10 @@ const AddAddressForm: React.FC = () => {
           </h1>
         </div>
 
-        <form className="bg-transparent w-full sm:w-[90vw] md:w-[80vw] h-auto">
+        <form onSubmit={handleSubmit} className="bg-transparent w-full sm:w-[90vw] md:w-[80vw] h-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-5">
-            {/* Address Name */}
             <div>
-              <label
-                htmlFor="addressName"
-                className="text-gray-400 text-sm sm:text-base"
-              >
+              <label htmlFor="addressName" className="text-gray-400 text-sm sm:text-base">
                 Full Name
               </label>
               <div className="rounded-sm mb-3 sm:mb-4 border-2 border-lime-400 bg-gradient-to-r from-[#2e470fb4] via-[#3a5b0bc9] to-[#3a5b0b49]">
@@ -135,20 +129,13 @@ const AddAddressForm: React.FC = () => {
                   className="w-full p-3 sm:p-4 text-white bg-transparent outline-none text-sm sm:text-base"
                 />
               </div>
+              {errors.addressName && (
+                <p className="text-red-500 text-sm mt-1">{errors.addressName}</p>
+              )}
             </div>
-            {errors.addressName && (
-              <p className="text-red-700 text-xs mt-1">
-                {errors.addressName.message}
-              </p>
-            )}
-          </div>
 
-            {/* Street Address */}
             <div>
-              <label
-                htmlFor="street"
-                className="text-gray-400 text-sm sm:text-base"
-              >
+              <label htmlFor="street" className="text-gray-400 text-sm sm:text-base">
                 Street
               </label>
               <div className="mb-3 sm:mb-4 rounded-sm border-2 border-lime-400 bg-gradient-to-r from-[#2e470fb4] via-[#3a5b0bc9] to-[#3a5b0b49]">
@@ -161,22 +148,13 @@ const AddAddressForm: React.FC = () => {
                   className="w-full p-3 sm:p-4 text-white bg-transparent outline-none text-sm sm:text-base"
                 />
               </div>
-              {errors.street && <p className="text-red-500 text-sm mt-1">{errors.street}</p>}
-
+              {errors.street && (
+                <p className="text-red-500 text-sm mt-1">{errors.street}</p>
+              )}
             </div>
-            {errors.street && (
-              <p className="text-red-700 text-xs mt-1">
-                {errors.street.message}
-              </p>
-            )}
-          </div>
 
-            {/* City */}
             <div>
-              <label
-                htmlFor="city"
-                className="text-gray-400 text-sm sm:text-base"
-              >
+              <label htmlFor="city" className="text-gray-400 text-sm sm:text-base">
                 City
               </label>
               <div className="mb-3 sm:mb-4 rounded-sm border-2 border-lime-400 bg-gradient-to-r from-[#2e470fb4] via-[#3a5b0bc9] to-[#3a5b0b49]">
@@ -189,19 +167,13 @@ const AddAddressForm: React.FC = () => {
                   className="w-full p-3 sm:p-4 text-white bg-transparent outline-none text-sm sm:text-base"
                 />
               </div>
-              {errors.city && <p className="text-red-500 text-sm mt-1">{errors.city}</p>}
+              {errors.city && (
+                <p className="text-red-500 text-sm mt-1">{errors.city}</p>
+              )}
             </div>
-            {errors.city && (
-              <p className="text-red-700 text-xs mt-1">{errors.city.message}</p>
-            )}
-          </div>
 
-            {/* PinCode */}
             <div>
-              <label
-                htmlFor="zipCode"
-                className="text-gray-400 text-sm sm:text-base"
-              >
+              <label htmlFor="zipCode" className="text-gray-400 text-sm sm:text-base">
                 PINCODE
               </label>
               <div className="mb-3 sm:mb-4 rounded-sm border-2 border-lime-400 bg-gradient-to-r from-[#2e470fb4] via-[#3a5b0bc9] to-[#3a5b0b49]">
@@ -214,22 +186,13 @@ const AddAddressForm: React.FC = () => {
                   className="w-full p-3 sm:p-4 text-white bg-transparent outline-none text-sm sm:text-base"
                 />
               </div>
-              {errors.zipCode && <p className="text-red-500 text-sm mt-1">{errors.zipCode}</p>}
-
+              {errors.zipCode && (
+                <p className="text-red-500 text-sm mt-1">{errors.zipCode}</p>
+              )}
             </div>
-            {errors.zipCode && (
-              <p className="text-red-700 text-xs mt-1">
-                {errors.zipCode.message}
-              </p>
-            )}
-          </div>
 
-            {/* State */}
             <div>
-              <label
-                htmlFor="state"
-                className="text-gray-400 text-sm sm:text-base"
-              >
+              <label htmlFor="state" className="text-gray-400 text-sm sm:text-base">
                 State
               </label>
               <div className="mb-3 sm:mb-4 rounded-sm border-2 border-lime-400 bg-gradient-to-r from-[#2e470fb4] via-[#3a5b0bc9] to-[#3a5b0b49]">
@@ -242,42 +205,32 @@ const AddAddressForm: React.FC = () => {
                   className="w-full p-3 sm:p-4 text-white bg-transparent outline-none text-sm sm:text-base"
                 />
               </div>
-              {errors.state && <p className="text-red-500 text-sm mt-1">{errors.state}</p>}
+              {errors.state && (
+                <p className="text-red-500 text-sm mt-1">{errors.state}</p>
+              )}
             </div>
-            {errors.state && (
-              <p className="text-red-700 text-xs mt-1">
-                {errors.state.message}
-              </p>
-            )}
-          </div>
 
-            {/*  Country */}
             <div>
-              <label
-                htmlFor="country"
-                className="text-gray-400 text-sm sm:text-base"
-              >
+              <label htmlFor="country" className="text-gray-400 text-sm sm:text-base">
                 Country
               </label>
               <div className="mb-3 sm:mb-4 rounded-sm border-2 border-lime-400 bg-gradient-to-r from-[#2e470fb4] via-[#3a5b0bc9] to-[#3a5b0b49]">
                 <input
                   type="text"
-                  name="country" 
+                  name="country"
                   value={formData.country}
                   onChange={handleChange}
                   placeholder="Country"
                   className="w-full p-3 sm:p-4 text-white bg-transparent outline-none text-sm sm:text-base"
                 />
               </div>
-              {errors.country && <p className="text-red-500 text-sm mt-1">{errors.country}</p>}
+              {errors.country && (
+                <p className="text-red-500 text-sm mt-1">{errors.country}</p>
+              )}
             </div>
 
-            {/* Mobile Number  */}
             <div>
-              <label
-                htmlFor="phoneNumber"
-                className="text-gray-400 text-sm sm:text-base"
-              >
+              <label htmlFor="phoneNumber" className="text-gray-400 text-sm sm:text-base">
                 Mobile Number
               </label>
               <div className="rounded-sm mb-3 sm:mb-4 border-2 border-lime-400 bg-gradient-to-r from-[#2e470fb4] via-[#3a5b0bc9] to-[#3a5b0b49]">
@@ -290,56 +243,29 @@ const AddAddressForm: React.FC = () => {
                   className="w-full p-3 sm:p-4 text-white bg-transparent outline-none text-sm sm:text-base"
                 />
               </div>
-              {errors.phoneNumber && <p className="text-red-500 text-sm mt-1">{errors.phoneNumber}</p>}
+              {errors.phoneNumber && (
+                <p className="text-red-500 text-sm mt-1">{errors.phoneNumber}</p>
+              )}
             </div>
-            {errors.country && (
-              <p className="text-red-700 text-xs mt-1">
-                {errors.country.message}
-              </p>
-            )}
           </div>
 
           <div className="flex items-center gap-4 sm:gap-10 w-full sm:w-3/4 md:w-1/2 mt-3 sm:mt-5">
             <button
-              className="relative justify-center items-center flex w-full py-2 sm:py-3 text-black font-bold text-base sm:text-lg rounded-xl bg-lime-400 shadow-[0_4px_20px_rgba(255,255,255,0.6)]"
-              onClick={handleSubmit}
+              type="submit"
+              className="relative w-full py-2 sm:py-3 text-black flex items-center justify-center font-bold text-base sm:text-lg rounded-xl bg-lime-400 shadow-[0_4px_20px_rgba(255,255,255,0.6)]"
             >
-              Mobile Number
-            </label>
-            <div
-              className={`rounded-sm mb-1 sm:mb-2 border-2 ${
-                errors.phoneNumber ? "border-red-700" : "border-lime-400"
-              } bg-gradient-to-r from-[#2e470fb4] via-[#3a5b0bc9] to-[#3a5b0b49]`}
+              {mutation.isPending ? <Loader className="animate-spin" /> : "Save"}
+            </button>
+            <button
+              type="button"
+              className="relative w-full py-2 sm:py-3 text-white border-2 border-white font-bold text-base sm:text-lg md:text-xl rounded-xl bg-transparent"
+              onClick={handleCancel}
             >
-              <Input
-                {...register("phoneNumber")}
-                placeholder="Mobile Number"
-                className="w-full p-3 sm:p-6 text-white bg-transparent outline-none text-sm sm:text-base border-0"
-              />
-            </div>
-            {errors.phoneNumber && (
-              <p className="text-red-700 text-xs mt-1">
-                {errors.phoneNumber.message}
-              </p>
-            )}
+              Cancel
+            </button>
           </div>
-        </div>
-
-        <div className="flex items-center gap-4 sm:gap-10 w-full sm:w-3/4 md:w-1/2 mt-3 sm:mt-5">
-          <button
-            className="relative w-full py-2 sm:py-3 text-black flex items-center justify-center font-bold text-base sm:text-lg rounded-xl bg-lime-400 shadow-[0_4px_20px_rgba(255,255,255,0.6)]"
-            type="submit"
-          >
-            {mutation.isPending ? <Loader className="animate-spin" /> : "Save"}
-          </button>
-          <button
-            className="relative w-full py-2 sm:py-3 text-white border-2 border-white font-bold text-base sm:text-lg md:text-xl rounded-xl bg-transparent"
-            onClick={handleCancel}
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 };

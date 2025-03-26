@@ -12,7 +12,6 @@ import { PiPencilSimple } from "react-icons/pi";
 import Script from "next/script";
 import { useSession } from "next-auth/react";
 import { Order, orderApi } from "@/lib/api/orders";
-import { useRouter } from "next/navigation";
 
 const Checkout: React.FC = () => {
   const [selectedAddress, setSelectedAddress] = useState<string>("");
@@ -20,9 +19,6 @@ const Checkout: React.FC = () => {
   const { cart } = useCart();
 
   const { data: session } = useSession();
-
-  const router = useRouter();
-
   // Fetch addresses from API
   const { data: addresses } = useQuery({
     queryKey: ["address"],

@@ -441,8 +441,6 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                 </div>
               </div>
             </div>
-          </div>
-
           <hr className="opacity-50 my-4" />
 
           <div className="w-full mb-22 h-full">
