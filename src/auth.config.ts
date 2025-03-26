@@ -7,7 +7,7 @@ import { NextAuthConfig } from "next-auth";
 import bcryptjs from "bcryptjs";
 
 const homeRoute = ["/", "/feature", "/pricing", "/contact"];
-const authRoute = ["/signin", "/signup"];
+const authRoute = ["/signin", "/signup",""];
 
 export default {
   providers: [
@@ -80,8 +80,8 @@ export default {
   callbacks: {
     authorized({ request: { nextUrl }, auth }:any) {
       const isLoggedIn = !!auth?.user;
-      // console.log(auth);
-      // console.log(isLoggedIn);
+      console.log(auth);
+      console.log(isLoggedIn);
       const { pathname } = nextUrl;
 
       // Allow access to the home route for all users
@@ -99,17 +99,17 @@ export default {
     },
 
     jwt({ token, user }: any) {
-      // console.log("🔵 Generating JWT Token...");
-      // console.log("🔹 User Data:", user);
+      console.log("🔵 Generating JWT Token...");
+      console.log("🔹 User Data:", user);
 
       if (user) {
         token.id = user.id;
         token.picture = user.image;
         token.mobile_no = user.mobile_no;
-        token.role = process.env.ADMIN_NUMBERS?.split(",").includes(user.mobile_no) ? "admin" : "user"; // Store user role
+        token.role = user.role; // Store user role
       }
 
-      // console.log("✅ Token Created:", token);
+      console.log("✅ Token Created:", token);
       return token;
     },
 

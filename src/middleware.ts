@@ -1,33 +1,44 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
-// Define paths that require admin access
-const adminRoutes = ["/admin", "/api/admin"];
+export function middleware(req: NextRequest,) {
+  const { pathname } = req.nextUrl;
 
-export async function middleware(req: NextRequest) {
-    // Extract token from NextAuth session
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  // Only process requests starting with "/backend"
+  if (pathname.startsWith('/backend')) {
+    console.log('Middleware triggered for:', pathname);
+    
+    // Determine cookie name based on environment
+    const isProd = process.env.NODE_ENV === 'production';
+    const cookieName = isProd
+      ? '__Secure-authjs.session-token'
+      : 'authjs.session-token';
+      const api_url = process.env.NEXT_PUBLIC_BACKEND_URL
+      const forwardedPath = req.nextUrl.pathname.replace("/backend", "");
+      const url = new URL(api_url + forwardedPath + req.nextUrl.search);
+      console.log('URL:', url.toString());
 
-    // If no token, redirect to login page
-    if (!token) {
-        return NextResponse.redirect(new URL("/api/auth/signin", req.url));
+    const token = req.cookies.get(cookieName)?.value;
+    console.log('Token found:', token);
+    
+    if (token) {
+      // Clone the request headers and add the Authorization header
+      const requestHeaders = new Headers(req.headers);
+      requestHeaders.set('Authorization', `Bearer ${token}`);
+
+      // Forward the request with the updated headers
+      return NextResponse.rewrite(url.toString(),{
+        request: {
+          headers: requestHeaders,
+        },
+      });
     }
-
-    // Check if the route requires admin access
-    const isAdminRoute = adminRoutes.some((route) => req.nextUrl.pathname.startsWith(route));
-
-    if (isAdminRoute) {
-        // Ensure the user is an admin
-        if (token.role !== "admin") {
-            // Redirect unauthorized users to the home page
-            return NextResponse.redirect(new URL("/", req.url));
-        }
-    }
-
-    return NextResponse.next(); // Allow the request to proceed
+  }
+  
+  return NextResponse.next();
 }
 
-// Apply middleware to specific paths
+// Ensure middleware runs only on routes starting with /backend
 export const config = {
-    matcher: ["/admin/:path*", "/api/admin/:path*"], // Apply to all admin routes
+  matcher: '/backend/:path*',
 };

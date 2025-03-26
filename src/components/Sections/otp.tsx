@@ -44,7 +44,7 @@ const handleResendOtp = async() => {
         console.log(data);
         toast.success("OTP verified successfully");
         if(data?.jwt){
-          router.push(`/forget-password/${data.jwt}`);
+          router.push(`/new-password/${data.jwt}`);
         }else{
           router.push("/signin");
         }
