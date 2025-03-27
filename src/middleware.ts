@@ -59,7 +59,7 @@ export default async function middleware(req: NextRequest) {
   }
 
   /** 🔹 Handle Auth Routes */
-  if (authRoutes.includes(pathname)) {
+  if (authRoutes.some(route => pathname.startsWith(route))) {
     if (session) {
       console.log('User already authenticated. Redirecting to home.');
       return NextResponse.redirect(new URL('/', req.url));
@@ -67,7 +67,7 @@ export default async function middleware(req: NextRequest) {
   }
 
   /** 🔹 Redirect Unauthenticated Users from Non-Public & Non-Auth Routes */
-  if (!publicRoutes.includes(pathname) && !authRoutes.includes(pathname) && !session) {
+  if (!publicRoutes.includes(pathname) && !authRoutes.some(route => pathname.startsWith(route)) && !session) {
     console.log('Protected route accessed without authentication. Redirecting to /signin.');
     return NextResponse.redirect(new URL('/signin', req.url));
   }
