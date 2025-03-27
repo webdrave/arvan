@@ -41,9 +41,8 @@ const Checkout: React.FC = () => {
 
   const getShiprocketToken = async ()  => {
 
-    const email = process.env.SHIPROCKET_EMAIL;
-    const password = process.env.SHIPROCKET_PASSWORD;
-    console.log(email, password);
+    const email = process.env.NEXT_PUBLIC_SHIPROCKET_EMAIL;
+    const password = process.env.NEXT_PUBLIC_SHIPROCKET_PASSWORD;
     try {
       const response = await fetch("https://apiv2.shiprocket.in/v1/external/auth/login", {
         method: "POST",
