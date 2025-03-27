@@ -4,8 +4,8 @@ import type { NextRequest } from 'next/server';
 import authConfig from './auth.config';
 import NextAuth from 'next-auth';
 
-// const publicRoutes = ['/', '/contact', '/product', '/about'];
-// const authRoutes = ['/signin', '/signup', '/otp', '/new-password', '/forgot-password'];
+const publicRoutes = ['/', '/contact', '/product', '/about'];
+const authRoutes = ['/signin', '/signup', '/otp', '/new-password', '/forgot-password'];
 
 const { auth } = NextAuth(authConfig);
 
@@ -46,30 +46,31 @@ export default async function middleware(req: NextRequest) {
   }
 
   /** 🔹 Handle Admin Routes */
-  // if (pathname.startsWith('/admin')) {
-  //   if (!session) {
-  //     console.log('User not authenticated. Redirecting to /signin.');
-  //     return NextResponse.redirect(new URL('/signin', req.url));
-  //   }
-  //   if (session.user?.role !== 'ADMIN') {
-  //     console.log('User is not an admin. Redirecting to home.');
-  //     return NextResponse.redirect(new URL('/', req.url));
-  //   }
-  // }
+  if (pathname.startsWith('/admin')) {
+    if (!session) {
+      console.log('User not authenticated. Redirecting to /signin.');
+      return NextResponse.redirect(new URL('/signin', req.url));
+    }
+    console.log(session.user);
+    if (session.user?.role !== 'ADMIN') {
+      console.log('User is not an admin. Redirecting to home.');
+      return NextResponse.redirect(new URL('/', req.url));
+    }
+  }
 
   /** 🔹 Handle Auth Routes */
-  // if (authRoutes.includes(pathname)) {
-  //   if (session) {
-  //     console.log('User already authenticated. Redirecting to home.');
-  //     return NextResponse.redirect(new URL('/', req.url));
-  //   }
-  // }
+  if (authRoutes.includes(pathname)) {
+    if (session) {
+      console.log('User already authenticated. Redirecting to home.');
+      return NextResponse.redirect(new URL('/', req.url));
+    }
+  }
 
   /** 🔹 Redirect Unauthenticated Users from Non-Public & Non-Auth Routes */
-  // if (!publicRoutes.includes(pathname) && !authRoutes.includes(pathname) && !session) {
-  //   console.log('Protected route accessed without authentication. Redirecting to /signin.');
-  //   return NextResponse.redirect(new URL('/signin', req.url));
-  // }
+  if (!publicRoutes.includes(pathname) && !authRoutes.includes(pathname) && !session) {
+    console.log('Protected route accessed without authentication. Redirecting to /signin.');
+    return NextResponse.redirect(new URL('/signin', req.url));
+  }
 
   return NextResponse.next();
 }

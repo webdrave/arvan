@@ -36,7 +36,6 @@ export async function handleSignup(data: z.infer<typeof SignUpSchema>) {
             name: data.name,
           mobile_no: data.mobileNumber,
           password: hashedPassword,
-          role: "ADMIN"
         },
       });
       console.log(response);
