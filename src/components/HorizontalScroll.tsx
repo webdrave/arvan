@@ -38,7 +38,7 @@ const HorizontalScroll = () => {
       para: "Elevate your style with the Cube Slides – a perfect fusion of futuristic design and everyday comfort.",
     },
     {
-      image: "/slides/10.png",
+      image: "/slideImage6.png",
       heading: "Red Dragon",
       para: "A fierce blend of style and comfort, the Red Dragon slides feature a striking emblem on a sleek black base.",
     },

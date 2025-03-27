@@ -12,8 +12,8 @@ import Navigation from "../navigation";
 import BestSellers from "./bestSellers";
 import Footer from "../Footer";
 import { productReviewApi } from "@/lib/api/productreview";
+import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-
 
 const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
   const [showReviewModal, setShowReviewModal] = useState(false);
@@ -24,6 +24,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
   const [availableSizes, setAvailableSizes] = useState<string[]>([]);
   const [quantity, setQuantity] = useState<number>(1);
   const { addToCart } = useCart();
+  const router = useRouter();
 
   const handlecloseReviewModal = () => {
     setShowReviewModal(false);
@@ -48,7 +49,6 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
   });
 
   const [productData, fetchedReviews] = results;
-  const router = useRouter();
 
   useEffect(() => {
     if (productData.data) {
@@ -189,10 +189,12 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                         {productData.data.price}
                       </p>
                       <div className="text-black text-normal border font-montserrat  rounded-xl  bg-[#C2E53A] font-bold px-2">
-                        {(((productData.data.price -
-                          productData.data.discountPrice!) /
-                          productData.data.price) *
-                          100).toFixed(2)}
+                        {(
+                          ((productData.data.price -
+                            productData.data.discountPrice!) /
+                            productData.data.price) *
+                          100
+                        ).toFixed(2)}
                         %
                       </div>
                     </div>
@@ -212,7 +214,8 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                     </div>
                     <button
                       className="text-[#bababa] w-full text-sm underline"
-                      onClick={handleWriteReview}>
+                      onClick={handleWriteReview}
+                    >
                       Write a Review
                     </button>
                     {showReviewModal && (
@@ -269,7 +272,8 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                               ? "border-[#c2e53a]"
                               : "border-white"
                           }`}
-                          onClick={() => setSelectedSize(size)}>
+                          onClick={() => setSelectedSize(size)}
+                        >
                           {size}
                         </button>
                       ))}
@@ -280,6 +284,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
 
                     <div className="mt-10 flex flex-row sm:flex-col md:flex-row w-full justify-between items-center gap-4">
                       <button
+                        className="w-full h-10 bg-[#c2e53a] rounded-xl text-black text-xl font-medium uppercase font-montserrat"
                         onClick={() => {
                           addToCart({
                             id: productData.data.id,
@@ -300,35 +305,57 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                             // stock: stockInfo?.stock || 0,
                             material: productData.data.material,
                           });
-                          router.push("/checkout");
+
+                          toast.success(
+                            `${productData.data.name} has been added to your cart.`,
+                            {
+                              duration: 2500,
+                            }
+                          );
+
+                          router.push("/cart");
                         }}
-                        className="w-full h-10 bg-[#c2e53a] rounded-xl text-black text-xl font-medium uppercase font-montserrat">
+                      >
                         Buy Now
                       </button>
-                      <button
-                        className="w-full h-10 border border-[#c2e53a] text-white  text-sm md:text-xl font-normal uppercase font-montserrat flex items-center justify-center gap-2 rounded-xl"
-                        onClick={() => {
-                          addToCart({
-                            id: productData.data.id,
-                            productVariantId: productData.data.colors
-                              .find((color) => color.color === selectedColor)
-                              ?.sizes.find(
-                                (size) => size.size === `SIZE_${selectedSize}`
-                              )?.id,
-                            name: productData.data.name,
-                            price:
-                              productData.data.discountPrice ||
-                              productData.data.price,
-                            quantity: 1,
-                            color: selectedColor,
-                            size: selectedSize,
-                            asset: selectedImage,
-                            image: selectedImage,
-                            // stock: stockInfo?.stock || 0,
-                            material: productData.data.material,
-                          });
-                        }}>
-                     
+                      <div className="w-full flex items-center  justify-center gap-1">
+                        <button
+                          className="border border-[#c2e53a] w-10 flex  items-center justify-center h-10 text-white rounded-lg"
+                          onClick={() => setQuantity((prev) => prev + 1)}
+                        >
+                          <Plus size={18} />
+                        </button>
+                        <button
+                          className="w-full h-10 border border-[#c2e53a] text-white  text-sm md:text-xl font-normal uppercase font-montserrat flex items-center justify-center gap-2 rounded-lg"
+                          onClick={() => {
+                            addToCart({
+                              id: productData.data.id,
+                              productVariantId: productData.data.colors
+                                .find((color) => color.color === selectedColor)
+                                ?.sizes.find(
+                                  (size) => size.size === `SIZE_${selectedSize}`
+                                )?.id,
+                              name: productData.data.name,
+                              price:
+                                productData.data.discountPrice ||
+                                productData.data.price,
+                              quantity: 1,
+                              color: selectedColor,
+                              size: selectedSize,
+                              asset: selectedImage,
+                              image: selectedImage,
+                              // stock: stockInfo?.stock || 0,
+                              material: productData.data.material,
+                            });
+
+                            toast.success(
+                              `${productData.data.name} has been added to your cart.`,
+                              {
+                                duration: 2500,
+                              }
+                            );
+                          }}
+                        >
                           <ShoppingCart className="h-5 w-5" /> Add to Cart :{" "}
                           {quantity}
                         </button>
@@ -390,7 +417,8 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                     {/* Rate Product Button */}
                     <button
                       className="text-base px-4 py-2 rounded-lg bg-gradient-to-r from-[#c3e53a85] via-[#3a5b0b] to-[#3a5b0b5e] border border-[#C2E53A] w-full sm:w-48 h-10"
-                      onClick={handleWriteReview}>
+                      onClick={handleWriteReview}
+                    >
                       Rate Product
                     </button>
                   </div>
@@ -401,7 +429,8 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                       (filter) => (
                         <button
                           key={filter}
-                          className="border border-[#c2e53a] px-3 sm:px-6 py-1 rounded-sm text-sm sm:text-base">
+                          className="border border-[#c2e53a] px-3 sm:px-6 py-1 rounded-sm text-sm sm:text-base"
+                        >
                           {filter}
                         </button>
                       )
@@ -418,7 +447,8 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                           <>
                             <div
                               className=" w-full  flex  gap-2 items-center"
-                              key={i}>
+                              key={i}
+                            >
                               <h1 className="font-montserrat text-zinc-500 text-xl">
                                 {review.title}
                               </h1>
@@ -441,6 +471,8 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                 </div>
               </div>
             </div>
+          </div>
+
           <hr className="opacity-50 my-4" />
 
           <div className="w-full mb-22 h-full">
