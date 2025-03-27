@@ -13,6 +13,7 @@ const OTPVerification = ({ mobileNumber }: { mobileNumber: string }) => {
   const [timer, setTimer] = useState(0);
   const [isVerifying, setIsVerifying] = useState(false);
   const router = useRouter();
+  
 
   const startResendTimer = () => {
     setIsResendDisabled(true);
@@ -108,7 +109,7 @@ const OTPVerification = ({ mobileNumber }: { mobileNumber: string }) => {
         </p>{" "}
       </div>
       <form className="bg-transparent" onSubmit={handleOTPSubmit}>
-        <OTPInput otp={otp} setOtp={setOtp} />
+        <OTPInput otp={otp} onChangeOtp={setOtp} />
         <p className="text-end mt-3 mb-6 text-sm text-lime-400">
           {isResendDisabled ? (
             <span>Resend available in {formatTime(timer)}</span>

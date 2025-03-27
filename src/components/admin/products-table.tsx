@@ -161,7 +161,7 @@ const { totalPages } = data?.pagination || { totalPages: 1 };
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">{product.name}</td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  ${product.price.toFixed(2)}
+                ₹{product.price.toFixed(2)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span

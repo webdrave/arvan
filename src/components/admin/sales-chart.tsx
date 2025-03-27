@@ -27,7 +27,7 @@ interface MonthlySalesData {
 
 export function SalesChart() {
   // Fetch products using React Query
-  const { data: products = [], isLoading, isError } = useQuery<Product[]>({
+  const { data: products = [] } = useQuery<Product[]>({
     queryKey: ["productPerformance"],
     queryFn: async () => {
       try {

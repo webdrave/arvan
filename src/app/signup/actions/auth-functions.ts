@@ -38,15 +38,16 @@ export async function handleSignup(data: z.infer<typeof SignUpSchema>) {
           password: hashedPassword,
         },
       });
+      console.log(response);
   
-      const otpResponse = await apiClient.post("/api/customers/otp", { mobile_no: response.mobile_no,type:"verify" });
-  
+      const otpResponse = await apiClient.post("/api/customers/otp", { mobile_no: response.mobile_no, type: "verify" });
       console.log(otpResponse.data);
      
       
       
       return {  jwt: otpResponse.data.jwt };
     } catch (error: any) {
+      console.error(error);
       return { error: error.message || "Something went wrong" };
     }
   }

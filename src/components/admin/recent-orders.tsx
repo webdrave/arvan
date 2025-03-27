@@ -50,9 +50,6 @@ export function RecentOrders() {
                 Order ID
               </th>
               <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                Customer
-              </th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                 Total
               </th>
               <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -72,8 +69,7 @@ export function RecentOrders() {
             {!isLoading && orders.map((order) => (
               <tr key={order.id} className="hover:bg-gray-50 transition-colors duration-200">
                 <td className="px-6 py-2 whitespace-nowrap text-sm font-medium text-[#4f507f]">#{order.id}</td>
-                <td className="px-6 py-2 whitespace-nowrap text-sm text-gray-700">{order.customer}</td>
-                <td className="px-6 py-2 whitespace-nowrap text-sm text-gray-700">${order.total.toFixed(2)}</td>
+                <td className="px-6 py-2 whitespace-nowrap text-sm text-gray-700">₹{order.total.toFixed(2)}</td>
                 <td className="px-6 py-2 whitespace-nowrap">
                   <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                     order.status === "Delivered" ? "bg-green-100 text-green-800" :

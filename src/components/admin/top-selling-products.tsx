@@ -82,6 +82,14 @@ export function TopSellingProducts() {
                 </td>
               </tr>
             )}
+            {!isLoading && products.map((product, index) => (
+              <tr key={index}>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{product.name}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.sales}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">₹{product.revenue}</td>
+              </tr>
+            ))}
+
           </tbody>
         </table>
       </div>

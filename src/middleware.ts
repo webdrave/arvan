@@ -4,13 +4,12 @@ import type { NextRequest } from 'next/server';
 import authConfig from './auth.config';
 import NextAuth from 'next-auth';
 
-const publicRoutes = ['/', '/contact', '/product', '/about'];
+const publicRoutes = ['/', '/contact', '/product', '/about','/shop'];
 const authRoutes = ['/signin', '/signup', '/otp', '/new-password', '/forgot-password'];
 
 const { auth } = NextAuth(authConfig);
 
-
-export default auth(async function middleware(req: NextRequest) {
+export default async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const session = (await auth()) as any;
 
@@ -18,6 +17,7 @@ export default auth(async function middleware(req: NextRequest) {
   console.log('User session:', session ? 'Authenticated' : 'Not Authenticated');
 
   if (pathname.startsWith('/backend')) {
+    console.log('Rewriting backend request to:', pathname);
     const isProd = process.env.NODE_ENV === 'production';
     const cookieName = isProd ? '__Secure-authjs.session-token' : 'authjs.session-token';
     const api_url = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -40,10 +40,8 @@ export default auth(async function middleware(req: NextRequest) {
       requestHeaders.set('Authorization', `Bearer ${token}`);
     }
 
-    return NextResponse.rewrite(url.toString(), {
-      request: {
-        headers: requestHeaders,
-      },
+    return NextResponse.rewrite(url, {
+      headers: requestHeaders,
     });
   }
 
@@ -53,6 +51,7 @@ export default auth(async function middleware(req: NextRequest) {
       console.log('User not authenticated. Redirecting to /signin.');
       return NextResponse.redirect(new URL('/signin', req.url));
     }
+    console.log(session.user);
     if (session.user?.role !== 'ADMIN') {
       console.log('User is not an admin. Redirecting to home.');
       return NextResponse.redirect(new URL('/', req.url));
@@ -60,7 +59,7 @@ export default auth(async function middleware(req: NextRequest) {
   }
 
   /** 🔹 Handle Auth Routes */
-  if (authRoutes.includes(pathname)) {
+  if (authRoutes.some(route => pathname.startsWith(route))) {
     if (session) {
       console.log('User already authenticated. Redirecting to home.');
       return NextResponse.redirect(new URL('/', req.url));
@@ -68,13 +67,13 @@ export default auth(async function middleware(req: NextRequest) {
   }
 
   /** 🔹 Redirect Unauthenticated Users from Non-Public & Non-Auth Routes */
-  if (!publicRoutes.includes(pathname) && !authRoutes.includes(pathname) && !session) {
+  if (!publicRoutes.includes(pathname) && !authRoutes.some(route => pathname.startsWith(route)) && !session) {
     console.log('Protected route accessed without authentication. Redirecting to /signin.');
     return NextResponse.redirect(new URL('/signin', req.url));
   }
 
   return NextResponse.next();
-});
+}
 
 // Ensure middleware runs on relevant routes
 export const config = {
