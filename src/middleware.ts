@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server';
 import authConfig from './auth.config';
 import NextAuth from 'next-auth';
 
-const publicRoutes = ['/', '/contact', '/product', '/about'];
+const publicRoutes = ['/', '/contact', '/product', '/about','/shop'];
 const authRoutes = ['/signin', '/signup', '/otp', '/new-password', '/forgot-password'];
 
 const { auth } = NextAuth(authConfig);

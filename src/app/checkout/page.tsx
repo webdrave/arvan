@@ -40,6 +40,10 @@ const Checkout: React.FC = () => {
   const router = useRouter();
 
   const getShiprocketToken = async ()  => {
+
+    const email = process.env.SHIPROCKET_EMAIL;
+    const password = process.env.SHIPROCKET_PASSWORD;
+    console.log(email, password);
     try {
       const response = await fetch("https://apiv2.shiprocket.in/v1/external/auth/login", {
         method: "POST",
@@ -47,8 +51,8 @@ const Checkout: React.FC = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: process.env.SHIPROCKET_EMAIL,
-          password: process.env.SHIPROCKET_PASSWORD,
+          email,
+          password,
         }),
       });
   
