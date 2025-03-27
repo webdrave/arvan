@@ -23,12 +23,12 @@ const Section2 = () => {
         <div className="heading relative text-center">
           <BrushStroke />
           <p className="px-[10vw] mt-2 md:px-[20vw] text-xs md:text-lg">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            Like a smooth brushstroke, Arvan glides effortlessly, bringing you
+            slides that redefine comfort with a touch of timeless style.
           </p>
         </div>
 
-        <div className="relative  overflow-x-hidden ">
+        <div className="relative overflow-x-hidden ">
           <HorizontalScroll />
         </div>
       </div>

@@ -114,8 +114,7 @@ export default function ContactForm() {
               <span className="text-white">?</span>
             </h2>
             <p className="text-gray-300 mt-2 text-[10px] sm:text-sm md:text-sm lg:text-base leading-relaxed">
-              Lorem Ipsum Dolor Sit Amet. Lorem Ipsum Dolor Sit Amet. Lorem
-              Ipsum Dolor Sit Amet.
+              Got a question or need assistance? We're here to help!
             </p>
             <form
               className="mt-6 space-y-4 sm:space-y-6"
@@ -174,8 +173,9 @@ export default function ContactForm() {
                   EMAIL
                 </h3>
                 <p className="text-gray-300 mt-2 text-[10px] sm:text-sm md:text-sm lg:text-base leading-relaxed">
-                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                  Quod, temporibus!
+                  Reach out to us via email for any inquiries, support, or
+                  collaborations. We’re just a message away and
+                  ready to assist you!
                 </p>
               </div>
 
@@ -207,8 +207,7 @@ export default function ContactForm() {
             </div>
 
             <p className="text-[10px] sm:text-sm md:text-sm lg:text-base leading-relaxed mt-6 md:mb-5 hidden md:block">
-              Lorem Ipsum Dolor Sit Amet. Lorem Ipsum Dolor Sit Amet. Lorem
-              Ipsum Dolor Sit Amet.
+              We’d love to hear from you! Whether you have questions, or just want to say hello, feel free to reach out.
             </p>
           </div>
         </div>
