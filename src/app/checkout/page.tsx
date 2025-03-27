@@ -28,13 +28,88 @@ const Checkout: React.FC = () => {
         id: addr.id,
         name: "Home", // Static name for now
         details: `${addr.street}, ${addr.city}, ${addr.state}, ${addr.country} - ${addr.zipCode}`,
+        street: addr.street,
+        city: addr.city,
+        state: addr.state,
+        country: addr.country,
+        zipCode: addr.zipCode,
       }));
     },
   });
 
   const router = useRouter();
 
-  const handleSubmit = () => {
+  const getShiprocketToken = async ()  => {
+    try {
+      const response = await fetch("https://apiv2.shiprocket.in/v1/external/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: process.env.SHIPROCKET_EMAIL,
+          password: process.env.SHIPROCKET_PASSWORD,
+        }),
+      });
+  
+      const data = await response.json();
+      return data.token;
+    } catch (error) {
+      console.error("Shiprocket Auth Error:", error);
+      return null;
+    }
+  };
+
+  const createShiprocketOrder = async (shipToken: string) => {
+    try {
+      const orderData = {
+        order_id: ``, // Unique order ID
+        order_date: new Date().toISOString(),
+        pickup_location: "Primary",
+        channel_id: "",
+        comment: "New order",
+        billing_customer_name: session?.user?.name,
+        billing_address: addresses?.find((a) => a.id === selectedAddress)?.details,
+        billing_city: addresses?.find((a) => a.id === selectedAddress)?.city,
+        billing_pincode: addresses?.find((a) => a.id === selectedAddress)?.zipCode,
+        billing_state: addresses?.find((a) => a.id === selectedAddress)?.state,
+        billing_country: "India",
+        billing_email: "",
+        billing_phone: session?.user?.mobile_no,
+        order_items: cart.map((item) => ({
+          name: item.name,
+          sku: item.productVariantId,
+          units: item.quantity,
+          selling_price: item.price,
+          hsn: "1234",
+        })),
+        payment_method: paymentMethod === "cod" ? "COD" : "Prepaid",
+        sub_total: subtotal,
+        length: 10,
+        breadth: 10,
+        height: 10,
+        weight: 1,
+      };
+  
+      const response = await fetch("https://apiv2.shiprocket.in/v1/external/orders/create/adhoc", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${shipToken}`,
+        },
+        body: JSON.stringify(orderData),
+      });
+  
+      const data = await response.json();
+      console.log("Shiprocket Order Created:", data);
+    } catch (error) {
+      console.error("Shiprocket Order Error:", error);
+    }
+  };
+  
+  
+
+  const handleSubmit =  async () => {
     console.log("Selected Address:", selectedAddress);
     if (!selectAddress) {
       alert("Select an address first..");
@@ -53,6 +128,8 @@ const Checkout: React.FC = () => {
           priceAtOrder: item.price,
         })),
       });
+      const shipToken = await getShiprocketToken();
+      createShiprocketOrder(shipToken as string);
       router.push("/profile");
     } else {
       // Razorpay will be here
@@ -146,18 +223,39 @@ const Checkout: React.FC = () => {
           });
           const res = await result.json();
           if (res.isOk) {
-            orderMutaion.mutate({
-              userId: session?.user?.id as string,
-              addressId: selectedAddress,
-              total,
-              paid: true,
-              items: cart.map((item) => ({
-                productVariantId: item.productVariantId as string,
-                quantity: item.quantity,
-                priceAtOrder: item.price,
-              })),
-            });
-            router.push("/profile");
+            orderMutaion.mutate(
+              {
+                userId: session?.user?.id as string,
+                addressId: selectedAddress,
+                total,
+                paid: true,
+                items: cart.map((item) => ({
+                  productVariantId: item.productVariantId as string,
+                  quantity: item.quantity,
+                  priceAtOrder: item.price,
+                })),
+              },
+              {
+                onSuccess: async (data) => {
+                  const orderId = data?.id;
+                  console.log("Order Created with ID:", orderId);
+          
+                  // 🔥 Shiprocket Order
+                  const shipToken = await getShiprocketToken();
+                  if (!shipToken) {
+                    console.error("Shiprocket token not found.");
+                    return;
+                  }
+          
+                  await createShiprocketOrder(shipToken);
+                  router.push("/profile");
+                },
+                onError: (error) => {
+                  console.error("Error creating order:", error);
+                },
+              }
+            );
+          
           } else {
             alert(res.message);
           }

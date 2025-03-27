@@ -7,6 +7,7 @@ export interface OrderItems {
 }
 
 export interface Order {
+    id?: string;
     addressId: string;
     paid?: boolean;
     userId: string;
