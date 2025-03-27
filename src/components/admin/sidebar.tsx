@@ -94,18 +94,6 @@ export function Sidebar() {
             label="All Orders"
             active={isActive("/admin/orders")}
           />
-          <NavItem
-            href="/admin/orders/pending"
-            icon={<Clock size={18} />}
-            label="Pending"
-            active={isActive("/admin/orders/pending")}
-          />
-          <NavItem
-            href="/admin/orders/shipped"
-            icon={<Truck size={18} />}
-            label="Shipped"
-            active={isActive("/admin/orders/shipped")}
-          />
         </div>
       </div>
 
@@ -157,7 +145,7 @@ export function Sidebar() {
         </div>
       </div>
 
-      <div className="p-4">
+      {/* <div className="p-4">
         <div className="text-sm text-gray-500 mb-2">Monitoring</div>
         <div className="space-y-1">
           <NavItem
@@ -167,9 +155,9 @@ export function Sidebar() {
             active={isActive("/admin/activity")}
           />
         </div>
-      </div>
+      </div> */}
 
-      <div className="p-4">
+      {/* <div className="p-4">
         <div className="text-sm text-gray-500 mb-2">Marketing</div>
         <div className="space-y-1">
           <NavItem
@@ -188,7 +176,7 @@ export function Sidebar() {
           label="Settings"
           active={isActive("/admin/settings")}
         />
-      </div>
+      </div> */}
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { Search, Sun, History, Bell, Layout } from "lucide-react"
+// import { Search, Sun, History, Bell, Layout } from "lucide-react"
 
 export function DashboardHeader() {
   return (
@@ -6,7 +6,7 @@ export function DashboardHeader() {
       <div className="flex items-center gap-4">
         <h1 className="text-xl font-semibold">Overview</h1>
       </div>
-      <div className="flex items-center gap-2">
+      {/* <div className="flex items-center gap-2">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
           <input
@@ -27,7 +27,7 @@ export function DashboardHeader() {
         <button className="p-2 rounded-full hover:bg-gray-100">
           <Layout size={20} className="text-gray-600" />
         </button>
-      </div>
+      </div> */}
     </div>
   )
 }
