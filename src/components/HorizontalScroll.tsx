@@ -38,7 +38,7 @@ const HorizontalScroll = () => {
       para: "Elevate your style with the Cube Slides – a perfect fusion of futuristic design and everyday comfort.",
     },
     {
-      image: "/slides/10.png",
+      image: "/slides/slideImage6.png",
       heading: "Red Dragon",
       para: "A fierce blend of style and comfort, the Red Dragon slides feature a striking emblem on a sleek black base.",
     },
@@ -600,7 +600,7 @@ const HorizontalScroll = () => {
           <div className=" text-center -translate-y-[50%]">
             <button
               onClick={() => router.push("/shop")}
-              className=" text-sm md:text-xl font-semibold p-5 bg-transparent
+              className=" text-sm md:text-xl font-semibold p-5 px-10 bg-transparent
                       border border-[#c3e53ab9] bg-gradient-to-r from-[#c3e53a77]  via-[#6c7f2069]  to-[#6c7f2069] transition-all duration-300 shadow-[0px_4px_20px_#c3e53a77]"
             >
               BUY NOW
