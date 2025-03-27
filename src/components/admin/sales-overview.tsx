@@ -37,7 +37,6 @@ export function SalesOverview() {
       title: "Total Revenue",
       value: `$${metrics?.totalRevenue?.toLocaleString() ?? "0"}`,
       icon: DollarSign,
-      change: "0%", // Placeholder
       changeType: "positive",
     },
     {
@@ -51,14 +50,12 @@ export function SalesOverview() {
       title: "Total Orders",
       value: metrics?.totalOrders.toLocaleString(),
       icon: ShoppingCart,
-      change: "0%", // Placeholder
       changeType: "positive",
     },
     {
-      title: "New Customers",
+      title: "Total Customers",
       value: metrics?.newCustomers.toLocaleString(),
       icon: Users,
-      change: "0%", // Placeholder
       changeType: "positive",
     },
   ]
