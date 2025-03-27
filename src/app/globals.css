@@ -101,7 +101,7 @@ body.admin-panel {
 }
 
 .pulse {
-  animation: pulse 0.3s linear infinite;
+  animation: pulse 0.4s linear infinite;
 }
 
 /* .montserrat {
@@ -129,10 +129,50 @@ body.admin-panel {
   .mainText {
     font-size: 20vw !important;
   }
+
+  .contact{
+    margin-bottom: 5rem;
+  }
 }
 
 @media screen and (width: 1024px) and (height: 600px) {
   .shop {
     height: 80vh;
   }
+}
+
+/* Ensure the dropdown background and text color are consistent */
+.react-tel-input .flag-dropdown {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+.react-tel-input .country-list {
+  background-color: #1a1a1a !important; /* Dark background */
+  color: white !important; /* White text */
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Fix hover issue (white text on white background) */
+.react-tel-input .country-list .country:hover {
+  background-color: #3a5b0bc9 !important; /* Custom hover background */
+  color: white !important; /* Ensure text remains visible */
+}
+
+/* Ensure selected country in the dropdown is visible */
+.react-tel-input .country-list .country.highlight {
+  background-color: #3a5b0bc9 !important; /* Highlighted background */
+  color: white !important;
+}
+
+/* Fix search input inside dropdown */
+.react-tel-input .selected-flag {
+  background-color: transparent !important;
+}
+
+.react-tel-input .country-list .search {
+  background-color: #1a1a1a !important; /* Dark background */
+  color: white !important;
+  border: 1px solid #3a5b0bc9;
 }

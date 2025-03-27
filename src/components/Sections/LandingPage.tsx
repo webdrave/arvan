@@ -14,6 +14,12 @@ const LandingPage = () => {
     // "/bgslides/bg-3.png",
   ];
 
+  const bannerBackground = [
+    "/BannerImages/Banner-1.jpg",
+    "/BannerImages/Banner-2.jpg",
+    "/BannerImages/Banner-3.jpg",
+  ];
+
   const slidestext = ["JUNGLE WALKER", "LIFE IS GOOD", "A4 BLACK"];
 
   return (
@@ -171,6 +177,44 @@ const LandingPage = () => {
           </p>
         </div>
       </main>
+
+      <div className="absolute hidden lg:block w-[35%] h-[35%] right-0 bottom-0 px-5 py-2">
+        {/* SVG Clip Path Definition */}
+        <svg width="0" height="0">
+          <defs>
+            <clipPath id="customClip" clipPathUnits="objectBoundingBox">
+              <path
+                d="M0 0.133C0 0.13 0.001 0.126 0.003 0.123L0.053 0.004C0.054 0.002 0.057 0 0.061 0H0.932H0.994C0.998 0 1 0.002 1 0.006V0.867C1 0.87 0.999 0.873 0.998 0.875L0.947 0.996C0.946 0.998 0.943 1 0.939 1H0.069H0.006C0.002 1 0 0.998 0 0.994V0.133Z"
+                fill="white"
+              />
+            </clipPath>
+          </defs>
+        </svg>
+
+        {/* Swiper with Clipping Path */}
+        <Swiper
+          modules={[Autoplay]}
+          autoplay={{ delay: 3000, disableOnInteraction: false }}
+          loop={true}
+          speed={1000}
+          className="absolute inset-0 w-full h-full z-[100] overflow-hidden"
+          style={{ clipPath: "url(#customClip)" }}
+        >
+          {bannerBackground.map((image, index) => (
+            <SwiperSlide key={index} className="w-full h-full overflow-hidden">
+              <div className="relative w-full h-full">
+                <Image
+                  src={image}
+                  alt={`Background Image ${index + 1}`}
+                  layout="fill"
+                  objectFit="cover"
+                  quality={100}
+                />
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
 
       {/* <button
         onClick={(e) => {
