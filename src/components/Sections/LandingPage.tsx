@@ -90,6 +90,7 @@ const LandingPage = () => {
         </h2>
       </div>
 
+      {/*Mobile Left Side */}
       <div
         className="absolute top-0 left-0 z-[30] bg-[#121212] w-full h-full block lg:hidden "
         style={{
@@ -109,7 +110,7 @@ const LandingPage = () => {
             e.stopPropagation(); // Prevent event bubbling (optional)
             animateOverlay(true);
           }}
-          className="w-fit  absolute top-[50%] lg:hidden -translate-y-1/2 -right-7 md:-right-12  font-semibold text-sm md:text-lg rotate-90  "
+          className="w-fit  absolute top-[50%] lg:hidden -translate-y-1/2 -right-8 md:-right-12  font-semibold text-xs md:text-xl rotate-90  "
         >
           BEST SELLER
         </button>

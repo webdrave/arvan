@@ -5,7 +5,5 @@ export default function ProductDetail({}) {
   const { id } = useParams();
   const productId = Array.isArray(id) ? id[0] : id || "";
 
-  return (
-      <ProductDetails productId={productId} />
-  );
+  return <ProductDetails productId={productId} />;
 }
