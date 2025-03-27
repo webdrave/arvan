@@ -39,22 +39,24 @@ const Checkout: React.FC = () => {
 
   const router = useRouter();
 
-  const getShiprocketToken = async ()  => {
-
+  const getShiprocketToken = async () => {
     const email = process.env.NEXT_PUBLIC_SHIPROCKET_EMAIL;
     const password = process.env.NEXT_PUBLIC_SHIPROCKET_PASSWORD;
     try {
-      const response = await fetch("https://apiv2.shiprocket.in/v1/external/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
-  
+      const response = await fetch(
+        "https://apiv2.shiprocket.in/v1/external/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        }
+      );
+
       const data = await response.json();
       return data.token;
     } catch (error) {
@@ -72,9 +74,11 @@ const Checkout: React.FC = () => {
         channel_id: "",
         comment: "New order",
         billing_customer_name: session?.user?.name,
-        billing_address: addresses?.find((a) => a.id === selectedAddress)?.details,
+        billing_address: addresses?.find((a) => a.id === selectedAddress)
+          ?.details,
         billing_city: addresses?.find((a) => a.id === selectedAddress)?.city,
-        billing_pincode: addresses?.find((a) => a.id === selectedAddress)?.zipCode,
+        billing_pincode: addresses?.find((a) => a.id === selectedAddress)
+          ?.zipCode,
         billing_state: addresses?.find((a) => a.id === selectedAddress)?.state,
         billing_country: "India",
         billing_email: "",
@@ -93,26 +97,28 @@ const Checkout: React.FC = () => {
         height: 10,
         weight: 1,
       };
-  
-      const response = await fetch("https://apiv2.shiprocket.in/v1/external/orders/create/adhoc", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${shipToken}`,
-        },
-        body: JSON.stringify(orderData),
-      });
-  
+
+      const response = await fetch(
+        "https://apiv2.shiprocket.in/v1/external/orders/create/adhoc",
+        {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${shipToken}`,
+          },
+          body: JSON.stringify(orderData),
+        }
+      );
+
       const data = await response.json();
       console.log("Shiprocket Order Created:", data);
     } catch (error) {
       console.error("Shiprocket Order Error:", error);
     }
   };
-  
-  
 
-  const handleSubmit =  async () => {
+  const handleSubmit = async () => {
     console.log("Selected Address:", selectedAddress);
     if (!selectAddress) {
       alert("Select an address first..");
@@ -151,7 +157,6 @@ const Checkout: React.FC = () => {
       console.error("Error creating order:", error);
     },
   });
-
 
   // Sync selected address with fetched data
   useEffect(() => {
@@ -242,14 +247,14 @@ const Checkout: React.FC = () => {
                 onSuccess: async (data) => {
                   const orderId = data?.id;
                   console.log("Order Created with ID:", orderId);
-          
+
                   // 🔥 Shiprocket Order
                   const shipToken = await getShiprocketToken();
                   if (!shipToken) {
                     console.error("Shiprocket token not found.");
                     return;
                   }
-          
+
                   await createShiprocketOrder(shipToken);
                   router.push("/profile");
                 },
@@ -258,7 +263,6 @@ const Checkout: React.FC = () => {
                 },
               }
             );
-          
           } else {
             alert(res.message);
           }
@@ -271,14 +275,14 @@ const Checkout: React.FC = () => {
           color: "#3399cc",
         },
       };
-        const paymentObject = new window.Razorpay(options);
-        paymentObject.on(
-          "payment.failed",
-          function (response: { error: { description: string } }) {
-            alert(response.error.description);
-          }
-        );
-        paymentObject.open();
+      const paymentObject = new window.Razorpay(options);
+      paymentObject.on(
+        "payment.failed",
+        function (response: { error: { description: string } }) {
+          alert(response.error.description);
+        }
+      );
+      paymentObject.open();
     } catch (error) {
       console.log(error);
     }
