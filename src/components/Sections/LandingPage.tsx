@@ -3,11 +3,11 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
 import Image from "next/image";
-import { useState } from "react";
+// import { useState } from "react";
 import { useOverlayContext } from "@/context/OverlayContext";
 const LandingPage = () => {
   const { animateOverlay } = useOverlayContext();
-  const [activeIndex, setActiveIndex] = useState(0);
+  // const [activeIndex, setActiveIndex] = useState(0);
   const backgroundImages = [
     "/bgslides/bg-1.png",
     // "/bgslides/bg-2.png",
@@ -20,7 +20,7 @@ const LandingPage = () => {
     "/BannerImages/Banner-3.jpg",
   ];
 
-  const slidestext = ["JUNGLE WALKER", "LIFE IS GOOD", "A4 BLACK"];
+  // const slidestext = ["JUNGLE WALKER", "LIFE IS GOOD", "A4 BLACK"];
 
   return (
     <div className="relative h-[100dvh] overflow-hidden ">
@@ -138,7 +138,7 @@ const LandingPage = () => {
           delay: 3000, // Delay between slides in milliseconds
           disableOnInteraction: false, // Continue autoplay even after user interaction
         }}
-        onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
+        // onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
         loop={true} // Enable infinite loop
         speed={1000} // Transition speed in milliseconds
         className="absolute inset-0 w-full h-full z-10"
