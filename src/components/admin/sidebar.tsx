@@ -14,14 +14,10 @@ import {
   Plus,
   List,
   Grid,
-  Settings,
-  Clock,
-  Truck,
+  
   TrendingUp,
   Users,
   MessageSquare,
-  Activity,
-  Percent,
 } from "lucide-react"
 
 export function Sidebar() {
