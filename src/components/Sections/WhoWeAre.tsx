@@ -2,10 +2,10 @@ import Image from "next/image";
 
 const WhoWeAre = () => {
   return (
-    <section className="px-6 sm:px-8 md:px-10  font-montserrat">
+    <section className="px-6 sm:px-8 md:px-10 md:py-10  font-montserrat">
       {/* Centered Heading */}
-      <div className="text-center relative py-10 sm:py-16 md:py-20">
-        <h2 className="text-2xl sm:text-4xl md:text-6xl font-bold">
+      <div className="text-center relative py-10 sm:py-10">
+        <h2 className="text-3xl sm:text-4xl md:text-6xl font-bold">
           Who <span className="text-lime-400">We</span>{" "}
             <span className="relative">
             Are?
@@ -23,11 +23,13 @@ const WhoWeAre = () => {
       </div>
 
       {/* Flex/Grid Layout Below */}
-      <div className="flex w-full h-full flex-col-reverse lg:flex-row items-start justify-center lg:items-start gap-8">
+      <div className="flex w-full h-full flex-col-reverse md:flex-row items-start justify-center lg:items-start gap-3 md:gap-6 lg:gap-8">
         {/* Left Content */}
-        <div className="w-full md:w-[85%] text-center lg:text-left px-4 sm:px-6">
-          <h3 className="text-5xl sm:text-6xl md:text-7xl font-bold mb-4">ARVAN</h3>
-          <p className="text-gray-300 text-xs sm:text-sm md:text-lg mt-3 md:mt-6 leading-relaxed font-sans ">
+        <div className="w-full md:w-[85%] text-center md:text-start lg:text-left px-4 sm:px-6">
+          <h3 className="text-5xl sm:text-6xl md:text-7xl font-bold mb-4">
+            ARVAN
+          </h3>
+          <p className="text-gray-300 text-xs sm:text-sm md:text-md mt-3 md:mt-6 leading-relaxed ">
             At The Arvan, we’re all about keeping it comfy without sacrificing
             style. We believe the right pair of slippers can totally elevate
             your day whether you’re relaxing at home, running errands, or just
@@ -44,13 +46,13 @@ const WhoWeAre = () => {
         </div>
 
         {/* Right Content */}
-        <div className="w-full md:w-[35%] flex justify-center md:justify-start items-center relative mt-6">
+        <div className="w-full md:w-[50%] flex justify-center items-center relative mt-6">
           <Image
             src="/logo.svg"
             alt="Chocolate"
             width={250}
             height={130}
-            className="object-cover -translate-y-10 sm:-translate-y-16 md:-translate-y-10 max-w-[60%] sm:max-w-[50%] md:max-w-[60%]"
+            className="object-cover -translate-y-10 sm:-translate-y-16 md:translate-y-5 max-w-[40%] sm:max-w-[50%] md:max-w-[90%]"
           />
         </div>
       </div>

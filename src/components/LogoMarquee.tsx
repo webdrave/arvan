@@ -32,7 +32,7 @@ const LogoMarquee = () => {
               key={i}
               className={`flex items-center justify-center rounded-md absolute w-[200px] h-[100px]`}
               style={{
-                left: "max(calc(200px * 8), 100%)",
+                left: "max(calc(130px * 8), 100%)",
                 animationName: "scrollLeft",
                 animationDuration: "30s",
                 animationTimingFunction: "linear",
@@ -45,9 +45,9 @@ const LogoMarquee = () => {
                 src={logo}
                 width={100}
                 height={100}
-                className={`object-cover  ${i === 2 ? "w-16" : ""} ${
-                  i === 6 ? "w-16" : ""
-                } ${i === 3 ? "w-40" : ""} ${i === 7 ? "w-40" : ""} `}
+                className={`object-cover  ${i === 2 ? "w-14" : ""} ${
+                  i === 6 ? "w-14" : ""
+                } ${i === 3 ? "w-36" : ""} ${i === 7 ? "w-36" : ""}  `}
               />
             </div>
           ))}

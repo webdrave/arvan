@@ -24,8 +24,6 @@ const HorizontalScroll = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  const router = useRouter();
-
   const slides = [
     {
       image: "/slides/11.png",
@@ -401,6 +399,8 @@ const HorizontalScroll = () => {
     }
   };
 
+  const router = useRouter();
+
   return (
     <>
       {/* Desktop/Laptop Version */}
@@ -411,7 +411,7 @@ const HorizontalScroll = () => {
         >
           <GridBackground />
 
-          <div className="relative z-10">
+          <div className="relative z-10 w-full h-full">
             <div
               ref={innerDivRef}
               className="inner relative flex flex-row flex-nowrap will-change-transform transform-gpu"
@@ -420,13 +420,13 @@ const HorizontalScroll = () => {
               {slides.map((slide, index) => (
                 <div
                   key={`slide-${index}`}
-                  className="slide-item flex-shrink-0 w-screen h-screen flex items-center justify-center"
+                  className="slide-item flex-shrink-0 w-screen h-full flex items-center justify-center"
                 >
-                  <div className="relative">
+                  <div className=" relative">
                     <Image
                       src={slide.image}
                       alt={`Slide image ${index + 1}`}
-                      width={1000}
+                      width={800}
                       height={500}
                       priority={index < 2}
                       className={`${index > 0 && "pb-[10%]"}`}
@@ -439,7 +439,7 @@ const HorizontalScroll = () => {
 
             <div
               ref={headingsContainerRef}
-              className="absolute top-[15%] left-0 w-full z-0 -translate-y-1/2 h-[20vh] overflow-hidden"
+              className="absolute top-[10%] left-0 w-full z-0 -translate-y-1/2 h-[20vh] overflow-hidden"
               style={{ pointerEvents: "none" }}
             >
               {slides.map((slide, index) => (
@@ -460,7 +460,7 @@ const HorizontalScroll = () => {
 
             <div
               ref={paraRef}
-              className="absolute top-[80%] left-0 w-full z-0 -translate-y-1/2 h-[10vh] overflow-hidden"
+              className="absolute top-[75%] left-0 w-full z-0 -translate-y-1/2 h-[10vh] overflow-hidden"
               style={{ pointerEvents: "none" }}
             >
               {slides.map((slide, index) => (
@@ -479,17 +479,14 @@ const HorizontalScroll = () => {
               ))}
             </div>
 
-            <div className="absolute bottom-4 left-0 w-full z-20">
-              <div className="text-center">
-                <button
-                  onClick={() => router.push("/shop")}
-                  className="text-sm md:text-xl font-semibold  p-5 bg-transparent
-                      border border-[#c3e53ab9] bg-gradient-to-r from-[#c3e53a77]  via-[#6c7f2069]  to-[#6c7f2069] transition-all duration-300 shadow-[0px_4px_20px_#c3e53a77]"
-                >
-                  BUY NOW
-                </button>
-              </div>
-            </div>
+            <button
+              onClick={() => router.push("/shop")}
+              className="absolute hidden md:block md:top-[90%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 text-sm md:text-xl font-semibold p-5 px-10 bg-transparent
+                    border border-[#c3e53ab9] bg-gradient-to-r from-[#c3e53a77] via-[#6c7f2069] to-[#6c7f2069] 
+                    transition-all duration-300 shadow-[0px_4px_20px_#c3e53a77]"
+            >
+              BUY NOW
+            </button>
           </div>
         </div>
       </div>
@@ -498,10 +495,10 @@ const HorizontalScroll = () => {
       <div
         className={`${
           isMobile ? "block" : "hidden"
-        } relative w-screen min-h-screen font-montserrat  overflow-hidden`}
+        } relative w-screen h-screen font-montserrat  overflow-hidden`}
       >
         <GridBackground />
-        <div className="relative ">
+        <div className="relative w-full h-full">
           <div
             ref={mobileInnerRef}
             className="mobile-inner relative z-10 flex   flex-nowrap will-change-transform transform-gpu h-full"
@@ -510,13 +507,13 @@ const HorizontalScroll = () => {
             {slides.map((slide, index) => (
               <div
                 key={`mobile-slide-${index}`}
-                className="mobile-slide-item flex-shrink-0 w-screen min-h-[90vh] flex items-center justify-center"
+                className="mobile-slide-item flex-shrink-0 w-screen min-h-[100dvh] flex items-center justify-center"
               >
                 <div className="relative">
                   <Image
                     src={slide.image}
                     alt={`Slide image ${index + 1}`}
-                    width={1000}
+                    width={800}
                     height={500}
                     className={`${index > 0 && "pb-[10%]"}`}
                     priority={index === activeSlide}
@@ -528,7 +525,7 @@ const HorizontalScroll = () => {
 
           <div
             ref={mobileHeadingsRef}
-            className="absolute top-[20%] left-0 w-full z-0 -translate-y-1/2 h-[10vh] overflow-hidden"
+            className="absolute top-[10%] left-0 w-full z-0 -translate-y-1/2 h-[10vh] overflow-hidden"
             style={{ pointerEvents: "none" }}
           >
             {slides.map((slide, index) => (
@@ -549,7 +546,7 @@ const HorizontalScroll = () => {
 
           <div
             ref={mobileParaRef}
-            className="absolute top-[70%] md:top-[75%] left-0 w-full z-0 -translate-y-1/2 h-[15vh] md:h-[20vh] overflow-hidden"
+            className="absolute top-[70%] md:top-[75%] left-0 w-full z-0 -translate-y-1/2 h-[15vh] md:h-[20vh] overflow-hidden "
             style={{ pointerEvents: "none" }}
           >
             {slides.map((slide, index) => (
@@ -560,12 +557,21 @@ const HorizontalScroll = () => {
                   willChange: "transform",
                 }}
               >
-                <p className="text-[3vw] md:text-[3vw] text-center  font-semibold text-white tracking-widest ">
+                <p className=" text-[3vw] md:text-[3vw] text-center  font-semibold text-white tracking-widest ">
                   {slide.para}
                 </p>
               </div>
             ))}
           </div>
+
+          <button
+            onClick={() => router.push("/shop")}
+            className="absolute top-[90%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 text-sm md:text-xl font-semibold p-5 px-10 bg-transparent
+                    border border-[#c3e53ab9] bg-gradient-to-r from-[#c3e53a77] via-[#6c7f2069] to-[#6c7f2069] 
+                    transition-all duration-300 shadow-[0px_4px_20px_#c3e53a77]"
+          >
+            BUY NOW
+          </button>
 
           {/* Navigation Buttons */}
 
@@ -594,16 +600,6 @@ const HorizontalScroll = () => {
               aria-label="Next slide"
             >
               <ChevronRight size={24} />
-            </button>
-          </div>
-
-          <div className=" text-center -translate-y-[50%]">
-            <button
-              onClick={() => router.push("/shop")}
-              className=" text-sm md:text-xl font-semibold p-5 px-10 bg-transparent
-                      border border-[#c3e53ab9] bg-gradient-to-r from-[#c3e53a77]  via-[#6c7f2069]  to-[#6c7f2069] transition-all duration-300 shadow-[0px_4px_20px_#c3e53a77]"
-            >
-              BUY NOW
             </button>
           </div>
         </div>
