@@ -13,7 +13,7 @@ const Landing_overlay = forwardRef<HTMLDivElement>((_, ref) => {
     { name: "jungle walker", image: "/Menu-Images/img-3.png" },
     { name: "haunted skull", image: "/Menu-Images/img-4.jpg" },
     { name: "leo", image: "/Menu-Images/img-5.jpg" },
-    { name: "life is sgood", image: "/Menu-Images/img-6.jpg" },
+    { name: "life is good", image: "/Menu-Images/img-6.jpg" },
     { name: "star mustard", image: "/Menu-Images/img-7.jpg" },
     { name: "the arvan", image: "/Menu-Images/img-8.jpg" },
     // { name: "fancy", image: "/Menu-Images/img-9.jpg" },
