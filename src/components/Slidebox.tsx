@@ -7,6 +7,7 @@ type SlideboxProps = {
   price: number;
   category: string;
   discount?: number;
+  transform?: string;
 };
 
 const Slidebox: React.FC<SlideboxProps> = ({
@@ -15,6 +16,7 @@ const Slidebox: React.FC<SlideboxProps> = ({
   price,
   category,
   discount = 0,
+  transform,
 }) => {
   return (
     <div className="h-full w-full rounded-md hover:scale-105 duration-150 cursor-pointer">
@@ -30,6 +32,7 @@ const Slidebox: React.FC<SlideboxProps> = ({
           width={500}
           height={500}
           className="object-cover aspect-square"
+          style={transform ? { transform } : {}}
         />
       </div>
       <div className="flex justify-between mt-2 font-coluna text-2xl font-bold tracking-wide">

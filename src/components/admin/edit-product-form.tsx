@@ -4,9 +4,12 @@ import { useEffect, useState } from "react";
 import { Upload, X, Check, Plus, Trash2, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import UploadPopup from "../UploadPopup";
-import { Category, Product } from "@/types/types";
+import { Category, Product, Varient } from "@/types/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { productApi } from "@/lib/api/productdetails";
+import { varientApi } from "@/lib/api/varients";
+import { categoryApi } from "@/lib/api/categories";
 
 export function EditProductForm({productId}: { productId: string }) {
   const [isUploadPopupOpen, setIsUploadPopupOpen] = useState(false);
@@ -14,6 +17,8 @@ export function EditProductForm({productId}: { productId: string }) {
   const [varientImgPopUp, setVarientImgPopUp] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [derror, setderror] = useState<string>("");
+  const [price, setPrice] = useState<number>(0);
+  const [discountPrice, setDiscountPrice] = useState<number>(0);
 
   const router = useRouter();
 
@@ -118,46 +123,54 @@ export function EditProductForm({productId}: { productId: string }) {
   const { data, isLoading, error: productError } = useQuery({
     queryKey: ["product", productId],
     queryFn: async () => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/${productId}`,
-        {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      const data = await response.json();
-      return data;
+      const res = await productApi.getById(productId);
+      return res
     },
   });
 
   useEffect(() => {
     if (data) {
       const product = {
-        ...data.product,
-        assets: data.product.assets?.map((asset: { asset_url: string; }) => ({
+        name: data.name,
+        description: data.description,
+        price: data.price,
+        category_id: data.category_id,
+        material: data.material,
+        status: data.status,
+        discountPrice: data.discountPrice ?? 1,
+        assets: data.assets?.map((asset: { asset_url: string; type?: "IMAGE" | "VIDEO" }) => ({
           ...asset,
           url: asset.asset_url || "",
+          type: asset.type || "IMAGE", // Ensuring type is present
         })),
-      }
+      };
+  
       setProduct(product);
-
-      const varients = data.product.colors.map((color: { assets: { asset_url: string; }[]; sizes: { stock: number; }[]; }) => ({
-        ...color,
+      setPrice(product.price);
+      setDiscountPrice(product.discountPrice);
+  
+      const variants = data.colors.map((color: { id: string; color: string; assets: { asset_url: string, }[]; sizes: {id:string, size: string; stock: number }[] }) => ({
+        id: color.id, 
+        color: color.color, 
         isOpen: false,
-        customColor:true,
+        customColor: true,
         images: color.assets?.map((asset) => ({
           ...asset,
           url: asset.asset_url || "",
+          type: "IMAGE" as "IMAGE" | "VIDEO",
         })),
         sizes: color.sizes?.map((size) => ({
           ...size,
-          quantity: size.stock,
+          id: size.id,
+          name: size.size,
+          quantity: size.stock
         })),
       }));
-      setVariants(varients);      
+  
+      setVariants(variants);
     }
-
   }, [data]);
+  
 
   const addVariant = () => {
     setVariants([
@@ -246,16 +259,9 @@ export function EditProductForm({productId}: { productId: string }) {
   const categoryQuery = useQuery({
     queryKey: ["categories"],
     queryFn: async () => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/category`,
-        {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      const data = await response.json();
-      return data;
-    },
+      const response = await categoryApi.getAll()
+      return response;
+    }
   });
 
   const handleAddImage = (imageUrl: string) => {
@@ -275,64 +281,31 @@ export function EditProductForm({productId}: { productId: string }) {
     });
   };
   const variantMutation = useMutation({
-    mutationFn: async (variant: {
-      productId: string;
-      color: string;
-      assets: {
-        url: string;
-        type: "IMAGE" | "VIDEO";
-      }[];
-      sizes: {
-        size: string;
-        stock: number;
-      }[];
-    }) => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products/color`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(variant),
-        }
-      );
-      return response.json();
-    },
-    onSuccess: (data) => {
-      console.log("Product color saved successfully", data);
-    },
+    mutationFn: async (variant: Varient) => {
+      await varientApi.updateVarient(variant.id,variant);
+    }
   });
 
   const productMutation = useMutation({
-    mutationFn: async (newProduct: Product) => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/products`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(newProduct),
-        }
-      );
-      return response.json();
-    },
+    mutationFn: (newProduct:Product)=>productApi.updateProduct(productId,newProduct),
     onSuccess: (data) => {
-      if (data.success && data.product.id) {
-        const productId = data.product.id;
-
+      if (data) {
+        const productId = data.id;
         // Iterate through variants and call the mutation for each one
         variants.forEach((variant) => {
           variantMutation.mutate({
+            id: variant.id,
             productId,
             color: variant.color,
             assets: variant.images,
             sizes: variant.sizes.map((size) => ({
-              size: size.name,
+              size: size.name as "SIZE_5" | "SIZE_6" | "SIZE_7" | "SIZE_8" | "SIZE_9" | "SIZE_10" | "SIZE_11" | "SIZE_12",
               stock: size.quantity,
             })),
           });
-        });
-      }
+        });      }
 
-      router.push(`/product/${data.product.id}`);
+      router.push(`/product/${productId}`);
     },
   });
 
@@ -458,6 +431,7 @@ export function EditProductForm({productId}: { productId: string }) {
                 </span>
                 <input
                   type="text"
+                  value={price}
                   onChange={(e) => {
                     const value = e.target.value;
                     if (!/^\d*\.?\d*$/.test(value)) {
@@ -469,6 +443,7 @@ export function EditProductForm({productId}: { productId: string }) {
                       ...product,
                       price: value ? parseFloat(value) : 0,
                     });
+                    setPrice(value ? parseFloat(value) : 0);
                   }}
                   className={`w-full pl-8 pr-3 py-2 bg-white border ${
                     error ? "border-red-500" : "border-gray-300"
@@ -491,6 +466,7 @@ export function EditProductForm({productId}: { productId: string }) {
                 </span>
                 <input
                   type="text"
+                  value={discountPrice}
                   onChange={(e) => {
                     const value = e.target.value;
                     if (!/^\d*\.?\d*$/.test(value)) {
@@ -502,6 +478,7 @@ export function EditProductForm({productId}: { productId: string }) {
                       ...product,
                       discountPrice: value ? parseFloat(value) : 0,
                     });
+                    setDiscountPrice(value ? parseFloat(value) : 0);
                   }}
                   className={`w-full pl-8 pr-3 py-2 bg-white border ${
                     derror ? "border-red-500" : "border-gray-300"
@@ -785,7 +762,7 @@ export function EditProductForm({productId}: { productId: string }) {
                     Loading...
                   </div>
                 ) : (
-                  categoryQuery.data?.categories?.map((category: Category) => (
+                  categoryQuery.data?.map((category: Category) => (
                     <div
                       key={category.id}
                       onClick={() =>

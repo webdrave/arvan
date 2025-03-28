@@ -8,6 +8,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useEffect, useState } from "react";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -29,15 +31,13 @@ const Signin = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  
   useEffect(() => {
     if (status === "authenticated") {
       router.push("/"); // Redirect to homepage or dashboard
     }
   }, [status, router]);
 
-
-  if(session?.user) {
+  if (session?.user) {
     router.push("/profile");
   }
 
@@ -89,19 +89,29 @@ const Signin = () => {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="bg-transparent space-y-4">
+            className="bg-transparent space-y-4"
+          >
             <FormField
               control={form.control}
               name="mobileNumber"
-              render={({ field }) => (
+              render={({ field: { onChange, ...field } }) => (
                 <FormItem>
                   <FormControl>
                     <div className="rounded-xl border-2 border-lime-400 bg-gradient-to-r from-[#2e470fb4] via-[#3a5b0bc9] to-[#3a5b0b49]">
-                      <Input
-                        placeholder="Mobile Number"
-                        className="w-full p-4 sm:p-5 text-white bg-transparent border-0 rounded-xl outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+                      <PhoneInput
+                        country={"in"}
+                        value={field.value}
+                        onChange={(phone) => onChange(phone)}
                         disabled={isLoading}
-                        {...field}
+                        inputClass="!w-full !p-5 !px-10 !sm:p-5 !text-white !bg-transparent !border-0 !rounded-xl !outline-none !ring-0"
+                        containerClass="!bg-transparent"
+                        buttonClass="!bg-transparent !border-0"
+                        dropdownClass="!bg-[#1a1a1a] !text-white text-black"
+                        searchClass="!bg-[#1a1a1a] !text-white"
+                        inputProps={{
+                          required: true,
+                          placeholder: "Mobile Number",
+                        }}
                       />
                     </div>
                   </FormControl>
@@ -132,7 +142,7 @@ const Signin = () => {
             />
 
             <div className="text-end mt-3 mb-6">
-              <Link href="/forget-password" className="text-sm text-lime-400">
+              <Link href="/forgot-password" className="text-sm text-lime-400">
                 Forget Password?
               </Link>
             </div>
@@ -140,7 +150,8 @@ const Signin = () => {
             <Button
               type="submit"
               className="relative w-full p-3 text-black font-bold text-lg sm:text-xl rounded-xl bg-lime-400 shadow-[0_4px_20px_rgba(255,255,255,0.6)] hover:bg-lime-500"
-              disabled={isLoading}>
+              disabled={isLoading}
+            >
               {isLoading ? "Logging in..." : "Login"}
             </Button>
           </form>
@@ -153,7 +164,8 @@ const Signin = () => {
             className="text-gray-400 font-bold p-0"
             type="button"
             onClick={() => router.push("/signup")}
-            disabled={isLoading}>
+            disabled={isLoading}
+          >
             Sign Up
           </Button>
         </div>

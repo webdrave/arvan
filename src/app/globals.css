@@ -33,7 +33,9 @@ body.admin-panel {
 }
 
 @layer base {
- 
+  :root {
+    --radius: 0.5rem;
+  }
   .dark {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
@@ -54,6 +56,7 @@ body.admin-panel {
     --border: 0 0% 14.9%;
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
+    --radius: 0.5rem;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
@@ -85,9 +88,91 @@ body.admin-panel {
   }
 }
 
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.pulse {
+  animation: pulse 0.4s linear infinite;
+}
+
 /* .montserrat {
   font-family: "Montserrat", sans-serif;
   font-optical-sizing: auto;
   font-weight: 200;
   font-style: normal;
 } */
+
+@media screen and (max-width) {
+  .shop {
+    height: 60vh;
+  }
+}
+
+@media (width: 1024px) {
+  .shop {
+    height: 40vh !important;
+  }
+
+  .clippath1 {
+    display: none !important;
+  }
+
+  .mainText {
+    font-size: 20vw !important;
+  }
+
+  .contact{
+    margin-bottom: 5rem;
+  }
+}
+
+@media screen and (width: 1024px) and (height: 600px) {
+  .shop {
+    height: 80vh;
+  }
+}
+
+/* Ensure the dropdown background and text color are consistent */
+.react-tel-input .flag-dropdown {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+.react-tel-input .country-list {
+  background-color: #1a1a1a !important; /* Dark background */
+  color: white !important; /* White text */
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Fix hover issue (white text on white background) */
+.react-tel-input .country-list .country:hover {
+  background-color: #3a5b0bc9 !important; /* Custom hover background */
+  color: white !important; /* Ensure text remains visible */
+}
+
+/* Ensure selected country in the dropdown is visible */
+.react-tel-input .country-list .country.highlight {
+  background-color: #3a5b0bc9 !important; /* Highlighted background */
+  color: white !important;
+}
+
+/* Fix search input inside dropdown */
+.react-tel-input .selected-flag {
+  background-color: transparent !important;
+}
+
+.react-tel-input .country-list .search {
+  background-color: #1a1a1a !important; /* Dark background */
+  color: white !important;
+  border: 1px solid #3a5b0bc9;
+}

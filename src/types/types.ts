@@ -19,6 +19,7 @@ export const product = z.object({
   });
 
 export const varient = z.object({
+  id: z.string().cuid("Invalid variant ID").optional(),
   productId: z.string().cuid("Invalid product ID"),
   color: z.string().min(1, "Color is required"),
   assets: z.array(
@@ -59,6 +60,21 @@ export const category = z.object({
 
 export type Category = z.infer<typeof category>;
 
+export const addressSchema = z.object({
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  street: z.string().min(1, "Street address is required"),
+  aptNumber: z.string().optional(),
+  city: z.string().min(1, "City is required"),
+  zipCode: z.string().regex(/^\d{6}$/, "Invalid pincode format (6 digits)"),
+  state: z.string().min(1, "State is required"),
+  country: z.string(),
+  phoneNumber: z.string().regex(/^\d{10}$/, "Invalid mobile number format (10 digits)"),
+  addressName: z.string().min(1, "Address name is required"),
+  district: z.string().min(1, "District is required"),
+});
+
+export type AddressType = z.infer<typeof addressSchema>;
 
 export const LoginSchema = z.object({
 

@@ -6,8 +6,9 @@ import { CredentialsSignin } from "next-auth";
 import { NextAuthConfig } from "next-auth";
 import bcryptjs from "bcryptjs";
 
-const homeRoute = ["/", "/feature", "/pricing", "/contact"];
-const authRoute = ["/signin", "/signup"];
+
+
+
 
 export default {
   providers: [
@@ -17,8 +18,8 @@ export default {
         mobileNumber: { label: "Mobile Number", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      authorize: async (credentials) => {
-        // console.log("🟢 Credentials Received:", credentials);
+      authorize: async (credentials:any) => {
+        console.log("🟢 Credentials Received:", credentials);
 
         const { mobileNumber, password } = credentials;
         const { data, success } = LoginSchema.safeParse({
@@ -78,44 +79,78 @@ export default {
   },
 
   callbacks: {
-    authorized({ request: { nextUrl }, auth }) {
-      const isLoggedIn = !!auth?.user;
-      // console.log(auth);
-      // console.log(isLoggedIn);
-      const { pathname } = nextUrl;
-
-      // Allow access to the home route for all users
-      if (homeRoute.includes(pathname)) {
-        return true;
-      }
-
-      // Redirect authenticated users away from auth routes
-      if (authRoute.includes(pathname)) {
-        return isLoggedIn ? Response.redirect(new URL("/", nextUrl)) : true;
-      }
-
-      // For all other routes, require user to be logged in
-      return isLoggedIn || Response.redirect(new URL("/signIn", nextUrl));
-    },
+    // authorized({ request: { nextUrl }, auth }: any) {
+    //   const isLoggedIn = !!auth?.user;
+    //   const { pathname } = nextUrl;
+    //   console.log("Authorize callback called with:");
+    //   console.log("Pathname:", pathname);
+    //   console.log("Auth:", auth);
+    //   console.log("isLoggedIn:", isLoggedIn);
+    
+    //   // 1. Admin routes: if the URL starts with "/admin"
+    //   if (pathname.startsWith("/admin")) {
+    //     console.log("Route starts with /admin");
+    //     if (!isLoggedIn) {
+    //       console.log("User not logged in; redirecting to /signIn");
+    //       return Response.redirect(new URL("/signIn", nextUrl));
+    //     }
+    //     if (auth.user.role !== "admin") {
+    //       console.log("User logged in but not admin; redirecting to /");
+    //       return Response.redirect(new URL("/", nextUrl));
+    //     }
+    //     console.log("Admin access granted");
+    //     return true; // Allow admin access
+    //   }
+    
+    //   // 2. Public routes: Allow routes like "/", "/contact", "/product", "/about"
+    //   if (
+    //     publicRoute.some((route) =>
+    //       pathname === route || pathname.startsWith(`${route}/`)
+    //     )
+    //   ) {
+    //     console.log("Route is public; access granted");
+    //     return true;
+    //   }
+    
+    //   // 3. Auth routes: accessible to non–logged-in users.
+    //   if (
+    //     authRoute.some((route) =>
+    //       pathname === route || pathname.startsWith(`${route}/`)
+    //     )
+    //   ) {
+    //     if (isLoggedIn) {
+    //       console.log("Logged-in user trying to access an auth route; redirecting to /");
+    //       return Response.redirect(new URL("/", nextUrl));
+    //     } else {
+    //       console.log("Auth route accessible to non-logged-in user; access granted");
+    //       return true;
+    //     }
+    //   }
+    
+    //   // 4. For all other routes, require user to be logged in.
+    //   if (!isLoggedIn) {
+    //     console.log("User not logged in; redirecting to /signIn for protected route");
+    //     return Response.redirect(new URL("/signIn", nextUrl));
+    //   }
+    //   console.log("User logged in; access granted");
+    //   return true;
+    // }
+   
 
     jwt({ token, user }: any) {
-      // console.log("🔵 Generating JWT Token...");
-      // console.log("🔹 User Data:", user);
 
       if (user) {
         token.id = user.id;
         token.picture = user.image;
         token.mobile_no = user.mobile_no;
-        token.role = process.env.ADMIN_NUMBERS?.split(",").includes(user.mobile_no) ? "admin" : "user"; // Store user role
+        token.role = user.role; // Store user role
       }
-
-      // console.log("✅ Token Created:", token);
       return token;
     },
 
     session({ session, token }: any) {
-      // console.log("🔄 Creating Session...");
-      // console.log("🔹 Token Data:", token);
+      console.log("🔄 Creating Session...");
+      console.log("🔹 Token Data:", token);
 
       if (session.user) {
         session.user.id = token.id;
@@ -123,10 +158,24 @@ export default {
         session.user.mobile_no = token.mobile_no;
         session.user.role = token.role as "admin" | "user"; 
       }
+      console.log("✅ Session Created:", session);
+
       return session;
-      // console.log("✅ Session Created:", session);
 
       // 🚀 Redirect users to "/" after signing in
     },
   },
+
+  secret: process.env.NEXTAUTH_SECRET,
+  cookies: {
+    sessionToken: {
+      name: `__Secure-next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: "none",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
+    },
+  }
 } satisfies NextAuthConfig;

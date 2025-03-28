@@ -1,6 +1,8 @@
+"use client"
 import Link from "next/link";
 import { Search, ShoppingCart, User } from "lucide-react";
 import Image from "next/image";
+import { useCart } from "@/context/CartContext";
 
 export default function Navigation() {
   const navItems = [
@@ -10,7 +12,7 @@ export default function Navigation() {
     },
     {
       name: "Shop",
-      href: "/product",
+      href: "/shop",
     },
     {
       name: "Track Order",
@@ -18,13 +20,15 @@ export default function Navigation() {
     },
     {
       name: "About",
-      href: "/",
+      href: "/about",
     },
     {
       name: "Contact",
-      href: "/",
+      href: "/contact",
     },
   ];
+
+  const { cart } = useCart();
 
   return (
     <nav className="bg-black text-white py-4 px-6 border-b border-gray-800">
@@ -62,8 +66,11 @@ export default function Navigation() {
           <button className="hover:text-[#CCFF00]">
             <Search className="w-5 h-5" />
           </button>
-          <Link href="/cart" className="hover:text-[#CCFF00]">
+          <Link href="/cart" className="hover:text-[#CCFF00] relative">
             <ShoppingCart className="w-5 h-5" />
+            <div className="absolute bg-[#c2e53a]  w-full h-full -top-2 -right-3 text-xs text-black  flex justify-center items-center rounded-full p-1">
+              {cart.length > 0 ? cart.length : 0}
+            </div>
           </Link>
           <Link href="/profile" className="hover:text-[#CCFF00]">
             <User className="w-5 h-5" />

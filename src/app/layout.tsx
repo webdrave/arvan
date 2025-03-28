@@ -6,6 +6,7 @@ import AdminStyles from "@/components/AdminStyles";
 import { OverlayProvider } from "@/context/OverlayContext";
 import { Theme } from "@radix-ui/themes";
 import QueryProvider from "@/lib/queryclient";
+import { CartProvider } from "@/context/CartContext";
 
 import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "next-auth/react";
@@ -32,18 +33,19 @@ export default function RootLayout({
 }>) {
   return (
     <SessionProvider>
-      <html lang="en">
+      <html lang="en" className="dark">
         <head>
           <meta name="color-scheme" content="dark" />
         </head>
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
           <QueryProvider>
             <Theme>
               <AdminStyles />
               <GSAPProvider>
                 <OverlayProvider>
-                  {children}
+                  <CartProvider>{children}</CartProvider>
                   <Toaster />
                 </OverlayProvider>
               </GSAPProvider>

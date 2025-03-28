@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import { Sidebar } from "@/components/admin/sidebar"
-import { NotificationSidebar } from "@/components/admin/notification-sidebar"
+// import { NotificationSidebar } from "@/components/admin/notification-sidebar"
 import { Bell } from "lucide-react"
 import QueryProvider from "@/lib/queryclient"
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
@@ -32,7 +32,7 @@ export default function AdminLayout({
         </div>
         {children}
       </main>
-      <NotificationSidebar isOpen={isNotificationSidebarOpen} onClose={() => setIsNotificationSidebarOpen(false)} />
+      {/* <NotificationSidebar isOpen={isNotificationSidebarOpen} onClose={() => setIsNotificationSidebarOpen(false)} /> */}
     </div>
     <ReactQueryDevtools initialIsOpen={false} />
     </QueryProvider>

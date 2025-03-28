@@ -16,50 +16,57 @@ type Slide = {
 const BestSellers: React.FC = () => {
   const slides: Slide[] = [
     {
-      img: "/slides/1.png",
+      img: "/slides/slideImage1.jpg",
       name: "Wireless Headphones",
       price: 99.99,
       category: "Electronics",
       discount: 0,
     },
     {
-      img: "/slides/2.png",
+      img: "/slides/slideImage2.jpg",
       name: "Leather Jacket",
       price: 149.99,
       category: "Fashion",
       discount: 15,
     },
     {
-      img: "/slides/3.png",
+      img: "/slides/slideImage3.jpg",
       name: "Smart Watch",
       price: 199.99,
       category: "Electronics",
       discount: 0,
     },
     {
-      img: "/slides/4.png",
+      img: "/slides/slideImage4.jpg",
       name: "Running Shoes",
       price: 89.99,
       category: "Sports",
       discount: 20,
     },
     {
-      img: "/slides/5.png",
-      name: "Coffee Maker",
+      img: "/slides/slideImage5.jpg",
+      name: "Life Is Good",
       price: 59.99,
       category: "Home Appliances",
       discount: 0,
     },
     {
-      img: "/slides/6.png",
-      name: "Backpack",
+      img: "/slides/slideImage6.png",
+      name: "Red Dragon",
       price: 49.99,
       category: "Accessories",
       discount: 10,
     },
     {
-      img: "/slides/7.png",
-      name: "Bluetooth Speaker",
+      img: "/slides/slideImage7.jpg",
+      name: "Leo",
+      price: 79.99,
+      category: "Electronics",
+      discount: 0,
+    },
+    {
+      img: "/slides/slideImage8.jpg",
+      name: "Cube",
       price: 79.99,
       category: "Electronics",
       discount: 0,
@@ -85,7 +92,7 @@ const BestSellers: React.FC = () => {
     };
   }, []);
   return (
-    <div className="w-full h-[500px] mt-16">
+    <div className="w-full min-h-[50dvh] mt-16">
       <div className="flex sm:flex-row gap-4 items-center justify-start w-full px-6">
         <div className="w-full sm:w-fit p-2 flex items-center gap-4 max-sm:gap-1 sm:justify-start">
           <h5 className="font-general_sans text-2xl max-sm:text-xl font-semibold whitespace-nowrap">
@@ -153,6 +160,7 @@ const BestSellers: React.FC = () => {
                 price={slide.price}
                 category={slide.category}
                 discount={slide.discount}
+                transform="scaleX(-1)"
               />
             </SwiperSlide>
           ))}
