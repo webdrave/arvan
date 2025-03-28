@@ -50,7 +50,7 @@ export default function Navigation() {
             <Link
               key={i}
               href={item.href}
-              className="relative font-montserrat font-normal text-md transition-colors duration-300
+              className="relative font-montserrat font-normal text-md xl:text-lg transition-colors duration-300
              after:content-[''] after:absolute after:left-0 after:bottom-0 
              after:h-[2px] after:bg-[#CCFF00] after:transform-gpu  after:w-0 hover:after:w-full
              after:transition-all after:duration-300
