@@ -15,7 +15,7 @@ export default function Testimonials() {
   const prevRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  // Removed duplicate declaration of testimonials
   const [maxHeight, setMaxHeight] = useState<number>(0);
 
   interface Testimonial {
@@ -30,8 +30,6 @@ export default function Testimonials() {
 
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const { data, isLoading } = useQuery({
-
-  const {data, isLoading} = useQuery({
 
     queryKey: ["testimonials"],
     queryFn: async () => {
@@ -119,7 +117,7 @@ export default function Testimonials() {
           modules={[Pagination, Navigation]}
           className="mySwiper w-full h-full"
         >
-        {testimonials.map((testimonial, index) => (
+        {testimonials.map((testimonial: Testimonial, index) => (
   <SwiperSlide key={index} className="flex justify-center items-center">
     <div className="relative w-full h-80 bg-[#1E1E1E] border border-gray-700 rounded-xl p-4 sm:p-6 flex flex-col justify-between text-center shadow-lg overflow-hidden">
       <div className="absolute w-40 h-40 bg-gradient-to-br blur-2xl from-[#6FD351] to-[#C2E53A] rounded-3xl opacity-30 -top-18 left-16"></div>
@@ -143,6 +141,8 @@ export default function Testimonials() {
                 i < testimonial.ratings ? "text-[#FFA43C]" : "text-gray-500"
               }`}
             />
+          ))}
+            
 
           {testimonials.map((testimonial, index) => (
             <SwiperSlide key={testimonial.id} className="flex justify-center items-center">
