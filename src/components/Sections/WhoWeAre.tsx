@@ -7,16 +7,18 @@ const WhoWeAre = () => {
       <div className="text-center relative py-10 sm:py-16 md:py-20">
         <h2 className="text-2xl sm:text-4xl md:text-6xl font-bold">
           Who <span className="text-lime-400">We</span>{" "}
-          <span className="relative">
+            <span className="relative">
             Are?
             <Image
               src={"/Star.svg"}
               width={40}
               height={40}
               alt="Star SVG"
-              className="absolute -top-6 sm:-top-5 right-0 animate-[spin_3s_linear_infinite] "
+              className="absolute -top-6 sm:-top-5 right-0 animate-[spin_3s_linear_infinite] -z-10"
+              priority={false}
+              unoptimized
             />
-          </span>
+            </span>
         </h2>
       </div>
 
