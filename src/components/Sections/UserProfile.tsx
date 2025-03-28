@@ -14,9 +14,8 @@ export default function ProfilePage({ user }: { user: Session["user"] }) {
     fullName: user?.name,
     email: user?.mobile_no,
     phone: user?.mobile_no,
-    address1: "Hno 2, Indore-458441, Madhya Pradesh",
-    address2: "Add",
-    avatar: "/userProfile.png",
+
+    avatar: user?.image || "/userProfile.png",
   };
 
   return (
@@ -133,9 +132,7 @@ export default function ProfilePage({ user }: { user: Session["user"] }) {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 w-full">
                   {[
                     { label: "Full Name", value: profile.fullName },
-                    { label: "Address 1", value: profile.address1 },
                     { label: "Phone No.", value: profile.phone },
-                    { label: "Address 2", value: profile.address2 },
                     { label: "Email", value: profile.email },
                   ].map((field, index) => (
                     <div key={index} className="w-full">

@@ -141,6 +141,7 @@ export default {
 
       if (user) {
         token.id = user.id;
+        token.email = user.email;
         token.picture = user.image;
         token.mobile_no = user.mobile_no;
         token.role = user.role; // Store user role
@@ -154,6 +155,7 @@ export default {
 
       if (session.user) {
         session.user.id = token.id;
+        session.user.email = token.email;
         session.user.image = token.picture;
         session.user.mobile_no = token.mobile_no;
         session.user.role = token.role as "admin" | "user"; 
