@@ -77,7 +77,7 @@ export function InventoryAlerts() {
           </div>
         ))}
         <Link
-          href="/admin/inventory"
+          href="/admin/products/inventory"
           className="flex items-center gap-4 p-4 rounded-lg hover:bg-gray-50 transition-colors duration-200"
         >
           <div className="p-4 bg-[#e6f3ff] rounded-xl shadow-sm">

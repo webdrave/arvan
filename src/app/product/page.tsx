@@ -162,7 +162,7 @@ export default function ProductPage() {
     const allProducts = products.pages.flatMap((group) => group.products);
     const filteredProducts = allProducts.filter(matchesFilters);
     return sortProducts(filteredProducts);
-  }, [products, sortBy, filters,matchesFilters,sortProducts]);
+  }, [products,matchesFilters,sortProducts]);
 
   const handleFilterChange = (type: keyof FilterOptions, value: string) => {
     setFilters((prev) => ({

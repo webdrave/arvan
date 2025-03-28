@@ -88,7 +88,7 @@ const Navbar = () => {
             </div>
           </Link>
           {session?.user ? (
-            <Link href={session.user?.role === "admin" ? "/admin" : "/profile"}>
+            <Link href={session.user?.role === "ADMIN" ? "/admin" : "/profile"}>
               <FiUser className="text-lg text-white cursor-pointer hover:text-[#CCFF00]" />
             </Link>
           ) : (
@@ -117,9 +117,15 @@ const Navbar = () => {
               </div>
             </Link>
             {session ? (
-              <Link href="/profile">
-                <FiUser className="text-lg text-white cursor-pointer hover:text-[#CCFF00]" />
-              </Link>
+              session.user.role === "ADMIN" ? (
+                <Link href="/admin">
+                  <FiUser className="text-lg text-white cursor-pointer hover:text-[#CCFF00]" />
+                </Link>
+              ) : (
+                <Link href="/signin">
+                  <FiUser className="text-lg text-white cursor-pointer hover:text-[#CCFF00]" />
+                </Link>
+              )
             ) : (
               <Link href="/signin">
                 <FiUser className="text-lg text-white cursor-pointer hover:text-[#CCFF00]" />
