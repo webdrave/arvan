@@ -11,7 +11,7 @@ import {
   Loader,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { orderApi, OrderItems } from "@/lib/api/orders";
+import { Order, orderApi, OrderItems } from "@/lib/api/orders";
 
 export const formateDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -24,7 +24,7 @@ export const formateDate = (dateString: string) => {
 
 const TrackOrders = ({ user }: { user: Session["user"] }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [currentOrders, setCurrentOrders] = useState<any[]>([]);
+  const [currentOrders, setCurrentOrders] = useState<Order[]>([]);
   const [totalPages, setTotalPages] = useState(0);
   const ordersPerPage = 2;
   const indexOfLastOrder = currentPage * ordersPerPage;
@@ -139,12 +139,12 @@ const TrackOrders = ({ user }: { user: Session["user"] }) => {
   useEffect(() => {
     if (data) {
       console.log(data);
-      setCurrentOrders((prev) =>
+      setCurrentOrders(() =>
         data.orders.slice(indexOfFirstOrder, indexOfLastOrder)
       );
       setTotalPages(Math.ceil(data!.orders.length / ordersPerPage));
     }
-  }, [data]);
+  }, [data,indexOfFirstOrder, indexOfLastOrder]);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -200,7 +200,7 @@ const TrackOrders = ({ user }: { user: Session["user"] }) => {
               No orders found
             </h3>
             <p className="text-gray-400 mb-6 text-sm sm:text-base">
-              You haven't placed any orders yet.
+              You haven&apos;t placed any orders yet.
             </p>
             <Link href="/shop">
               <button className="bg-[#C2E53A] text-black px-4 py-2 sm:px-6 sm:py-3 rounded-sm hover:bg-[#a8c72f] transition text-sm sm:text-base">
@@ -221,7 +221,7 @@ const TrackOrders = ({ user }: { user: Session["user"] }) => {
                     <div>
                       <p className="text-xs text-gray-400 mb-1">ORDER PLACED</p>
                       <p className="font-medium text-sm sm:text-base">
-                        {formateDate(order.createdAt)}
+                        {formateDate(order.createdAt || "")}
                       </p>
                     </div>
                     <div className="hidden sm:block w-px h-10 bg-gray-700"></div>
@@ -256,9 +256,9 @@ const TrackOrders = ({ user }: { user: Session["user"] }) => {
                       {order.status}
                     </span>
                   </div>
-                  <span className="text-xs sm:text-sm text-gray-400 ml-0 sm:ml-2 mt-2 sm:mt-0">
+                  {/* <span className="text-xs sm:text-sm text-gray-400 ml-0 sm:ml-2 mt-2 sm:mt-0">
                     {order?.message || "Delivered on 24 Date"}
-                  </span>
+                  </span> */}
                   {order?.awb && (
                     <a
                       href={`https://shiprocket.co/tracking//${order.awb}`}

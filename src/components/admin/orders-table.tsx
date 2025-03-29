@@ -206,7 +206,7 @@ export function OrdersTable() {
                   <ul className="list-disc list-inside">
                     {selectedOrder.items.map((item, index) => (
                       <li key={index} className="text-sm text-gray-500">
-                        Product ID: {item.productVariantId} (x{item.quantity}) - ₹{item.priceAtOrder.toFixed(2)}
+                        Product Name: {item.productName} (x{item.quantity}) - ₹{item.priceAtOrder.toFixed(2)}
                       </li>
                     ))}
                   </ul>

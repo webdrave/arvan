@@ -10,6 +10,7 @@ import { CartProvider } from "@/context/CartContext";
 
 import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "next-auth/react";
+// import { GoogleTagManager } from '@next/third-parties/google' 
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,14 +39,16 @@ export default function RootLayout({
           <meta name="color-scheme" content="dark" />
         </head>
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
           <QueryProvider>
             <Theme>
               <AdminStyles />
               <GSAPProvider>
                 <OverlayProvider>
-                  <CartProvider>{children}</CartProvider>
+                  <CartProvider>
+                    {/* <GoogleTagManager gtmId="YOUR_GTM_ID" /> */}
+                    {children}
+                  </CartProvider>
                   <Toaster />
                 </OverlayProvider>
               </GSAPProvider>

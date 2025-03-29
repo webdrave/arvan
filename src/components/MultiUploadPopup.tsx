@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button"
 import { useDropzone } from "react-dropzone"
 import axios from "axios"
 import { Upload, X, Trash2 } from "lucide-react"
-import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
+import Image from "next/image"
 
 interface FileWithPreview extends File {
   preview: string;
@@ -152,7 +152,9 @@ export default function MultiUploadPopup({ onSuccess, onClose }: MultiUploadPopu
                   <div key={index} className="relative group rounded-lg overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
                     <div className="relative aspect-square bg-gray-50">
                       {isImage(file) ? (
-                        <img 
+                        <Image 
+                          width={500}
+                          height={500}
                           src={file.preview} 
                           alt={file.name}
                           className="w-full h-full object-cover"

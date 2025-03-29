@@ -11,8 +11,9 @@ export interface OrderItems {
 }
 
 export interface Order {
-  id: string;
+  id?: string;
   addressId: string;
+  awb?: string;
   paid?: boolean;
   userId: string;
   items: OrderItems[];
