@@ -107,62 +107,60 @@ export default function ProductPage() {
     initialPageParam: 1,
   });
 
-  const sortProducts = (products: Products[]) => {
-    return [...products].sort((a, b) => {
-      switch (sortBy) {
-        case "price_asc":
-          return (a.price || 0) - (b.price || 0);
-        case "price_desc":
-          return (b.price || 0) - (a.price || 0);
-        case "name_asc":
-          return a.name.localeCompare(b.name);
-        case "name_desc":
-          return b.name.localeCompare(a.name);
-        case "newest":
-          return (
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-          );
-        case "oldest":
-          return (
-            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-          );
-        default:
-          return 0;
-      }
-    });
-  };
-
-  // Helper function to check if a product matches the filters
-  const matchesFilters = (product: Products) => {
-    if (filters.priceRanges.length > 0) {
-      const price = product.discountPrice || 0;
-      const matchesPrice = filters.priceRanges.some((range) => {
-        switch (range) {
-          case "Under ₹1000":
-            return price < 1000;
-          case "₹1000 - ₹2000":
-            return price >= 1000 && price <= 2000;
-          case "₹2000 - ₹3000":
-            return price >= 2000 && price <= 3000;
-          case "Above ₹3000":
-            return price > 3000;
-          default:
-            return true;
-        }
-      });
-      if (!matchesPrice) return false;
-    }
-
-    return true;
-  };
-
-  // Modified getAllProducts to include filtering
   const getAllProducts = useMemo(() => {
     if (!products?.pages) return [];
+    
+    const sortProducts = (products: Products[]) => {
+      return [...products].sort((a, b) => {
+        switch (sortBy) {
+          case "price_asc":
+            return (a.price || 0) - (b.price || 0);
+          case "price_desc":
+            return (b.price || 0) - (a.price || 0);
+          case "name_asc":
+            return a.name.localeCompare(b.name);
+          case "name_desc":
+            return b.name.localeCompare(a.name);
+          case "newest":
+            return (
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            );
+          case "oldest":
+            return (
+              new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+            );
+          default:
+            return 0;
+        }
+      });
+    };
+
+    const matchesFilters = (product: Products) => {
+      if (filters.priceRanges.length > 0) {
+        const price = product.discountPrice || 0;
+        const matchesPrice = filters.priceRanges.some((range) => {
+          switch (range) {
+            case "Under ₹1000":
+              return price < 1000;
+            case "₹1000 - ₹2000":
+              return price >= 1000 && price <= 2000;
+            case "₹2000 - ₹3000":
+              return price >= 2000 && price <= 3000;
+            case "Above ₹3000":
+              return price > 3000;
+            default:
+              return true;
+          }
+        });
+        if (!matchesPrice) return false;
+      }
+      return true;
+    };
+
     const allProducts = products.pages.flatMap((group) => group.products);
     const filteredProducts = allProducts.filter(matchesFilters);
     return sortProducts(filteredProducts);
-  }, [products,matchesFilters,sortProducts]);
+  }, [products, filters, sortBy]);
 
   const handleFilterChange = (type: keyof FilterOptions, value: string) => {
     setFilters((prev) => ({
