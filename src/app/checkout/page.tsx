@@ -12,6 +12,8 @@ import { PiPencilSimple } from "react-icons/pi";
 import Script from "next/script";
 import { useSession } from "next-auth/react";
 import { Order, orderApi } from "@/lib/api/orders";
+import { apiClient } from "@/lib/axiosClient";
+import cuid from "cuid";
 
 const Checkout: React.FC = () => {
   const [selectedAddress, setSelectedAddress] = useState<string>("");
@@ -42,40 +44,13 @@ const Checkout: React.FC = () => {
     },
   });
 
-  const getShiprocketToken = async () => {
-    const email = process.env.NEXT_PUBLIC_SHIPROCKET_EMAIL;
-    const password = process.env.NEXT_PUBLIC_SHIPROCKET_PASSWORD;
-    try {
-      const response = await fetch(
-        "https://apiv2.shiprocket.in/v1/external/auth/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-            password,
-          }),
-        }
-      );
 
-      const data = await response.json();
-      return data.token;
-    } catch (error) {
-      console.error("Shiprocket Auth Error:", error);
-      return null;
-    }
-  };
-
-  const createShiprocketOrder = async (shipToken: string) => {
+  const createShiprocketOrder = async (orderId: string) => {
     try {
       const orderData = {
-        order_id: ``, // Unique order ID
+        order_id: orderId? orderId : cuid(), // Unique order ID
         order_date: new Date().toISOString(),
-        pickup_location: "Primary",
-        channel_id: "",
-        comment: "New order",
+        pickup_location: "work",
         billing_customer_name: session?.user?.name,
         billing_address: addresses?.find((a) => a.id === selectedAddress)
           ?.details,
@@ -93,6 +68,7 @@ const Checkout: React.FC = () => {
           selling_price: item.price,
           hsn: "ARV-" + item.color + "-" + item.size,
         })),
+
         payment_method: paymentMethod === "cod" ? "COD" : "Prepaid",
         sub_total: subtotal,
         length: 10,
@@ -101,21 +77,8 @@ const Checkout: React.FC = () => {
         weight: 1,
       };
 
-      const response = await fetch(
-        "https://apiv2.shiprocket.in/v1/external/orders/create/adhoc",
-        {
-          method: "POST",
-          mode: "no-cors",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${shipToken}`,
-          },
-          body: JSON.stringify(orderData),
-        }
-      );
-
-      const data = await response.json();
-      console.log("Shiprocket Order Created:", data);
+      const response = apiClient.post('/api/shiprocket',orderData);
+      console.log(response);
     } catch (error) {
       console.error("Shiprocket Order Error:", error);
     }
@@ -144,9 +107,8 @@ const Checkout: React.FC = () => {
           })),
         },
         {
-          onSuccess: async () => {
-            const shipToken = await getShiprocketToken();
-            createShiprocketOrder(shipToken as string);
+          onSuccess: async (data) => {
+            createShiprocketOrder(data.id as string);
             setIsLoading(false);
             router.push("/profile");
           },
@@ -257,13 +219,7 @@ const Checkout: React.FC = () => {
                   console.log("Order Created with ID:", orderId);
 
                   // 🔥 Shiprocket Order
-                  const shipToken = await getShiprocketToken();
-                  if (!shipToken) {
-                    console.error("Shiprocket token not found.");
-                    return;
-                  }
-
-                  await createShiprocketOrder(shipToken);
+                  await createShiprocketOrder(orderId as string);
                   router.push("/profile");
                 },
                 onError: (error) => {
