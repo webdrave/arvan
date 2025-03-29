@@ -1,18 +1,25 @@
 import { apiClient } from "../axiosClient";
 
 export interface OrderItems {
-    productVariantId: string;
-    quantity: number;
-    priceAtOrder: number;
+  productId: string;
+  quantity: number;
+  priceAtOrder: number;
+  color: string;
+  productImage: string;
+  productName: string;
+  size: string;
 }
 
 export interface Order {
-    id?: string;
-    addressId: string;
-    paid?: boolean;
-    userId: string;
-    items: OrderItems[];
-    total: number;
+  id: string;
+  addressId: string;
+  paid?: boolean;
+  userId: string;
+  items: OrderItems[];
+  total: number;
+  status: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export const orderApi = {
@@ -21,7 +28,7 @@ export const orderApi = {
     itemsPerPage: string,
     debouncedSearchTerm: string
   ): Promise<{
-    success: boolean,
+    success: boolean;
     orders: Order[];
     pagination: {
       totalPages: number;
@@ -39,7 +46,7 @@ export const orderApi = {
     });
     return response.data;
   },
-  getOrderById: async (id: string): Promise<Order> => { 
+  getOrderById: async (id: string): Promise<Order> => {
     const response = await apiClient.get(`/api/orders/${id}`);
     return response.data.order;
   },

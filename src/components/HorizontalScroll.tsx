@@ -507,7 +507,7 @@ const HorizontalScroll = () => {
             {slides.map((slide, index) => (
               <div
                 key={`mobile-slide-${index}`}
-                className="mobile-slide-item flex-shrink-0 w-screen min-h-[100dvh] flex items-center justify-center"
+                className="mobile-slide-item flex-shrink-0 w-screen h-full flex items-center justify-center"
               >
                 <div className="relative">
                   <Image
@@ -525,7 +525,7 @@ const HorizontalScroll = () => {
 
           <div
             ref={mobileHeadingsRef}
-            className="absolute top-[10%] left-0 w-full z-0 -translate-y-1/2 h-[10vh] overflow-hidden"
+            className="absolute top-[20%] md:top-[10%] left-0 w-full z-0 -translate-y-1/2 h-[10vh] overflow-hidden"
             style={{ pointerEvents: "none" }}
           >
             {slides.map((slide, index) => (
