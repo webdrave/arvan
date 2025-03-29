@@ -27,6 +27,9 @@ const Checkout: React.FC = () => {
   const router = useRouter();
 
   // Fetch addresses from API
+
+  // console.log("date" + new Date().toISOString().slice(0, 11))
+
   const { data: addresses } = useQuery({
     queryKey: ["address"],
     queryFn: async () => {
@@ -44,44 +47,51 @@ const Checkout: React.FC = () => {
     },
   });
 
-
   const createShiprocketOrder = async (orderId: string) => {
-    try {
+      const selectedAddr = addresses?.find((a) => a.id === selectedAddress);
+
+      if (!selectedAddr) {
+        throw new Error("Selected address not found.");
+      }
+
       const orderData = {
-        order_id: orderId? orderId : cuid(), // Unique order ID
-        order_date: new Date().toISOString(),
+        order_id: orderId || cuid(), // Ensure unique order ID
+        order_date: new Date().toISOString().slice(0, 10),
         pickup_location: "work",
-        billing_customer_name: session?.user?.name,
-        billing_address: addresses?.find((a) => a.id === selectedAddress)
-          ?.details,
-        billing_city: addresses?.find((a) => a.id === selectedAddress)?.city,
-        billing_pincode: addresses?.find((a) => a.id === selectedAddress)
-          ?.zipCode,
-        billing_state: addresses?.find((a) => a.id === selectedAddress)?.state,
+        billing_customer_name: session?.user?.name || "Guest",
+        billing_address: selectedAddr.details || "N/A",
+        billing_city: selectedAddr.city || "N/A",
+        billing_pincode: selectedAddr.zipCode || "000000",
+        billing_state: selectedAddr.state || "N/A",
+        billing_last_name: session?.user?.name.split(" ")[1] || "N/A",
         billing_country: "India",
-        billing_email: "",
-        billing_phone: session?.user?.mobile_no,
+        billing_email: session?.user?.email || "test@test.com",
+        billing_phone: session?.user?.mobile_no
+          ? session.user.mobile_no.slice(-10)
+          : "0000000000",
+        shipping_is_billing: true,
         order_items: cart.map((item) => ({
           name: item.name,
-          sku: "ARV-" + item.color + "-" + item.size,
-          units: item.quantity,
-          selling_price: item.price,
-          hsn: "ARV-" + item.color + "-" + item.size,
+          sku: `ARV${item.color || "Default"}${item.size || "Free"}`,
+          units: item.quantity || 1,
+          selling_price: item.price?.toString() || "0",
+          hsn: Math.floor(Math.random() * 10000).toString(),
         })),
-
         payment_method: paymentMethod === "cod" ? "COD" : "Prepaid",
-        sub_total: subtotal,
+        sub_total: subtotal || 0,
+        shipping_charges: 0,
+        giftwrap_charges: 0,
+        transaction_charges: 0,
+        total_discount: 0,
         length: 10,
         breadth: 10,
         height: 10,
         weight: 1,
       };
 
-      const response = apiClient.post('/api/shiprocket',orderData);
-      console.log(response);
-    } catch (error) {
-      console.error("Shiprocket Order Error:", error);
-    }
+      const response = await apiClient.post("/api/shiprocket", orderData);
+      console.log("Shiprocket Order Response:", response.data);
+    
   };
 
   const handleSubmit = async () => {
@@ -124,7 +134,7 @@ const Checkout: React.FC = () => {
   const orderMutaion = useMutation({
     mutationFn: (order: Order) => {
       return orderApi.createOrder(order);
-    }
+    },
   });
 
   // Sync selected address with fetched data
@@ -264,49 +274,52 @@ const Checkout: React.FC = () => {
       <Navbar />
 
       <div className="container mx-auto max-w-6xl relative">
-      {isLoading && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm z-50">
-          <div className="bg-black/80 border border-lime-500 p-6 rounded-lg shadow-lg text-center">
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 border-4 border-lime-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-              <p className="text-lg font-bold text-lime-400">Processing your order...</p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {isPaymentProcessing && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm z-50">
-          <div className="bg-black/80 border border-lime-500 p-6 rounded-lg shadow-lg text-center">
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 border-4 border-lime-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-              <p className="text-lg font-bold text-lime-400">Redirecting to payment...</p>
-            </div>
-          </div>
-        </div>
-      )}
-      {isPaymentFailed && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm z-50">
-          <div className="bg-black/80 border border-red-500 p-6 rounded-lg shadow-lg text-center">
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 text-red-500 mb-4 flex items-center justify-center border-2 border-red-500 rounded-full">
-                <span className="text-2xl">❌</span>
+        {isLoading && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm z-50">
+            <div className="bg-black/80 border border-lime-500 p-6 rounded-lg shadow-lg text-center">
+              <div className="flex flex-col items-center">
+                <div className="w-12 h-12 border-4 border-lime-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                <p className="text-lg font-bold text-lime-400">
+                  Processing your order...
+                </p>
               </div>
-              <p className="text-lg font-bold text-red-400">Payment Failed</p>
-              <p className="text-gray-400 mt-2">{paymentErrorMessage}</p>
-              <button 
-                onClick={() => {
-                  setIsPaymentFailed(false)
-                  router.push("/cart")
-                }}
-                className="mt-4 px-4 py-2 bg-red-500/80 hover:bg-red-600 text-white rounded-lg transition-colors"
-              >
-                Close
-              </button>
             </div>
           </div>
-        </div>
-      )}
+        )}
+
+        {isPaymentProcessing && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm z-50">
+            <div className="bg-black/80 border border-lime-500 p-6 rounded-lg shadow-lg text-center">
+              <div className="flex flex-col items-center">
+                <div className="w-12 h-12 border-4 border-lime-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                <p className="text-lg font-bold text-lime-400">
+                  Redirecting to payment...
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+        {isPaymentFailed && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm z-50">
+            <div className="bg-black/80 border border-red-500 p-6 rounded-lg shadow-lg text-center">
+              <div className="flex flex-col items-center">
+                <div className="w-12 h-12 text-red-500 mb-4 flex items-center justify-center border-2 border-red-500 rounded-full">
+                  <span className="text-2xl">❌</span>
+                </div>
+                <p className="text-lg font-bold text-red-400">Payment Failed</p>
+                <p className="text-gray-400 mt-2">{paymentErrorMessage}</p>
+                <button
+                  onClick={() => {
+                    setIsPaymentFailed(false);
+                    router.push("/cart");
+                  }}
+                  className="mt-4 px-4 py-2 bg-red-500/80 hover:bg-red-600 text-white rounded-lg transition-colors">
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
         {/* Blurred Background */}
         <div className="absolute w-[80vw] h-[40vw] rounded-full bg-lime-600/15 blur-3xl left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 -z-1"></div>
 
