@@ -16,9 +16,14 @@ import { Order, orderApi } from "@/lib/api/orders";
 const Checkout: React.FC = () => {
   const [selectedAddress, setSelectedAddress] = useState<string>("");
   const [paymentMethod, setPaymentMethod] = useState("credit");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
+  const [isPaymentFailed, setIsPaymentFailed] = useState(false);
+  const [paymentErrorMessage, setPaymentErrorMessage] = useState("");
   const { cart } = useCart();
-
   const { data: session } = useSession();
+  const router = useRouter();
+
   // Fetch addresses from API
   const { data: addresses } = useQuery({
     queryKey: ["address"],
@@ -36,8 +41,6 @@ const Checkout: React.FC = () => {
       }));
     },
   });
-
-  const router = useRouter();
 
   const getShiprocketToken = async () => {
     const email = process.env.NEXT_PUBLIC_SHIPROCKET_EMAIL;
@@ -126,22 +129,32 @@ const Checkout: React.FC = () => {
     if (!paymentMethod) {
       alert("Select a payment method first..");
     }
+    setIsLoading(true);
+
     if (paymentMethod === "cod") {
-      orderMutaion.mutate({
-        userId: session?.user?.id as string,
-        addressId: selectedAddress,
-        total,
-        items: cart.map((item) => ({
-          productVariantId: item.productVariantId as string,
-          quantity: item.quantity,
-          priceAtOrder: item.price,
-        })),
-      });
-      const shipToken = await getShiprocketToken();
-      createShiprocketOrder(shipToken as string);
-      router.push("/profile");
+      orderMutaion.mutate(
+        {
+          userId: session?.user?.id as string,
+          addressId: selectedAddress,
+          total,
+          items: cart.map((item) => ({
+            productVariantId: item.productVariantId as string,
+            quantity: item.quantity,
+            priceAtOrder: item.price,
+          })),
+        },
+        {
+          onSuccess: async () => {
+            const shipToken = await getShiprocketToken();
+            createShiprocketOrder(shipToken as string);
+            setIsLoading(false);
+            router.push("/profile");
+          },
+          onError: () => setIsLoading(false),
+        }
+      );
     } else {
-      // Razorpay will be here
+      setIsPaymentProcessing(true);
       processPayment();
     }
   };
@@ -149,13 +162,7 @@ const Checkout: React.FC = () => {
   const orderMutaion = useMutation({
     mutationFn: (order: Order) => {
       return orderApi.createOrder(order);
-    },
-    onSuccess: (data) => {
-      console.log("Order Created:", data);
-    },
-    onError: (error) => {
-      console.error("Error creating order:", error);
-    },
+    }
   });
 
   // Sync selected address with fetched data
@@ -217,6 +224,7 @@ const Checkout: React.FC = () => {
           razorpay_order_id: string;
           razorpay_signature: string;
         }) {
+          setIsPaymentProcessing(false);
           const data = {
             orderCreationId: orderId,
             razorpayPaymentId: response.razorpay_payment_id,
@@ -264,7 +272,9 @@ const Checkout: React.FC = () => {
               }
             );
           } else {
-            alert(res.message);
+            setIsPaymentProcessing(false);
+            setIsPaymentFailed(true);
+            setPaymentErrorMessage(res.message);
           }
         },
         prefill: {
@@ -279,7 +289,9 @@ const Checkout: React.FC = () => {
       paymentObject.on(
         "payment.failed",
         function (response: { error: { description: string } }) {
-          alert(response.error.description);
+          setIsPaymentProcessing(false);
+          setIsPaymentFailed(true);
+          setPaymentErrorMessage(response.error.description);
         }
       );
       paymentObject.open();
@@ -296,6 +308,49 @@ const Checkout: React.FC = () => {
       <Navbar />
 
       <div className="container mx-auto max-w-6xl relative">
+      {isLoading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm z-50">
+          <div className="bg-black/80 border border-lime-500 p-6 rounded-lg shadow-lg text-center">
+            <div className="flex flex-col items-center">
+              <div className="w-12 h-12 border-4 border-lime-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+              <p className="text-lg font-bold text-lime-400">Processing your order...</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isPaymentProcessing && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm z-50">
+          <div className="bg-black/80 border border-lime-500 p-6 rounded-lg shadow-lg text-center">
+            <div className="flex flex-col items-center">
+              <div className="w-12 h-12 border-4 border-lime-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+              <p className="text-lg font-bold text-lime-400">Redirecting to payment...</p>
+            </div>
+          </div>
+        </div>
+      )}
+      {isPaymentFailed && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-sm z-50">
+          <div className="bg-black/80 border border-red-500 p-6 rounded-lg shadow-lg text-center">
+            <div className="flex flex-col items-center">
+              <div className="w-12 h-12 text-red-500 mb-4 flex items-center justify-center border-2 border-red-500 rounded-full">
+                <span className="text-2xl">❌</span>
+              </div>
+              <p className="text-lg font-bold text-red-400">Payment Failed</p>
+              <p className="text-gray-400 mt-2">{paymentErrorMessage}</p>
+              <button 
+                onClick={() => {
+                  setIsPaymentFailed(false)
+                  router.push("/cart")
+                }}
+                className="mt-4 px-4 py-2 bg-red-500/80 hover:bg-red-600 text-white rounded-lg transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
         {/* Blurred Background */}
         <div className="absolute w-[80vw] h-[40vw] rounded-full bg-lime-600/15 blur-3xl left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 -z-1"></div>
 
