@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Upload, X, Check, Plus, Trash2, ChevronRight } from "lucide-react";
 import Image from "next/image";
-import UploadPopup from "../UploadPopup";
 import { Category, Product } from "@/types/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -11,6 +10,7 @@ import { categoryApi } from "@/lib/api/categories";
 import cuid from "cuid";
 import { varientApi } from "@/lib/api/varients";
 import { productApi } from "@/lib/api/productdetails";
+import MultiUploadPopup from "../MultiUploadPopup";
 
 export function AddProductForm() {
   const [isUploadPopupOpen, setIsUploadPopupOpen] = useState(false);
@@ -171,14 +171,14 @@ export function AddProductForm() {
     );
   };
 
-  const handleAddVarientImage = (imageUrl: string) => {
+  const handleAddVarientImage = (Urls : string[]) => {
     // In a real app, this would open a file picker
     setVariants(
       variants.map((variant) => {
         if (variant.id === varientId) {
           return {
             ...variant,
-            images: [...variant.images, { url: imageUrl, type: "IMAGE" }],
+            images: [...variant.images, ...Urls.map((url) => ({ url, type: "IMAGE" as const }))],
           };
         }
         return variant;
@@ -208,10 +208,10 @@ export function AddProductForm() {
     queryFn: () => categoryApi.getAll(),
   });
 
-  const handleAddImage = (imageUrl: string) => {
+  const handleAddImage = (Urls : string[]) => {
     setProduct({
       ...product,
-      assets: [...(product.assets || []), { url: imageUrl, type: "IMAGE" }],
+      assets: [...(product.assets || []), ...Urls.map((url) => ({ url, type: "IMAGE" as const }))],
     });
     setIsUploadPopupOpen(false);
   };
@@ -883,13 +883,13 @@ export function AddProductForm() {
         </div>
       </div>
       {isUploadPopupOpen && (
-        <UploadPopup
+        <MultiUploadPopup
           onSuccess={handleAddImage}
           onClose={() => setIsUploadPopupOpen(false)}
         />
       )}
       {varientImgPopUp && (
-        <UploadPopup
+        <MultiUploadPopup
           onSuccess={handleAddVarientImage}
           onClose={() => setVarientImgPopUp(false)}
         />
