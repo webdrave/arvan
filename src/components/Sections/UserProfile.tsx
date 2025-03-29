@@ -3,15 +3,18 @@
 import { useState } from "react";
 import { Pencil, LogOut, X } from "lucide-react";
 import Image from "next/image";
-import { FaUser, FaShoppingBag, FaMapMarkerAlt } from "react-icons/fa"; // Importing icons from react-icons
+import { FaUser, FaShoppingBag, FaMapMarkerAlt } from "react-icons/fa";
 import { signOut } from "next-auth/react";
-import { Session } from "next-auth";
 import TrackOrders from "./TrackOrders";
 import ManageAddress from "./ManageAddress";
 import Navigation from "../navigation";
+import { useGetCustomer,useUpdateCustomer } from "@/app/profile/hooks/hooks";
+import { Session } from "next-auth";
 export default function ProfilePage({ user }: { user: Session["user"] }) {
-  const [activeSection, setActiveSection] = useState("personal"); // Track active section
-
+  const { data: customerData, isLoading } = useGetCustomer();
+  const updateCustomerMutation = useUpdateCustomer();
+  const [activeSection, setActiveSection] = useState("personal");
+  
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editField, setEditField] = useState<{
     label: string;
@@ -20,26 +23,41 @@ export default function ProfilePage({ user }: { user: Session["user"] }) {
   } | null>(null);
   const [editValue, setEditValue] = useState("");
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#C2E53A]"></div>
+      </div>
+    );
+  }
+
+  const customer = customerData?.customer;
+
   const handleEdit = (label: string, key: string, value: string) => {
     setEditField({ label, key, value });
     setEditValue(value);
     setIsEditModalOpen(true);
   };
 
-  const handleSave = () => {
-    // Here you would implement the API call to update the user's information
-    // For now, we'll just close the modal
-    setIsEditModalOpen(false);
-    // Reset edit field
-    setEditField(null);
+  const handleSave = async () => {
+    if (!editField) return;
+    
+    try {
+      await updateCustomerMutation.mutateAsync({
+        [editField.key]: editValue
+      });
+      setIsEditModalOpen(false);
+      setEditField(null);
+    } catch (error) {
+      console.error('Failed to update customer:', error);
+    }
   };
 
   const profile = {
-    fullName: user?.name,
-    email: user?.email,
-    phone: user?.mobile_no,
-
-    avatar: user?.image || "/userProfile.png",
+    fullName: customer?.name || 'N/A',
+    email: customer?.email || 'N/A',
+    phone: customer?.mobile_no || 'N/A',
+    avatar: customer?.image || "/userProfile.png",
   };
 
   return (
@@ -52,7 +70,7 @@ export default function ProfilePage({ user }: { user: Session["user"] }) {
           </h1>
 
           {/* Blurred circle in background */}
-          <div className="absolute w-[80vw] h-[40vw] rounded-full bg-lime-600/10 blur-3xl left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 -z-1 pointer-events-none "></div>
+          <div className="absolute w-[80vw] h-[40vw] rounded-full bg-lime-600/10 blur-3xl left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 -z-1 pointer-events-none"></div>
 
           <div className="grid grid-cols-1 md:grid-cols-[300px,1fr] gap-6 sm:gap-8">
             {/* Sidebar */}
@@ -156,12 +174,12 @@ export default function ProfilePage({ user }: { user: Session["user"] }) {
                     {[
                       {
                         label: "Full Name",
-                        key: "fullName",
+                        key: "name",
                         value: profile.fullName,
                       },
                       {
                         label: "Phone No.",
-                        key: "phone",
+                        key: "mobile_no",
                         value: profile.phone,
                       },
                       { label: "Email", key: "email", value: profile.email },
@@ -175,15 +193,16 @@ export default function ProfilePage({ user }: { user: Session["user"] }) {
                             type="text"
                             value={field.value}
                             readOnly
-                            placeholder="Email Address"
+                            placeholder={`Enter ${field.label}`}
                             className="w-full text-sm bg-[#C2E53A2E] border border-[#C2E53A] rounded-sm px-4 py-2.5 pr-10"
                           />
                           <button
                             className="absolute right-3 top-1/2 transform -translate-y-1/2"
                             onClick={() =>
                               handleEdit(field.label, field.key, field.value)
-                            }>
-                            <Pencil className="w-4 h-4 text-[#beaaaa]" />
+                            }
+                            disabled={field.key === "mobile_no"}>
+                            <Pencil className={`w-4 h-4 ${field.key === "mobile_no" ? "text-gray-500" : "text-[#beaaaa]"}`} />
                           </button>
                         </div>
                       </div>
@@ -192,9 +211,9 @@ export default function ProfilePage({ user }: { user: Session["user"] }) {
                 </div>
               )}
 
-              {activeSection === "orders" && <TrackOrders user={user} />}
+              {activeSection === "orders" && <TrackOrders user={user}/>}
 
-              {activeSection === "address" && <ManageAddress user={user} />}
+              {activeSection === "address" && <ManageAddress  user={user}/>}
             </div>
           </div>
         </div>
@@ -229,7 +248,6 @@ export default function ProfilePage({ user }: { user: Session["user"] }) {
                   value={editValue}
                   placeholder={`Enter your ${editField.label}`}
                   onChange={(e) => setEditValue(e.target.value)}
-                  disabled={editField.key === "phone"}
                   className="w-full text-sm bg-[#C2E53A2E] backdrop-blur-sm bg-opacity-30 border border-[#C2E53A] rounded-sm px-4 py-2.5"
                 />
               </div>
@@ -242,8 +260,9 @@ export default function ProfilePage({ user }: { user: Session["user"] }) {
                 </button>
                 <button
                   onClick={handleSave}
-                  className="px-4 py-2 bg-[#C2E53A] text-black rounded-sm hover:bg-[#C2E53A]/80 transition">
-                  Save Changes
+                  disabled={updateCustomerMutation.isPending}
+                  className="px-4 py-2 bg-[#C2E53A] text-black rounded-sm hover:bg-[#C2E53A]/80 transition disabled:opacity-50">
+                  {updateCustomerMutation.isPending ? 'Saving...' : 'Save Changes'}
                 </button>
               </div>
             </div>

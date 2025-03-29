@@ -1,17 +1,105 @@
-"use client"
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 
-import { useRouter } from "next/navigation"
-import { Loader } from "lucide-react"
 import { z } from "zod"
-
+import { useParams } from "next/navigation"
+import { useEffect, useState } from "react"
+import { useGetAddresses } from "@/app/profile/hooks/hooks"
 import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation"
+import { MapPin } from "lucide-react"
+
+import { Loader } from "lucide-react"
+
 import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { useAddAddress } from "../profile/hooks/hooks"
-import toast from "react-hot-toast"
+import { useUpdateAddress } from "@/app/profile/hooks/hooks"
+import { toast } from "react-hot-toast"
+
+export default function AddressPage() {
+  const params = useParams()
+  const addressId = params.id as string
+  const { data: addresses, isLoading, isError } = useGetAddresses()
+  const [address, setAddress] = useState<any>(null)
+  const [notFound, setNotFound] = useState(false)
+
+  useEffect(() => {
+    if (addresses && !isLoading) {
+      const foundAddress = addresses.find((addr: any) => addr.id === addressId)
+      if (foundAddress) {
+        setAddress(foundAddress)
+      } else {
+        setNotFound(true)
+      }
+    }
+  }, [addresses, addressId, isLoading])
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-black">
+        <Loader className="animate-spin text-lime-400 w-8 h-8" />
+      </div>
+    )
+  }
+
+  if (notFound || isError) {
+    return <NotFoundPage />
+  }
+
+  return address ? <UpdateAddressForm address={address} /> : null
+}
+
+function NotFoundPage() {
+    const router = useRouter()
+  
+    return (
+      <div className="relative w-full min-h-screen bg-black overflow-hidden py-5 flex flex-col items-center justify-center">
+        {/* Blurred circle in background */}
+        <div className="absolute w-[80vw] h-[40vw] rounded-full bg-lime-500/15 blur-3xl left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 -z-10"></div>
+  
+        <div className="text-center max-w-md px-4">
+          <div className="flex justify-center mb-6">
+            <div className="bg-lime-400/20 p-6 rounded-full">
+              <MapPin className="w-16 h-16 text-lime-400" />
+            </div>
+          </div>
+  
+          <h1 className="text-3xl sm:text-4xl font-bold mb-4 text-white">Address Not Found</h1>
+  
+          <p className="text-gray-400 mb-8">
+            We couldn&apos;t find the address you&apos;re looking for. It may have been deleted or the link is incorrect.
+          </p>
+  
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button
+              onClick={() => router.push("/address/new")}
+              className="bg-lime-400 text-black font-bold py-2 px-6 rounded-xl hover:bg-lime-500"
+            >
+              Add New Address
+            </Button>
+  
+            <Button
+              onClick={() => router.push("/profile")}
+              className="border-2 border-white text-white font-bold py-2 px-6 rounded-xl bg-transparent hover:bg-white/10"
+            >
+              Go to Profile
+            </Button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  
+  
+
+
+
+
+
 
 // Define the schema based on the Prisma model
 const addressSchema = z.object({
@@ -26,13 +114,9 @@ const addressSchema = z.object({
 
 type AddressFormValues = z.infer<typeof addressSchema>
 
-// Mock API service - replace with your actual API
-
-
-export default function AddAddressForm() {
-
+ function UpdateAddressForm({ address }: { address: any }) {
   const router = useRouter()
-  const { mutate,isPending } = useAddAddress()
+  const { mutate, isPending } = useUpdateAddress()
 
   const form = useForm<AddressFormValues>({
     resolver: zodResolver(addressSchema),
@@ -47,21 +131,44 @@ export default function AddAddressForm() {
     },
   })
 
+  // Set form values when address data is available
+  useEffect(() => {
+    if (address) {
+      form.reset({
+        name: address.name || "",
+        phone: address.phone || "",
+        street: address.street || "",
+        city: address.city || "",
+        state: address.state || "",
+        country: address.country || "",
+        zipCode: address.zipCode || "",
+      })
+    }
+  }, [address, form])
 
-  async function onSubmit(data: AddressFormValues) {
-    mutate(data,{
-      onSuccess: () => {
-       toast.success("Address added successfully");
-      }
-    })
+  function onSubmit(data: AddressFormValues) {
+    mutate(
+      { addressId: address.id, addressData: data },
+      {
+        onSuccess: () => {
+          toast(
+            "Your address has been successfully updated",
+          )
+          router.push("/profile")
+        },
+        onError: () => {
+          toast( "Failed to update address. Please try again.")
+        },
+      },
+    )
   }
 
   const handleCancel = () => {
-    router.push("/checkout")
+    router.push("/profile")
   }
 
   const handleBack = () => {
-    router.push("/")
+    router.back()
   }
 
   return (
@@ -78,7 +185,7 @@ export default function AddAddressForm() {
 
       {/* Form container */}
       <div className="w-full px-4 sm:px-10 flex flex-col relative z-10 mt-6 sm:mt-10">
-        <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-6 text-white">ADD YOUR ADDRESS</h1>
+        <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-6 text-white">UPDATE YOUR ADDRESS</h1>
       </div>
 
       <Form {...form}>
@@ -108,8 +215,8 @@ export default function AddAddressForm() {
               )}
             />
 
-
-<FormField
+            {/* Phone Number */}
+            <FormField
               control={form.control}
               name="phone"
               render={({ field }) => (
@@ -233,19 +340,16 @@ export default function AddAddressForm() {
                 </FormItem>
               )}
             />
-
-            {/* Phone Number */}
-            
           </div>
 
           <div className="flex items-center gap-4 sm:gap-10 w-full sm:w-3/4 md:w-1/2 mt-6 sm:mt-8">
             <Button
               type="submit"
               className="relative w-full py-2 sm:py-3 text-black flex items-center justify-center font-bold text-base sm:text-lg rounded-xl bg-lime-400 shadow-[0_4px_20px_rgba(255,255,255,0.6)] hover:bg-lime-500"
-              disabled={isPending}
+              disabled={isPending || !form.formState.isDirty}
             >
               {isPending ? <Loader className="animate-spin mr-2" /> : null}
-              Save
+              Update
             </Button>
             <Button
               type="button"
