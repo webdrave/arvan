@@ -85,6 +85,9 @@ export default {
         coluna: ["Coluna", "sans-serif"],
         general_sans: ["General Sans", "sans-serif"],
       },
+      clipPath : {
+        custom : "polygon(0% 100%, 35% 100%, 40% 96%, 60% 96%, 65% 100%)"
+      }
     },
   },
   plugins: [require("tailwindcss-animate")],

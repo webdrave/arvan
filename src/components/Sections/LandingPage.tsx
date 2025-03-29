@@ -45,8 +45,7 @@ const LandingPage = () => {
         className="clippath1 max-sm:hidden absolute top-0 right-0 z-[20] bg-[#121212] w-full h-full hidden lg:block "
         style={{
           clipPath:
-            "polygon(100% 0%, 100% 25%, 98% 35%, 98% 55%, 100% 65%, 100% 100%)",
-          // "polygon(100% 0%, 100% 25%, 98% 35%, 98% 55%, 100% 65%, 100% 100%)",
+            "polygon(100% 0%, 100% 30%, 97% 35%, 97% 55%, 100% 60%, 100% 100%)",
         }}
       >
         <button
@@ -54,7 +53,7 @@ const LandingPage = () => {
             e.stopPropagation(); // Prevent event bubbling (optional)
             animateOverlay(true);
           }}
-          className="w-fit  absolute top-[45%] -translate-y-1/2 -right-14 font-semibold text-xl rotate-90  "
+          className="w-fit  absolute top-[45%] -translate-y-1/2 -right-11 font-semibold text-xl rotate-90  "
         >
           BEST SELLER
         </button>
@@ -63,7 +62,8 @@ const LandingPage = () => {
       <div
         className="clippath1 max-sm:hidden absolute top-0 left-0 z-[20] bg-[#121212] w-full h-full hidden lg:block "
         style={{
-          clipPath: "polygon(0% 0%, 0% 25%, 2% 35%, 2% 55%, 0% 65%,0% 100%)",
+          clipPath:
+            "polygon(0% 0%, 0% 30%, 2.5% 35%, 2.5% 55%, 0% 60%,0% 100%)",
         }}
       ></div>
       {/* Bottom CLipPath */}
@@ -79,12 +79,7 @@ const LandingPage = () => {
       </div>
 
       {/* Mobile Bottom ClipPath */}
-      <div
-        className=" absolute top-0 z-[20] right-0 bg-[#121212] text-white w-full h-full block lg:hidden "
-        style={{
-          clipPath: "polygon(0% 100%, 30% 100%, 35% 96%, 65% 96%, 70% 100%)",
-        }}
-      >
+      <div className=" absolute clipP bottom-0 z-[20] right-0 bg-[#121212] text-white w-full h-[20%] md:h-full md:[clip-path:polygon(0%_100%,35%_100%,40%_96%,60%_96%,65%_100%)] block lg:hidden ">
         <h2 className="w-fit  absolute font-montserrat bottom-1 left-1/2 -translate-x-1/2 text-xs md:text-xl  block lg:hidden">
           SCROLL DOWN
         </h2>
@@ -179,7 +174,7 @@ const LandingPage = () => {
         </div>
       </main>
 
-      <div className="absolute hidden lg:block w-[35%] h-[35%] right-0 bottom-0 px-5 py-2">
+      <div className="absolute hidden md:block w-[35%] h-[35%] right-0 bottom-0 md:h-[25%] lg:h-[35%] px-5 py-2">
         {/* SVG Clip Path Definition */}
         <svg width="0" height="0">
           <defs>
@@ -210,6 +205,44 @@ const LandingPage = () => {
                   layout="fill"
                   objectFit="cover"
                   quality={100}
+                />
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
+
+      <div className="block md:hidden absolute z-[20] w-full h-[25%] left-0 bottom-0  ">
+        <svg
+          width="100%"
+          height="100%"
+          className="absolute inset-0 w-screen h-full"
+        >
+          <defs>
+            <clipPath id="customClipM" clipPathUnits="objectBoundingBox">
+              <path d="M1,0.95V0.05C1,0.02,0.99,0,0.98,0H0.02C0.01,0,0,0.02,0,0.05V0.95C0,0.98,0.01,1,0.02,1H0.33L0.35,0.89H0.64L0.66,1H0.98C0.99,1,1,0.98,1,0.95Z" />
+            </clipPath>
+          </defs>
+        </svg>
+
+        <Swiper
+          modules={[Autoplay]}
+          autoplay={{ delay: 3000, disableOnInteraction: false }}
+          loop={true}
+          speed={1000}
+          className="absolute inset-0 w-full h-full  overflow-hidden"
+          style={{ clipPath: "url(#customClipM)" }}
+        >
+          {bannerBackground.map((image, index) => (
+            <SwiperSlide key={index} className="w-full h-full overflow-hidden">
+              <div className="relative w-full h-full z-[20]">
+                <Image
+                  src={image}
+                  alt={`Background Image ${index + 1}`}
+                  layout="fill"
+                  objectFit="cover"
+                  quality={100}
+                  priority
                 />
               </div>
             </SwiperSlide>
