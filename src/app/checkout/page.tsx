@@ -88,10 +88,10 @@ const Checkout: React.FC = () => {
         billing_phone: session?.user?.mobile_no,
         order_items: cart.map((item) => ({
           name: item.name,
-          sku: item.productVariantId,
+          sku: "ARV-" + item.color + "-" + item.size,
           units: item.quantity,
           selling_price: item.price,
-          hsn: "1234",
+          hsn: "ARV-" + item.color + "-" + item.size,
         })),
         payment_method: paymentMethod === "cod" ? "COD" : "Prepaid",
         sub_total: subtotal,

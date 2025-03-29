@@ -25,7 +25,7 @@ const Navbar = () => {
     },
     {
       name: "Track Order",
-      href: "/",
+      href: "/track-order",
     },
     {
       name: "About",
