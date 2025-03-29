@@ -16,9 +16,28 @@ export interface Order {
 }
 
 export const orderApi = {
-  getOrders: async (): Promise<Order[]> => {
-    const response = await apiClient.get("/api/orders");
-    return response.data.orders;
+  getOrders: async (
+    currentPage: string,
+    itemsPerPage: string,
+    debouncedSearchTerm: string
+  ): Promise<{
+    success: boolean,
+    orders: Order[];
+    pagination: {
+      totalPages: number;
+      currentPage: number;
+      totalItems: number;
+      itemsPerPage: number;
+    };
+  }> => {
+    const response = await apiClient.get("/api/orders", {
+      params: {
+        page: currentPage,
+        limit: itemsPerPage,
+        search: debouncedSearchTerm,
+      },
+    });
+    return response.data;
   },
   getOrderById: async (id: string): Promise<Order> => { 
     const response = await apiClient.get(`/api/orders/${id}`);

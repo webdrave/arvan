@@ -1,6 +1,6 @@
 "use client"
 import Link from "next/link";
-import { Search, ShoppingCart, User } from "lucide-react";
+import {  ShoppingCart, User } from "lucide-react";
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 
@@ -16,7 +16,7 @@ export default function Navigation() {
     },
     {
       name: "Track Order",
-      href: "/",
+      href: "/track-order",
     },
     {
       name: "About",
@@ -31,7 +31,7 @@ export default function Navigation() {
   const { cart } = useCart();
 
   return (
-    <nav className="bg-black text-white py-4 px-6 border-b border-gray-800">
+    <nav className=" text-white py-4 px-6 border-b border-gray-800">
       <div className="container mx-auto flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="text-2xl font-bold">
@@ -63,9 +63,6 @@ export default function Navigation() {
 
         {/* Right Icons */}
         <div className="flex items-center space-x-6">
-          <button className="hover:text-[#CCFF00]">
-            <Search className="w-5 h-5" />
-          </button>
           <Link href="/cart" className="hover:text-[#CCFF00] relative">
             <ShoppingCart className="w-5 h-5" />
             <div className="absolute bg-[#c2e53a]  w-full h-full -top-2 -right-3 text-xs text-black  flex justify-center items-center rounded-full p-1">

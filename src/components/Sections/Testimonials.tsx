@@ -9,13 +9,13 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Navigation, Pagination } from "swiper/modules";
 import { useQuery } from "@tanstack/react-query";
+import { apiClient } from "@/lib/axiosClient";
 
 export default function Testimonials() {
   const prevRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   // Removed duplicate declaration of testimonials
-  const [maxHeight, setMaxHeight] = useState<number>(0);
 
   interface Testimonial {
     id: string;
@@ -31,46 +31,8 @@ export default function Testimonials() {
   const { data, isLoading } = useQuery({
     queryKey: ["testimonials"],
     queryFn: async () => {
-      return [
-        {
-          id: "cm8rkjgsp002hbd2fn9cwoblt",
-          username: "Vivek Jaiswal",
-          role: "UI Designer at WebDrave",
-          description: "Valuable & Reliable Slides",
-          image:
-            "https://res.cloudinary.com/dlqooiewh/image/upload/v1743092950/uploads/icav9g02kyesvrqiesgn.jpg",
-          ratings: 5,
-        },
-        {
-          id: "cm8rknwz9002ibd2fl7h3z8nb",
-          username: "Abhishek Chaudhary",
-          role: "CEO & Founder of WebDrave",
-          description: "Edgy, stylish, and super comfortable Sliders",
-          image:
-            "https://res.cloudinary.com/dlqooiewh/image/upload/v1743093158/uploads/kifvuszkdpdle22clqab.jpg",
-          ratings: 5,
-        },
-        {
-          id: "cm8rkq6ct002jbd2fvwt8hcly",
-          username: "Khushwant Singh",
-          role: "COO & Co-Founder of WebDrave",
-          description:
-            "ARVAN never disappoints! I've bought multiple pairs, and every design is unique and stylish. The quality is outstanding, and the comfort level is unbeatable.",
-          image:
-            "https://res.cloudinary.com/dlqooiewh/image/upload/v1743093266/uploads/ub1ljbiev4w6rkx0v6zb.jpg",
-          ratings: 5,
-        },
-        {
-          id: "cm8rl0i54002kbd2faw6g01ee",
-          username: "Khushi Rawat",
-          role: "Project Manager",
-          description:
-            "Best sliders in the market! The designs are bold, the material is durable, and they fit like a dream. Whether at home or outside, these sliders are my go-to choice. Highly recommended!",
-          image:
-            "https://res.cloudinary.com/dlqooiewh/image/upload/v1743093746/uploads/tu63jqgzwkpog0t6grjd.jpg",
-          ratings: 5,
-        },
-      ];
+      const response = await apiClient.get("/api/testimonials");
+      return response.data.testimonials;
     },
   });
 
@@ -135,25 +97,22 @@ export default function Testimonials() {
             });
           }}
           modules={[Pagination, Navigation]}
-          className="mySwiper w-full h-full center-testimonial-swiper"
-        >
+          className="mySwiper w-full h-full center-testimonial-swiper">
           {testimonials.map((testimonial, index) => (
             <SwiperSlide
               key={index}
-              className="flex justify-center items-center testimonial-slide"
-            >
+              className="flex justify-center items-center testimonial-slide">
               <div
                 ref={(el) => {
                   cardRefs.current[index] = el;
                 }}
-                className="testimonial-card relative w-full h-[20rem] sm:h-[25rem] md:h-[25rem] bg-[#1E1E1E] border border-gray-700 rounded-xl p-4 sm:p-6  flex flex-col justify-between text-center shadow-lg overflow-hidden transition-all duration-300 ease-in-out transform scale-75 opacity-80 "
-              >
+                className="testimonial-card relative w-full h-[20rem] sm:h-[25rem] md:h-[25rem] bg-[#1E1E1E] border border-gray-700 rounded-xl p-4 sm:p-6  flex flex-col justify-between text-center shadow-lg overflow-hidden transition-all duration-300 ease-in-out transform scale-75 opacity-80 ">
                 <div className="absolute w-1/2 h-1/2 bg-gradient-to-br blur-2xl from-[#6FD351] to-[#C2E53A] rounded-3xl opacity-30 -top-[10%] left-[20%]"></div>
 
                 <div className="flex flex-col flex-1">
-                  <p className="text-4xl sm:text-5xl text-start absolute top-2 left-2">
-                    "
-                  </p>
+                  {/* <p className="text-4xl sm:text-5xl text-start absolute top-2 left-2">
+                    
+                  </p> */}
 
                   {/* Testimonial text */}
                   <div className="mt-[15%] mb-3 overflow-y-auto max-h-[50%] pr-2 text-left">
@@ -200,14 +159,12 @@ export default function Testimonials() {
 
         <button
           ref={prevRef}
-          className="absolute left-[-7%] sm:left-[-5%] top-1/2 transform -translate-y-1/2 cursor-pointer z-10 text-white text-xl sm:text-2xl md:text-3xl p-2 bg-black/40 rounded-full"
-        >
+          className="absolute left-[-7%] sm:left-[-5%] top-1/2 transform -translate-y-1/2 cursor-pointer z-10 text-white text-xl sm:text-2xl md:text-3xl p-2 bg-black/40 rounded-full">
           <FaChevronLeft />
         </button>
         <button
           ref={nextRef}
-          className="absolute right-[-7%] sm:right-[-5%] top-1/2 transform -translate-y-1/2 cursor-pointer z-10 text-white text-xl sm:text-2xl md:text-3xl p-2 bg-black/40 rounded-full"
-        >
+          className="absolute right-[-7%] sm:right-[-5%] top-1/2 transform -translate-y-1/2 cursor-pointer z-10 text-white text-xl sm:text-2xl md:text-3xl p-2 bg-black/40 rounded-full">
           <FaChevronRight />
         </button>
       </div>

@@ -116,7 +116,7 @@ export default function ContactForm() {
               <span className="text-white">?</span>
             </h2>
             <p className="text-gray-300 mt-2 text-[10px] sm:text-sm md:text-sm lg:text-base leading-relaxed">
-              Got a question or need assistance? We're here to help!
+              Got a question or need assistance? We&apos;re here to help!
             </p>
             <form
               className="mt-6 space-y-4 sm:space-y-6"

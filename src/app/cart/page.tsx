@@ -10,49 +10,10 @@ import Navigation from "@/components/navigation";
 import { useCart } from "@/context/CartContext";
 import { useRouter } from "next/navigation";
 
-// Sample cart data
-// const initialCartItems = [
-//   {
-//     id: 1,
-//     name: "Leather",
-//     color: "White",
-//     size: "6 UK",
-//     quantity: 1,
-//     price: 599,
-//     image: "/slides/1.png",
-//   },
-//   {
-//     id: 2,
-//     name: "Leather",
-//     color: "White",
-//     size: "6 UK",
-//     quantity: 1,
-//     price: 599,
-//     image: "/slides/2.png",
-//   },
-//   {
-//     id: 3,
-//     name: "Leather",
-//     color: "White",
-//     size: "6 UK",
-//     quantity: 1,
-//     price: 599,
-//     image: "/slides/3.png",
-//   },
-//   {
-//     id: 4,
-//     name: "Leather",
-//     color: "White",
-//     size: "6 UK",
-//     quantity: 1,
-//     price: 599,
-//     image: "/slides/4.png",
-//   },
-// ];
-
 export default function CartPage() {
   const [giftCode, setGiftCode] = useState("");
   const [showSummary, setShowSummary] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { cart, updateQuantity, removeFromCart } = useCart();
 
@@ -63,6 +24,15 @@ export default function CartPage() {
   const shippingCharges = 149;
   const tax = subtotal * 0.18; // 18% tax
   const total = cart.length > 0 ? subtotal + shippingCharges + tax : 0;
+
+  const handleCheckout = async () => {
+    setIsLoading(true);
+    try {
+      router.push("/checkout");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -275,10 +245,10 @@ export default function CartPage() {
 
                 <Button
                   className="w-full bg-[#c2e53a] text-black text-xl font-montserrat rounded-lg py-3 font-semibold mt-6 uppercase cursor-pointer hover:bg-[#aecc34]"
-                  disabled={total === 0}
-                  onClick={() => router.push("/checkout")}
+                  disabled={total === 0 || isLoading}
+                  onClick={handleCheckout}
                 >
-                  Checkout
+                  {isLoading ? "Processing..." : "Checkout"}
                 </Button>
               </div>
             </div>
@@ -333,11 +303,11 @@ export default function CartPage() {
                   <span>₹{total.toFixed(2)}</span>
                 </div>
                 <Button
-                  disabled={total === 0}
+                  disabled={total === 0 || isLoading}
                   className="w-full h-12 bg-[#CCFF00] text-black hover:bg-[#CCFF00]/90 font-bold"
-                  onClick={() => router.push("/checkout")}
+                  onClick={handleCheckout}
                 >
-                  CHECKOUT
+                  {isLoading ? "Processing..." : "CHECKOUT"}
                 </Button>
               </div>
             </div>
@@ -356,11 +326,11 @@ export default function CartPage() {
                   <Plus className="w-5 h-5" />
                 </Button>
                 <Button
-                  disabled={total === 0}
+                  disabled={total === 0 || isLoading}
                   className="h-12 bg-[#CCFF00] text-black hover:bg-[#CCFF00]/90 font-bold px-8"
-                  onClick={() => router.push("/checkout")}
+                  onClick={handleCheckout}
                 >
-                  CHECKOUT
+                  {isLoading ? "Processing..." : "CHECKOUT"}
                 </Button>
               </div>
             </div>
