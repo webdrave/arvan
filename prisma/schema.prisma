@@ -285,3 +285,4 @@ model ProductPerformance {
   @@unique([productId, date]) // Ensures one record per product per day
   @@index([date]) // Adds an index on the 'date' field
 }
+
