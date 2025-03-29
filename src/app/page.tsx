@@ -41,7 +41,7 @@ export default function Home() {
       <Section2></Section2>
       <NewArrivals></NewArrivals>
       <BestSellers></BestSellers>
-      <section className="mt-20">
+      <section className="mt-10 md:mt-20">
         <WhoWeAre></WhoWeAre>
       </section>
       <ShopNowAt></ShopNowAt>

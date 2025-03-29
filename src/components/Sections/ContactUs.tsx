@@ -5,6 +5,8 @@ import { FaInstagram, FaFacebook } from "react-icons/fa";
 import Image from "next/image";
 import { apiClient } from "@/lib/axiosClient";
 import { toast } from "react-hot-toast";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 // Define the type for the form data
 interface FormData {
@@ -63,7 +65,7 @@ export default function ContactForm() {
             width={40}
             height={40}
             alt="Star SVG"
-            className="absolute -top-6 sm:-top-5 right-0 animate-[spin_3s_linear_infinite]"
+            className="absolute -z-[10] -top-5 right-0 animate-[spin_3s_linear_infinite]"
           />
         </span>
       </h2>
@@ -85,7 +87,7 @@ export default function ContactForm() {
             src="/border_mobile.svg"
             alt="Border"
             fill
-            className="object-fill"
+            className="object-fill scale-x-[1.2] scale-y-[1.25] sm:scale-y-[1.2]"
             priority
           />
         </div>
@@ -136,13 +138,27 @@ export default function ContactForm() {
                 onChange={handleChange}
                 value={formData.email}
               />
-              <input
+              {/* <input
                 type="text"
                 name="mobile"
                 placeholder="Mobile No."
                 className="w-full bg-transparent border-b border-gray-500 p-2 focus:outline-none text-sm sm:text-base md:text-sm lg:text-base"
                 onChange={handleChange}
                 value={formData.mobile}
+              /> */}
+              <PhoneInput
+                country={"in"}
+                value={formData.mobile}
+                onChange={() => handleChange}
+                inputClass="!w-full !p-5 !px-10 !sm:p-5 !border-b !text-white !bg-transparent !border-0  !outline-none !ring-0"
+                containerClass="!bg-transparent"
+                buttonClass="!bg-transparent !border-0"
+                dropdownClass="!bg-[#1a1a1a] !text-white text-black"
+                searchClass="!bg-[#1a1a1a] !text-white"
+                inputProps={{
+                  required: true,
+                  placeholder: "Mobile Number",
+                }}
               />
               <textarea
                 name="message"
@@ -150,6 +166,7 @@ export default function ContactForm() {
                 className="w-full bg-transparent border-b border-gray-500 p-2 focus:outline-none text-sm sm:text-base md:text-sm lg:text-base"
                 onChange={handleChange}
                 value={formData.message}
+                style={{ resize: "none" }}
               ></textarea>
               <button
                 type="submit"
@@ -207,7 +224,8 @@ export default function ContactForm() {
             </div>
 
             <p className="text-[10px] sm:text-sm md:text-sm lg:text-base leading-relaxed mt-6 md:mb-5 hidden md:block">
-              We’d love to hear from you! Whether you have questions, or just want to say hello, feel free to reach out.
+              We’d love to hear from you! Whether you have questions, or just
+              want to say hello, feel free to reach out.
             </p>
           </div>
         </div>

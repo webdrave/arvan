@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback } from "react"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/Button"
 import { useDropzone } from "react-dropzone"
 import axios from "axios"
 import { Upload, X } from "lucide-react"
