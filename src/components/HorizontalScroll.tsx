@@ -439,7 +439,7 @@ const HorizontalScroll = () => {
 
             <div
               ref={headingsContainerRef}
-              className="absolute top-[10%] left-0 w-full z-0 -translate-y-1/2 h-[20vh] overflow-hidden"
+              className="absolute top-[15%] left-0 w-full z-0 -translate-y-1/2 h-[20vh] overflow-hidden"
               style={{ pointerEvents: "none" }}
             >
               {slides.map((slide, index) => (

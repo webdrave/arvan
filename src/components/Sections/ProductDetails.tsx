@@ -14,6 +14,8 @@ import Footer from "../Footer";
 import { productReviewApi } from "@/lib/api/productreview";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import cuid from "cuid";
+import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 
 const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
   const [showReviewModal, setShowReviewModal] = useState(false);
@@ -22,7 +24,6 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
   const [selectedImage, setSelectedImage] = useState("");
   const [images, setImages] = useState<string[]>([]);
   const [availableSizes, setAvailableSizes] = useState<string[]>([]);
-  const [quantity, setQuantity] = useState<number>(1);
   const { addToCart } = useCart();
   const router = useRouter();
 
@@ -49,30 +50,8 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
   });
 
   const [productData, fetchedReviews] = results;
-
   useEffect(() => {
     if (productData.data) {
-      // Extract all images from the product data
-      const allImages: string[] = [];
-
-      // Add main product assets
-      productData.data.assets.forEach((asset) => {
-        if (asset.type === "IMAGE") {
-          allImages.push(asset.asset_url);
-        }
-      });
-
-      // Add color-specific assets
-      productData.data.colors.forEach((color) => {
-        color.assets.forEach((asset) => {
-          if (asset.type === "IMAGE") {
-            allImages.push(asset.asset_url);
-          }
-        });
-      });
-
-      setImages(allImages);
-
       // Default color selection - always select first color
       const defaultColor = productData.data.colors[0]?.color || "";
       setSelectedColor(defaultColor);
@@ -95,43 +74,80 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
           setSelectedSize(sizes[0]);
         }
 
-        // Set default selected image (first image of selected color)
-        if (defaultColorData.assets.length > 0) {
-          setSelectedImage(defaultColorData.assets[0].asset_url);
-        } else if (allImages.length > 0) {
-          // Fallback to first overall image if no color-specific assets
-          setSelectedImage(allImages[0]);
+        // Set color-specific images only
+        const colorImages: string[] = [];
+        defaultColorData.assets.forEach((asset) => {
+          if (asset.type === "IMAGE") {
+            colorImages.push(asset.asset_url);
+          }
+        });
+
+        // If no color-specific images, fallback to main product images
+        if (colorImages.length === 0) {
+          productData.data.assets.forEach((asset) => {
+            if (asset.type === "IMAGE") {
+              colorImages.push(asset.asset_url);
+            }
+          });
         }
-      } else {
-        setSelectedImage(productData.data.assets[0].asset_url);
+
+        setImages(colorImages);
+
+        // Set default selected image
+        if (colorImages.length > 0) {
+          setSelectedImage(colorImages[0]);
+        }
       }
     }
   }, [productData.data]);
 
-  // Add another useEffect for handling color changes
   useEffect(() => {
     if (productData.data && selectedColor) {
       // Find the currently selected color's data
       const currentColor = productData.data.colors.find(
         (color) => color.color === selectedColor
       );
+
       if (currentColor) {
+        // Set only color-specific images
+        const colorImages: string[] = [];
+
+        // Add only the selected color's assets
+        currentColor.assets.forEach((asset) => {
+          if (asset.type === "IMAGE") {
+            colorImages.push(asset.asset_url);
+          }
+        });
+
+        // If no color-specific images, fallback to main product images
+        if (colorImages.length === 0) {
+          productData.data.assets.forEach((asset) => {
+            if (asset.type === "IMAGE") {
+              colorImages.push(asset.asset_url);
+            }
+          });
+        }
+
+        setImages(colorImages);
+
         // Update available sizes for the selected color
         const sizes = currentColor.sizes
           .map((size) => size.size.replace("SIZE_", ""))
           .sort((a, b) => Number(a) - Number(b));
         setAvailableSizes(sizes);
+
         // Update selected size if current selection is no longer available
         if (sizes.length > 0 && !sizes.includes(selectedSize)) {
           setSelectedSize(sizes[0]);
         }
+
         // Update selectedImage to first color-specific asset when color changes
-        if (currentColor.assets.length > 0) {
-          setSelectedImage(currentColor.assets[0].asset_url);
+        if (colorImages.length > 0) {
+          setSelectedImage(colorImages[0]);
         }
       }
     }
-  }, [productData.data, selectedColor, selectedSize]);
+  }, [productData.data, selectedColor]);
 
   return (
     <>
@@ -141,24 +157,26 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
         <>
           <Navigation />
           <div className="w-full min-h-screen relative mx-auto pt-10 pb-10 px-6 md:px-12 ">
-            <div className="w-full h-full relative mx-auto pb-10  grid grid-cols-1 lg:grid-cols-2 items-start gap-6 lg:gap-8">
+            <div className="w-full h-full relative mx-auto pb-10  grid grid-cols-1 lg:grid-cols-2 items-start gap-6 lg:gap-8 ">
               {/* Left Section - Image Gallery */}
-              <div className="flex flex-col lg:sticky lg:top-5 sm:flex-row items-center gap-4 ">
-                <div className="flex sm:flex-col gap-3 order-2 sm:order-1">
+              <div className="flex flex-col  lg:sticky lg:top-5 sm:flex-row items-center gap-4 ">
+                <div className="flex sm:flex-col overflow-x-auto gap-3 order-2 sm:order-1">
                   {images.map((img, index) => (
-                    <Image
-                      key={index}
-                      src={img || ""}
-                      alt="Thumbnail"
-                      height={200}
-                      width={200}
-                      className={`h-12 w-14 cursor-pointer border-2 transition-all duration-200 ${
-                        selectedImage === img
-                          ? "border-[#c2e53a]"
-                          : "border-white"
-                      }`}
-                      onClick={() => setSelectedImage(img)}
-                    />
+                    <>
+                      <Image
+                        key={index}
+                        src={img || ""}
+                        alt="Thumbnail"
+                        height={200}
+                        width={200}
+                        className={`h-12 w-14 cursor-pointer border-2 transition-all duration-200 ${
+                          selectedImage === img
+                            ? "border-[#c2e53a]"
+                            : "border-white"
+                        }`}
+                        onClick={() => setSelectedImage(img)}
+                      />
+                    </>
                   ))}
                 </div>
                 <div className="w-full sm:h-[50dvh] my-10 md:my-0 md:h-[80dvh] order-1 sm:order-2 shadow-[0_4px_20px_rgba(255,255,255,0.3)] rounded-2xl overflow-hidden ">
@@ -183,20 +201,26 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                     <div className="flex items-center gap-2  my-2 flex-wrap">
                       <p className="text-white font-montserrat text-lg sm:text-xl font-bold">
                         {/* {remainProduct.currency} */}
-                        {productData.data.discountPrice}
+                        {productData.data.discountPrice
+                          ? productData.data.discountPrice
+                          : productData.data.price}
                       </p>
-                      <p className="text-[#858585] text-lg sm:text-xl font-bold  line-through">
-                        {productData.data.price}
-                      </p>
-                      <div className="text-black text-normal border font-montserrat  rounded-xl  bg-[#C2E53A] font-bold px-2">
-                        {(
-                          ((productData.data.price -
-                            productData.data.discountPrice!) /
-                            productData.data.price) *
-                          100
-                        ).toFixed(2)}
-                        %
-                      </div>
+                      {productData.data.discountPrice && (
+                        <p className="text-[#858585] text-lg sm:text-xl font-bold  line-through">
+                          {productData.data.price}
+                        </p>
+                      )}
+                      {productData.data.discountPrice && (
+                        <div className="text-black text-normal border font-montserrat  rounded-xl  bg-[#C2E53A] font-bold px-2">
+                          {(
+                            ((productData.data.price -
+                              productData.data.discountPrice!) /
+                              productData.data.price) *
+                            100
+                          ).toFixed(2)}
+                          %
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="md:w-[20%] flex flex-col items-start sm:items-center gap-1 mt-2 sm:mt-0">
@@ -259,9 +283,31 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                     {/* Size Selection */}
                     <div className="flex items-center justify-between w-full">
                       <p className="text-base ">Select Size (UK):</p>
-                      <button className="text-white underline text-sm font-medium font-montserrat  w-fit uppercase mt-4 sm:mt-0">
+                      {/* <button className="text-white underline text-sm font-medium font-montserrat  w-fit uppercase mt-4 sm:mt-0">
                         Size Chart
-                      </button>
+                      </button> */}
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <button className="text-white underline text-sm font-medium font-montserrat  w-fit uppercase mt-4 sm:mt-0">
+                            Size Chart
+                          </button>
+                        </DialogTrigger>
+                        <DialogContent
+                          aria-describedby="Size Chart"
+                          aria-description="Size Chart"
+                          className="bg-black/95 text-white border-white/20"
+                        >
+                          <div className="p-2 rounded-xl overflow-hidden  object-cover">
+                          <Image
+                            width={100}
+                            height={100}
+                            src={"/sizeChart.png"}
+                            alt="Size Chart"
+                            className="w-full h-full object-cover rounded-md"
+                          />
+                          </div>
+                        </DialogContent>
+                      </Dialog>
                     </div>
                     <div className="flex flex-wrap gap-3 mt-2">
                       {availableSizes.map((size) => (
@@ -287,7 +333,8 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                         className="w-full h-10 bg-[#c2e53a] rounded-xl text-black text-xl font-medium uppercase font-montserrat"
                         onClick={() => {
                           addToCart({
-                            id: productData.data.id,
+                            id: cuid(),
+                            productId: productData.data.id,
                             productVariantId: productData.data.colors
                               .find((color) => color.color === selectedColor)
                               ?.sizes.find(
@@ -320,16 +367,11 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                       </button>
                       <div className="w-full flex items-center  justify-center gap-1">
                         <button
-                          className="border border-[#c2e53a] w-10 flex  items-center justify-center h-10 text-white rounded-lg"
-                          onClick={() => setQuantity((prev) => prev + 1)}
-                        >
-                          <Plus size={18} />
-                        </button>
-                        <button
-                          className="w-full h-10 border border-[#c2e53a] text-white  text-sm md:text-xl font-normal uppercase font-montserrat flex items-center justify-center gap-2 rounded-lg"
+                          className="w-full h-10 border border-[#c2e53a] text-white  text-sm md:text-xl font-normal uppercase font-montserrat flex items-center justify-center gap-2 rounded-xl"
                           onClick={() => {
                             addToCart({
-                              id: productData.data.id,
+                              id: cuid(),
+                              productId: productData.data.id,
                               productVariantId: productData.data.colors
                                 .find((color) => color.color === selectedColor)
                                 ?.sizes.find(
@@ -356,22 +398,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                             );
                           }}
                         >
-                          <ShoppingCart className="h-5 w-5" /> Add to Cart :{" "}
-                          {quantity}
-                        </button>
-
-                        <button
-                          className="border border-[#c2e53a] w-10 flex  items-center justify-center h-10 text-white rounded-lg"
-                          onClick={() => {
-                            setQuantity((prev) => {
-                              if (prev === 1) {
-                                return 1;
-                              }
-                              return prev - 1;
-                            });
-                          }}
-                        >
-                          <Minus size={18} />
+                          <ShoppingCart className="h-5 w-5" /> Add to Cart
                         </button>
                       </div>
                     </div>
@@ -384,6 +411,10 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                     Product Details
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3 text-base lg:text-lg">
+                    <p className="text-[#b3b3b3]">Description</p>{" "}
+                    <p className="text-white uppercase">
+                      {productData.data.description}
+                    </p>
                     <p className="text-[#b3b3b3]">Material</p>{" "}
                     <p className="text-white uppercase">
                       {productData.data.material}

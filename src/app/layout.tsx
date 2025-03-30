@@ -11,6 +11,7 @@ import { CartProvider } from "@/context/CartContext";
 import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "next-auth/react";
 // import { GoogleTagManager } from '@next/third-parties/google' 
+import { LenisProvider } from "@/context/LenisContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,15 +44,15 @@ export default function RootLayout({
           <QueryProvider>
             <Theme>
               <AdminStyles />
-              <GSAPProvider>
-                <OverlayProvider>
-                  <CartProvider>
-                    {/* <GoogleTagManager gtmId="YOUR_GTM_ID" /> */}
-                    {children}
-                  </CartProvider>
-                  <Toaster />
-                </OverlayProvider>
-              </GSAPProvider>
+
+              <LenisProvider>
+                <GSAPProvider>
+                  <OverlayProvider>
+                    <CartProvider>{children}</CartProvider>
+                    <Toaster />
+                  </OverlayProvider>
+                </GSAPProvider>
+              </LenisProvider>
             </Theme>
           </QueryProvider>
         </body>
