@@ -8,12 +8,21 @@ interface TopProducts {
 }
 
 interface BestSellers {
-    productId: string;
+    productid: string;
     name: string;
     price: number;
     discount?: number;
     category: string;
     img : string
+}
+
+interface NewArrivals {
+    id : string;
+    name : string,
+    img : string,
+    price : number,
+    discount?: number,
+    category : string
 }
 
 export const analyticApi = {
@@ -25,4 +34,8 @@ export const analyticApi = {
         const response = await apiClient.get(`/api/analytics/best-sellers/?limit=10`);
         return response.data.products;
     },
+    getNewArrivals : async (): Promise<NewArrivals[]> => {
+        const response = await apiClient.get(`/api/analytics/new-arrivals/?limit=10`);
+        return response.data.products;
+    }
     }
