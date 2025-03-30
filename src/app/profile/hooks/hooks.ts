@@ -68,7 +68,7 @@ export const useGetAddresses = () => {
 
 // --- GET CUSTOMER ---
 const getCustomer = async () => {
-  const response = await apiClient.get('/customers');
+  const response = await apiClient.get('/api/customers');
   return response.data;
 };
 
@@ -81,7 +81,7 @@ export const useGetCustomer = () => {
 
 // --- UPDATE CUSTOMER ---
 const updateCustomer = async (customerData: any) => {
-  const response = await apiClient.put('/customers', customerData);
+  const response = await apiClient.put('/api/customers', customerData);
   return response.data;
 };
 

@@ -1,12 +1,20 @@
-import OTPVerification from '@/components/Sections/otp'
+import { useParams } from 'next/navigation'
 import React from 'react'
 
-async function page({params}: {params: Promise<{ id: string }>}) {
-    const { id } = await params
-    
+async function Page() {
+
+  const { id} = useParams();
+
+  if(!id){
+    return <div>Invalid ID</div>
+  }
+
+  if( typeof id !== 'string'){
+    return <div>Invalid ID</div>
+  }
   return (
-   <OTPVerification id={id} />
+
   )
 }
 
-export default page
+export default Page
