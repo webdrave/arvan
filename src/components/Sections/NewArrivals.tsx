@@ -9,13 +9,13 @@ import { useQuery } from "@tanstack/react-query";
 import { analyticApi } from "@/lib/api/analytic";
 import Link from "next/link";
 
-type Slide = {
-  img: string;
-  name: string;
-  price: number;
-  category: string;
-  discount?: number;
-};
+// type Slide = {
+//   img: string;
+//   name: string;
+//   price: number;
+//   category: string;
+//   discount?: number;
+// };
 
 const NewArrivals: React.FC = () => {
   // const slides: Slide[] = [
