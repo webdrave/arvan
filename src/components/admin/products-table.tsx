@@ -41,6 +41,7 @@ export interface Products extends Product {
     type: "IMAGE" | "VIDEO";
     asset_url: string;
     url: string;
+    id: string
   }[];
   colors: Color[];
   createdAt : string

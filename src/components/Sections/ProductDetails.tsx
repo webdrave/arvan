@@ -50,105 +50,126 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
   });
 
   const [productData, fetchedReviews] = results;
+
+  // First useEffect - runs when productData.data changes
   useEffect(() => {
     if (productData.data) {
-      // Default color selection - always select first color
-      const defaultColor = productData.data.colors[0]?.color || "";
-      setSelectedColor(defaultColor);
+      // console.log(productData.data)
+      // No default color selection
+      setSelectedColor(""); // Empty string or null, depending on your preference
 
-      // Find the default color's data
-      const defaultColorData = productData.data.colors.find(
-        (color) => color.color === defaultColor
+      // Set available sizes to empty initially
+      setAvailableSizes([]);
+
+      // Get all color-specific image IDs to exclude them
+      const colorImageIds = new Set(
+        productData.data.colors.flatMap(
+          (color) =>
+            color.assets
+              .filter((asset) => asset.type === "IMAGE")
+              .map((asset) => asset.id) // Store only IDs
+        )
       );
 
-      if (defaultColorData) {
-        // Set available sizes for the selected color
-        const sizes = defaultColorData.sizes
-          .map((size) => size.size.replace("SIZE_", ""))
-          .sort((a, b) => Number(a) - Number(b));
-
-        setAvailableSizes(sizes);
-
-        // Set default selected size (first available size)
-        if (sizes.length > 0) {
-          setSelectedSize(sizes[0]);
+      // Load main product images, excluding color-specific images
+      const mainImages: string[] = [];
+      productData.data.assets.forEach((asset) => {
+        if (asset.type === "IMAGE" && !colorImageIds.has(asset.id)) {
+          mainImages.push(asset.asset_url);
         }
+      });
 
-        // Set color-specific images only
-        const colorImages: string[] = [];
-        defaultColorData.assets.forEach((asset) => {
-          if (asset.type === "IMAGE") {
-            colorImages.push(asset.asset_url);
-          }
-        });
+      setImages(mainImages);
 
-        // If no color-specific images, fallback to main product images
-        if (colorImages.length === 0) {
-          productData.data.assets.forEach((asset) => {
-            if (asset.type === "IMAGE") {
-              colorImages.push(asset.asset_url);
-            }
-          });
-        }
-
-        setImages(colorImages);
-
-        // Set default selected image
-        if (colorImages.length > 0) {
-          setSelectedImage(colorImages[0]);
-        }
+      // Set default selected image from main images
+      if (mainImages.length > 0) {
+        setSelectedImage(mainImages[0]);
       }
     }
   }, [productData.data]);
 
+  // Second useEffect - runs when selectedColor changes
   useEffect(() => {
-    if (productData.data && selectedColor) {
-      // Find the currently selected color's data
-      const currentColor = productData.data.colors.find(
-        (color) => color.color === selectedColor
-      );
-
-      if (currentColor) {
-        // Set only color-specific images
-        const colorImages: string[] = [];
-
-        // Add only the selected color's assets
-        currentColor.assets.forEach((asset) => {
-          if (asset.type === "IMAGE") {
-            colorImages.push(asset.asset_url);
+    if (productData.data) {
+      if (!selectedColor) {
+        // Get all color-specific image IDs to exclude them
+        const colorImageIds = new Set(
+          productData.data.colors.flatMap(
+            (color) =>
+              color.assets
+                .filter((asset) => asset.type === "IMAGE")
+                .map((asset) => asset.id) // Store only IDs
+          )
+        );
+        // Load main product images, excluding color-specific images
+        const mainImages: string[] = [];
+        productData.data.assets.forEach((asset) => {
+          if (asset.type === "IMAGE" && !colorImageIds.has(asset.id)) {
+            mainImages.push(asset.asset_url);
           }
         });
+        setImages(mainImages);
 
-        // If no color-specific images, fallback to main product images
-        if (colorImages.length === 0) {
-          productData.data.assets.forEach((asset) => {
+        if (mainImages.length > 0) {
+          setSelectedImage(mainImages[0]);
+        }
+      } else {
+        // When a color is selected, show only that color's images
+        const currentColor = productData.data.colors.find(
+          (color) => color.color === selectedColor
+        );
+
+        if (currentColor) {
+          // Set color-specific images
+          const colorImages: string[] = [];
+          currentColor.assets.forEach((asset) => {
             if (asset.type === "IMAGE") {
               colorImages.push(asset.asset_url);
             }
           });
-        }
 
-        setImages(colorImages);
+          // If no color-specific images, keep main images (optional)
+          if (colorImages.length === 0) {
+            const colorImageUrls = new Set(
+              productData.data.colors
+                .filter((color) => color.color !== selectedColor) // Exclude current color
+                .flatMap((color) =>
+                  color.assets
+                    .filter((asset) => asset.type === "IMAGE")
+                    .map((asset) => asset.asset_url)
+                )
+            );
 
-        // Update available sizes for the selected color
-        const sizes = currentColor.sizes
-          .map((size) => size.size.replace("SIZE_", ""))
-          .sort((a, b) => Number(a) - Number(b));
-        setAvailableSizes(sizes);
+            productData.data.assets.forEach((asset) => {
+              if (
+                asset.type === "IMAGE" &&
+                !colorImageUrls.has(asset.asset_url)
+              ) {
+                colorImages.push(asset.asset_url);
+              }
+            });
+          }
 
-        // Update selected size if current selection is no longer available
-        if (sizes.length > 0 && !sizes.includes(selectedSize)) {
-          setSelectedSize(sizes[0]);
-        }
+          setImages(colorImages);
 
-        // Update selectedImage to first color-specific asset when color changes
-        if (colorImages.length > 0) {
-          setSelectedImage(colorImages[0]);
+          // Update available sizes for the selected color
+          const sizes = currentColor.sizes
+            .map((size) => size.size.replace("SIZE_", ""))
+            .sort((a, b) => Number(a) - Number(b));
+          setAvailableSizes(sizes);
+
+          // Set default size when color is selected
+          if (sizes.length > 0) {
+            setSelectedSize(sizes[0]);
+          }
+          // Update selectedImage to first color-specific asset
+          if (colorImages.length > 0) {
+            setSelectedImage(colorImages[0]);
+          }
         }
       }
     }
   }, [productData.data, selectedColor, selectedSize]);
-
   return (
     <>
       {productData.isLoading ? (
@@ -298,31 +319,39 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                           className="bg-black/95 text-white border-white/20"
                         >
                           <div className="p-2 rounded-xl overflow-hidden  object-cover">
-                          <Image
-                            width={100}
-                            height={100}
-                            src={"/sizeChart.png"}
-                            alt="Size Chart"
-                            className="w-full h-full object-cover rounded-md"
-                          />
+                            <Image
+                              width={100}
+                              height={100}
+                              src={"/sizeChart.png"}
+                              alt="Size Chart"
+                              className="w-full h-full object-cover rounded-md"
+                            />
                           </div>
                         </DialogContent>
                       </Dialog>
                     </div>
                     <div className="flex flex-wrap gap-3 mt-2">
-                      {availableSizes.map((size) => (
-                        <button
-                          key={size}
-                          className={`w-12 h-12 rounded-lg border-2 ${
-                            selectedSize === size
-                              ? "border-[#c2e53a]"
-                              : "border-white"
-                          }`}
-                          onClick={() => setSelectedSize(size)}
-                        >
-                          {size}
-                        </button>
-                      ))}
+                      {availableSizes.length > 0 ? (
+                        availableSizes.map((size) => (
+                          <button
+                            key={size}
+                            className={`w-12 h-12 rounded-lg border-2 ${
+                              selectedSize === size
+                                ? "border-[#c2e53a]"
+                                : "border-white"
+                            }`}
+                            onClick={() => setSelectedSize(size)}
+                          >
+                            {size}
+                          </button>
+                        ))
+                      ) : (
+                        <div className="flex items-center justify-center">
+                          <p className="text-white text-sm">
+                            Select any Color First
+                          </p>
+                        </div>
+                      )}
                     </div>
                     {/* Size Chart Button */}
 
@@ -332,6 +361,16 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                       <button
                         className="w-full h-10 bg-[#c2e53a] rounded-xl text-black text-xl font-medium uppercase font-montserrat"
                         onClick={() => {
+                          if (availableSizes.length === 0) {
+                            toast.error(
+                              `Please select a color first to see available sizes.`,
+                              {
+                                duration: 2500,
+                              }
+                            );
+                            return;
+                          }
+
                           addToCart({
                             id: cuid(),
                             productId: productData.data.id,
@@ -369,6 +408,16 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                         <button
                           className="w-full h-10 border border-[#c2e53a] text-white  text-sm md:text-xl font-normal uppercase font-montserrat flex items-center justify-center gap-2 rounded-xl"
                           onClick={() => {
+                            if (availableSizes.length === 0) {
+                              toast.error(
+                                `Please select a color first to see available sizes.`,
+                                {
+                                  duration: 2500,
+                                }
+                              );
+                              return;
+                            }
+
                             addToCart({
                               id: cuid(),
                               productId: productData.data.id,

@@ -175,7 +175,7 @@ const NewArrivals: React.FC = () => {
                     name={slide.name}
                     price={slide.price}
                     category={slide.category}
-                    discount={slide.discount && slide.discount}
+                    discount={slide.discount}
                   />
                 </Link>
               </SwiperSlide>
