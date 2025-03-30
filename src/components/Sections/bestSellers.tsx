@@ -7,6 +7,7 @@ import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { analyticApi } from "@/lib/api/analytic";
+import Link from "next/link";
 
 // type Slide = {
 //   img: string;
@@ -76,16 +77,10 @@ const BestSellers: React.FC = () => {
   // ];
   const [autoplayDelay, setAutoplayDelay] = useState(3000); // Default delay
 
-  const {
-    data: slides,
-  } = useQuery({
+  const { data: slides } = useQuery({
     queryKey: ["top-products"],
     queryFn: async () => analyticApi.getBestSellers(),
   });
-
-  useEffect(() => {
-    if (slides) console.log(slides);
-  }, [slides]);
 
   useEffect(() => {
     const updateAutoplay = () => {
@@ -168,14 +163,16 @@ const BestSellers: React.FC = () => {
                 key={index}
                 className="h-full flex justify-center items-center p-2"
               >
-                <Slidebox
-                  image={slide.img}
-                  name={slide.name}
-                  price={slide.price}
-                  category={slide.category}
-                  discount={slide.discount && slide.discount}
-                  transform="scaleX(-1)"
-                />
+                <Link href={`/product/${slide.productid}`}>
+                  <Slidebox
+                    image={slide.img}
+                    name={slide.name}
+                    price={slide.price}
+                    category={slide.category}
+                    discount={slide.discount && slide.discount}
+                    transform="scaleX(-1)"
+                  />
+                </Link>
               </SwiperSlide>
             ))}
           </Swiper>
