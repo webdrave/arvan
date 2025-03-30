@@ -76,7 +76,7 @@ const Navbar = () => {
               <Link
                 key={i}
                 href={item.href}
-                className="relative font-montserrat font-normal text-md xl:text-lg transition-colors duration-300
+                className="relative font-montserrat  text-md xl:text-lg transition-colors duration-300
                after:content-[''] after:absolute after:left-0 after:bottom-0
                after:h-[2.5px] after:bg-[#CCFF00] after:transform-gpu after:w-0 hover:after:w-full
                after:transition-all after:duration-300"
@@ -150,7 +150,7 @@ const Navbar = () => {
       </nav>
       {/* Mobile Menu (unchanged) */}
       {isMenuOpen && (
-        <div className="md:hidden fixed top-20 left-0 right-0 bg-transparent p-4 z-40 backdrop-blur-md">
+        <div className="md:hidden font-montserrat fixed top-20 left-0 right-0 bg-transparent p-4 z-40 backdrop-blur-md">
           <div className="flex flex-col space-y-4">
             {navItems.map((navItem, idx) => (
               <Link

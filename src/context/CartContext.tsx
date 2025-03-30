@@ -8,6 +8,7 @@ import {
 } from "react";
 
 type CartItem = {
+  productId: string,
   id: string;
   name: string;
   price: number;
@@ -28,8 +29,8 @@ type AddToCartItem = Omit<CartItem, "quantity"> & {
 type cartContext = {
   cart: CartItem[];
   addToCart: (item: AddToCartItem) => void;
-  removeFromCart: (id: string) => void;
-  updateQuantity: (id: string, quantity: number) => void;
+  removeFromCart: (id: string, size: string, color: string) => void;
+  updateQuantity: (id: string, size: string, color: string, quantity: number) => void;
   clearCart: () => void;
 };
 
@@ -49,52 +50,76 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
+  
   const addToCart = (item: AddToCartItem) => {
     // Ensure quantity is a number before proceeding
     const quantityToAdd: number =
       item.quantity !== undefined ? item.quantity : 1;
-
+  
     const itemWithQuantity: CartItem = {
       ...(item as Omit<CartItem, "quantity">), // Cast to ensure all required fields are present
       quantity: quantityToAdd,
     };
-
+  
     setCart((prevCart: CartItem[]) => {
-      const existingItem = prevCart.find((cartItem) => cartItem.id === item.id);
+      // Find existing item with same product ID, size, and color
+      const existingItem = prevCart.find(
+        (cartItem) => 
+          cartItem.id === item.id && 
+          cartItem.size === item.size && 
+          cartItem.color === item.color
+      );
+  
+      // If exact match (same product, size, and color) exists, update quantity
       if (existingItem) {
-        return prevCart.map((c) =>
-          c.id === item.id ? { ...c, quantity: c.quantity + quantityToAdd } : c
+        return prevCart.map((cartItem) =>
+          (cartItem.id === item.id && 
+           cartItem.size === item.size && 
+           cartItem.color === item.color)
+            ? { ...cartItem, quantity: cartItem.quantity + quantityToAdd }
+            : cartItem
         );
       }
-
+  
+      // Otherwise add as a new item
       return [...prevCart, itemWithQuantity];
     });
   };
 
-  // Update quantity of an item in the cart
-  const updateQuantity = (id: string, quantity: number) => {
-    if (quantity <= 0) {
-      // Remove item if quantity is 0 or negative
-      removeFromCart(id);
-      return;
-    }
+ // Update quantity of an item in the cart
+const updateQuantity = (id: string, size: string, color: string, quantity: number) => {
+  if (quantity <= 0) {
+    // Remove item if quantity is 0 or negative
+    removeFromCart(id, size, color);
+    return;
+  }
 
-    setCart((prevCart) =>
-      prevCart.map((cartItem) =>
-        cartItem.id === id ? { ...cartItem, quantity } : cartItem
-      )
-    );
-  };
+  setCart((prevCart) =>
+    prevCart.map((cartItem) =>
+      (cartItem.id === id && 
+       cartItem.size === size && 
+       cartItem.color === color)
+        ? { ...cartItem, quantity } 
+        : cartItem
+    )
+  );
+};
 
-  const removeFromCart = (id: string) => {
-    setCart((prevCart) => prevCart.filter((cartItem) => cartItem.id !== id));
-  };
+// Remove an item from the cart based on id, size, and color
+const removeFromCart = (id: string, size: string, color: string) => {
+  setCart((prevCart) => 
+    prevCart.filter((cartItem) => 
+      !(cartItem.id === id && 
+        cartItem.size === size && 
+        cartItem.color === color)
+    )
+  );
+};
 
-  // Clear the entire cart
-  const clearCart = () => {
-    setCart([]);
-  };
-
+// Clear the entire cart
+const clearCart = () => {
+  setCart([]);
+};
   return (
     <CartContext.Provider
       value={{ cart, addToCart, removeFromCart, updateQuantity, clearCart }}
