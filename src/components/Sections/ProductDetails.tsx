@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Star, ShoppingCart, Minus, Plus } from "lucide-react";
+import { Star, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import ReviewWritings from "../reviewWriting";
 import { useQueries } from "@tanstack/react-query";
@@ -147,7 +147,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
         }
       }
     }
-  }, [productData.data, selectedColor]);
+  }, [productData.data, selectedColor, selectedSize]);
 
   return (
     <>
