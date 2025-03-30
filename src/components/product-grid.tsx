@@ -28,7 +28,8 @@ export default function ProductGrid({ product }: { product: Products }) {
             <h3 className="font-bold text-lg">{product.name}</h3>
             <div className="text-right">
               <div className="font-bold">
-                ₹{product.discountPrice ? product.discountPrice : product.price}
+                ₹{" "}
+                {product.discountPrice ? product.discountPrice : product.price}
               </div>
               {product.discountPrice && (
                 <div className="text-sm text-gray-400 line-through">
