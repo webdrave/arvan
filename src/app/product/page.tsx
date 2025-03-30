@@ -109,7 +109,7 @@ export default function ProductPage() {
 
   const getAllProducts = useMemo(() => {
     if (!products?.pages) return [];
-    
+
     const sortProducts = (products: Products[]) => {
       return [...products].sort((a, b) => {
         switch (sortBy) {
@@ -137,7 +137,7 @@ export default function ProductPage() {
 
     const matchesFilters = (product: Products) => {
       if (filters.priceRanges.length > 0) {
-        const price = product.discountPrice || 0;
+        const price = product.price || 0;
         const matchesPrice = filters.priceRanges.some((range) => {
           switch (range) {
             case "Under ₹1000":
@@ -198,11 +198,8 @@ export default function ProductPage() {
             height={500}
             className="w-full h-full object-contain relative z-[15] -rotate-12"
           />
-          <h2 className="text-4xl sm:top-[45%]  md:top-[45%] lg:top-[42%] -translate-y-1/2  md:text-6xl absolute left-[75%] md:left-[80%] lg:left-[65%]  -translate-x-1/2  font-coluna font-bold tracking-wider z-[20] text-center">
-            INTO
-          </h2>
-          <h1 className="text-[25vw] md:text-[20vw] lg:text-[15vw] top-[62%] md:top-[60%] lg:top-[65%] -translate-y-1/2  absolute left-[70%] -translate-x-1/2  font-coluna font-bold tracking-wider z-[20] text-center">
-            STYLE.
+          <h1 className="text-[25vw] md:text-[20vw] lg:text-[15vw] top-[62%] md:top-[60%] lg:top-[65%] -translate-y-1/2  absolute left-[70%] -translate-x-1/2  font-coluna font-bold tracking-wider z-[20] text-center flex flex-col leading-none">
+            <span className=" text-4xl inline-block ">INTO</span>STYLE.
           </h1>
         </div>
       </section>

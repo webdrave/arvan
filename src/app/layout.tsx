@@ -10,6 +10,7 @@ import { CartProvider } from "@/context/CartContext";
 
 import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "next-auth/react";
+import { LenisProvider } from "@/context/LenisContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,12 +44,14 @@ export default function RootLayout({
           <QueryProvider>
             <Theme>
               <AdminStyles />
-              <GSAPProvider>
-                <OverlayProvider>
-                  <CartProvider>{children}</CartProvider>
-                  <Toaster />
-                </OverlayProvider>
-              </GSAPProvider>
+              <LenisProvider>
+                <GSAPProvider>
+                  <OverlayProvider>
+                    <CartProvider>{children}</CartProvider>
+                    <Toaster />
+                  </OverlayProvider>
+                </GSAPProvider>
+              </LenisProvider>
             </Theme>
           </QueryProvider>
         </body>
