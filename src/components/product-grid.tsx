@@ -5,7 +5,7 @@ export default function ProductGrid({ product }: { product: Products }) {
   return (
     <>
       <Link href={`/product/${product.id}`} className="group">
-        <div className="relative aspect-square   shadow-[0_4px_20px_rgba(255,255,255,0.6)] rounded-xl overflow-hidden mb-4">
+        <div className="relative aspect-square   shadow-[0_1px_20px_rgba(255,255,255,0.2)] rounded-xl overflow-hidden mb-4">
           {product.discountPrice && (
             <span className="absolute top-2 right-2 bg-[#CCFF00] text-black px-2 py-1 text-sm rounded">
               {(
