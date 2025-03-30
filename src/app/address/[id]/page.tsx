@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { useParams, useRouter } from "next/navigation";
 import { Loader } from "lucide-react";
 import { z } from "zod";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useGetAddresses, useUpdateAddress } from "../../profile/hooks/hooks";
-import { Address } from "@/lib/api/address";
 import Navigation from "@/components/navigation";
 
 const oldAddresses = [{
