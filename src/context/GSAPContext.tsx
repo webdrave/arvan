@@ -21,7 +21,7 @@ export const GSAPProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (Math.abs(newWidth - lastWidth) > 50) {
         lastWidth = newWidth;
-        // window.location.reload();
+        window.location.reload();
       }
     };
     window.addEventListener("resize", handleResize);
