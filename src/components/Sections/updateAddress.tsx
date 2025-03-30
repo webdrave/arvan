@@ -5,9 +5,9 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 
 import { z } from "zod"
-import { useParams } from "next/navigation"
-import { useEffect, useState } from "react"
-import { useGetAddresses } from "@/app/profile/hooks/hooks"
+
+import { useEffect } from "react"
+import { useGetAddressById } from "@/app/profile/hooks/hooks"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 import { MapPin } from "lucide-react"
@@ -19,23 +19,12 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useUpdateAddress } from "@/app/profile/hooks/hooks"
 import { toast } from "react-hot-toast"
 
-export default function AddressPage() {
-  const params = useParams()
-  const addressId = params.id as string
-  const { data: addresses, isLoading, isError } = useGetAddresses()
-  const [address, setAddress] = useState<any>(null)
-  const [notFound, setNotFound] = useState(false)
+export default function AddressPage({id}:{id:string}) {
 
-  useEffect(() => {
-    if (addresses && !isLoading) {
-      const foundAddress = addresses.find((addr: any) => addr.id === addressId)
-      if (foundAddress) {
-        setAddress(foundAddress)
-      } else {
-        setNotFound(true)
-      }
-    }
-  }, [addresses, addressId, isLoading])
+
+  const { data: address,isLoading, isError } = useGetAddressById(id)
+
+
 
   if (isLoading) {
     return (
@@ -45,7 +34,7 @@ export default function AddressPage() {
     )
   }
 
-  if (notFound || isError) {
+  if (!address || isError) {
     return <NotFoundPage />
   }
 

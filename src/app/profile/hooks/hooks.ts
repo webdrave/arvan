@@ -95,3 +95,16 @@ export const useUpdateCustomer = () => {
     },
   });
 };
+
+async function getAddressById(id: string) {
+  return (await apiClient.get(`/api/customers/address/${id}`)).data;
+}
+
+export const useGetAddressById = (id: string) => {
+  return useQuery({
+    queryKey: ['address', id], // Include id in queryKey to keep data fresh per ID
+    queryFn: () => getAddressById(id), // Pass id to queryFn
+    enabled: !!id, // Ensures the query only runs if id is provided
+  });
+};
+

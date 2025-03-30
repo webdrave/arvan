@@ -1,11 +1,12 @@
-import OTPVerification from '@/components/Sections/otp'
+
 import React from 'react'
+import AddressPage from '@/components/Sections/updateAddress'
 
 async function page({params}: {params: Promise<{ id: string }>}) {
     const { id } = await params
     
   return (
-   <OTPVerification id={id} />
+   <AddressPage id={id} />
   )
 }
 
