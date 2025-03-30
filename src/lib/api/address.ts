@@ -3,6 +3,7 @@ import { apiClient } from "../axiosClient";
 
 export type Address = {
   id: string;
+  name?: string;
   street: string;
   city: string;
   state: string;
@@ -15,12 +16,12 @@ export type Address = {
 
 export const AddressApi = {
   getAddress: async (): Promise<Address[]> => {
-    const response = await apiClient.get("/api/customers/customer");
+    const response = await apiClient.get("/api/customers/address");
     return response.data.address;
   },
   addAddress: async (formData: AddressType): Promise<void> => {
    await apiClient.post(
-      "/api/customers/customer/address",
+      "/api/customers/address",
       formData
     );
   },
