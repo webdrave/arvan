@@ -38,8 +38,7 @@ const Slidebox: React.FC<SlideboxProps> = ({
       <div className="flex justify-between mt-2 font-coluna text-2xl font-bold tracking-wide">
         <span className="uppercase">{name}</span>
         <span>
-          $
-          {discount > 0
+        ₹ {discount > 0
             ? (price - (price * discount) / 100).toFixed(2)
             : price.toFixed(2)}
         </span>

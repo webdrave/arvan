@@ -169,7 +169,7 @@ const BestSellers: React.FC = () => {
                     name={slide.name}
                     price={slide.price}
                     category={slide.category}
-                    discount={slide.discount && slide.discount}
+                    discount={slide.discount}
                     transform="scaleX(-1)"
                   />
                 </Link>
