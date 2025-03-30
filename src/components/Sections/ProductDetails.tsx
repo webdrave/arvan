@@ -54,11 +54,10 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
   // First useEffect - runs when productData.data changes
   useEffect(() => {
     if (productData.data) {
-      // console.log(productData.data)
-      // No default color selection
+    
       setSelectedColor(""); // Empty string or null, depending on your preference
 
-      // Set available sizes to empty initially
+    
       setAvailableSizes([]);
 
       // Get all color-specific image IDs to exclude them
@@ -169,7 +168,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
         }
       }
     }
-  }, [productData.data, selectedColor, selectedSize]);
+  }, [productData.data, selectedColor]);
   return (
     <>
       {productData.isLoading ? (
