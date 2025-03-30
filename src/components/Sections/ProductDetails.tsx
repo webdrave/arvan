@@ -222,13 +222,13 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                     <div className="flex items-center gap-2  my-2 flex-wrap">
                       <p className="text-white font-montserrat text-lg sm:text-xl font-bold">
                         {/* {remainProduct.currency} */}
-                        {productData.data.discountPrice
+                        ₹ {productData.data.discountPrice
                           ? productData.data.discountPrice
                           : productData.data.price}
                       </p>
                       {productData.data.discountPrice && (
                         <p className="text-[#858585] text-lg sm:text-xl font-bold  line-through">
-                          {productData.data.price}
+                          ₹ {productData.data.price}
                         </p>
                       )}
                       {productData.data.discountPrice && (
