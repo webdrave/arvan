@@ -8,28 +8,51 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 import toast from "react-hot-toast"
+import { useEffect, useState } from "react"
+
+const oldAddresses = [{
+  "id": "84110d2b-d500-4085-ac68-62165d98f8f5",
+  "name": "Aditya Bansal",
+  "phone": "7060140150",
+  "street": "Supertech Upcountry",
+  "city": "Greater Noida",
+  "state": "Uttar Pradesh",
+  "country": "India",
+  "zipCode": "203201",
+  "userId": "cm8vavsfy0000zvgwvcc3mkqg",
+  "createdAt": "2025-03-30T07:44:38.703Z",
+  "updatedAt": "2025-03-30T07:44:38.703Z"
+}]
 
 const ManageAddress = ({ user }: { user: Session["user"] }) => {
   const router = useRouter()
-  const { data: addresses, isLoading } = useGetAddresses()
+  const { data, isLoading } = useGetAddresses()
   const { mutate: deleteAddress, isPending } = useDeleteAddress()
+  const [addresses, setAddresses] = useState(oldAddresses)
+
+  useEffect(() => {
+    if(data) {
+      setAddresses(data.address)
+    }
+  }, [data])
 
   const handleAddAddress = () => {
     router.push("/address")
   }
 
-  const handleDeleteAddress = (id: string) => {
-   
-      deleteAddress(id, {
+  const handleDeleteAddress = async (id: string) => {
+    try {
+      await deleteAddress(id, {
         onSuccess: () => {
           toast.success("Address deleted successfully");
-        }
-        ,
-        onError: (error) => {
-          toast.error(error.message || "Failed to delete address");
+        },
+        onError: (error: any) => {
+          toast.error(error?.message || "Failed to delete address");
         }
       })
-    
+    } catch (error: any) {
+      toast.error(error?.message || "Failed to delete address");
+    }
   }
 
   if (!user) {
@@ -105,7 +128,6 @@ const ManageAddress = ({ user }: { user: Session["user"] }) => {
               <p className="text-xl mb-2">No addresses found</p>
               <p className="text-sm">Add a new address to get started</p>
             </div>
-          
           </div>
         )}
       </div>
@@ -114,4 +136,3 @@ const ManageAddress = ({ user }: { user: Session["user"] }) => {
 }
 
 export default ManageAddress
-

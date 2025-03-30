@@ -10,6 +10,7 @@ import { CartProvider } from "@/context/CartContext";
 
 import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "next-auth/react";
+// import { GoogleTagManager } from '@next/third-parties/google' 
 import { LenisProvider } from "@/context/LenisContext";
 
 const geistSans = Geist({
@@ -39,11 +40,11 @@ export default function RootLayout({
           <meta name="color-scheme" content="dark" />
         </head>
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
           <QueryProvider>
             <Theme>
               <AdminStyles />
+
               <LenisProvider>
                 <GSAPProvider>
                   <OverlayProvider>

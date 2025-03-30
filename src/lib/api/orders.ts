@@ -4,6 +4,7 @@ export interface OrderItems {
   productId: string;
   quantity: number;
   priceAtOrder: number;
+  productVariantId: string;
   color: string;
   productImage: string;
   productName: string;
@@ -11,8 +12,9 @@ export interface OrderItems {
 }
 
 export interface Order {
-  id: string;
+  id?: string;
   addressId: string;
+  awb?: string;
   paid?: boolean;
   userId: string;
   items: OrderItems[];

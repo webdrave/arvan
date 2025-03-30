@@ -111,10 +111,16 @@ const Checkout: React.FC = () => {
           addressId: selectedAddress,
           total,
           items: cart.map((item) => ({
+            productId: item.id,
+            color: item.color,
+            productName: item.name,
+            size: item.size,
             productVariantId: item.productVariantId as string,
             quantity: item.quantity,
             priceAtOrder: item.price,
+            productImage: item.image,
           })),
+          status: "PENDING"
         },
         {
           onSuccess: async (data) => {
@@ -216,12 +222,17 @@ const Checkout: React.FC = () => {
                 userId: session?.user?.id as string,
                 addressId: selectedAddress,
                 total,
-                paid: true,
                 items: cart.map((item) => ({
+                  productId: item.id,
+                  color: item.color,
+                  productName: item.name,
+                  size: item.size,
                   productVariantId: item.productVariantId as string,
                   quantity: item.quantity,
                   priceAtOrder: item.price,
+                  productImage: item.image,
                 })),
+                status: "PENDING"
               },
               {
                 onSuccess: async (data) => {
