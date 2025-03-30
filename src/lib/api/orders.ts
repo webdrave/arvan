@@ -4,6 +4,7 @@ export interface OrderItems {
   productId: string;
   quantity: number;
   priceAtOrder: number;
+  productVariantId: string;
   color: string;
   productImage: string;
   productName: string;
