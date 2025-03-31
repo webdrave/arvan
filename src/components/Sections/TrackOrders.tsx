@@ -1,3 +1,4 @@
+"use client"
 import { Session } from "next-auth";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
