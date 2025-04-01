@@ -10,6 +10,9 @@ import {
   CheckCircle,
   Clock,
   Loader,
+  XCircle,
+  ShoppingBag,
+  ShoppingCart,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Order, orderApi, OrderItems } from "@/lib/api/orders";
@@ -43,7 +46,6 @@ const TrackOrders = ({ user }: { user: Session["user"] }) => {
 
   useEffect(() => {
     if (data) {
-      console.log(data);
       setCurrentOrders(() =>
         data.orders.slice(indexOfFirstOrder, indexOfLastOrder)
       );
@@ -70,23 +72,50 @@ const TrackOrders = ({ user }: { user: Session["user"] }) => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen font-montserrat text-white">
-        <Loader className="animate-spin" />
+      <div className="flex items-center justify-center  font-montserrat text-white">
+        <div className="flex flex-col items-center">
+          <Loader className="animate-spin w-12 h-12 mb-4" />
+          <p className="text-gray-400">Loading your orders...</p>
+        </div>
       </div>
     );
   }
 
   if (isError) {
-    <div className="flex items-center justify-center h-screen font-montserrat text-white">
-      <h1 className="text-2xl">Something went wrong</h1>
-      <Link href="/shop">
-        <button className="bg-[#C2E53A] text-black px-4 py-2 sm:px-6 sm:py-3 rounded-sm hover:bg-[#a8c72f] transition text-sm sm:text-base">
-          Go Back And Continue Shopping
-        </button>
-      </Link>
-    </div>;
+    return (
+      <div className="flex items-center justify-center  font-montserrat text-white">
+        <div className="text-center flexx flex-col items-center">
+          <XCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+          <h1 className="text-2xl mb-4">Oops! Something went wrong</h1>
+          <p className="text-gray-400 mb-6">We're having trouble loading your orders</p>
+          <Link className="w-full" href="/shop">
+            <button className="bg-[#C2E53A] text-black px-6 py-3 rounded-sm hover:bg-[#a8c72f] transition text-base flex items-center gap-2">
+              <ShoppingBag className="w-5 h-5" />
+              Continue Shopping
+            </button>
+          </Link>
+        </div>
+      </div>
+    );
   }
 
+  if (data && data.orders.length === 0) {
+    return (
+      <div className="flex items-center flex-col justify-center  font-montserrat text-white">
+        <div className="text-center flex flex-col items-center justify-center">
+          <Package className="w-16 h-16 text-gray-500 mx-auto mb-4" />
+          <h1 className="text-2xl mb-4">No Orders Found</h1>
+          <p className="text-gray-400 mb-6">Looks like you haven't made any orders yet</p>
+          <Link className="flex justify-center" href="/shop">
+            <button className="bg-[#C2E53A] text-black flex-1 px-6 py-3 rounded-sm hover:bg-[#a8c72f] transition text-base flex items-center gap-2">
+              <ShoppingCart className="w-5 h-5" />
+              Start Shopping
+            </button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
   return (
     data &&
     data.orders.length > 0 && (
@@ -207,7 +236,7 @@ const TrackOrders = ({ user }: { user: Session["user"] }) => {
                             </div>
 
                             <div className="flex flex-wrap gap-3 mt-4">
-                              <Link href={`/product/${product.productId}`}>
+                              <Link href={`/product/${product.id}`}>
                                 <button className="border border-gray-600 px-3 py-1 sm:px-4 sm:py-2 rounded-sm hover:bg-gray-800 transition text-xs sm:text-sm">
                                   View Product
                                 </button>
