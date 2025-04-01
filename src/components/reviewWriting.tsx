@@ -1,3 +1,4 @@
+"use client"
 import { productReviewApi } from "@/lib/api/productreview";
 import { Review } from "@/types/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

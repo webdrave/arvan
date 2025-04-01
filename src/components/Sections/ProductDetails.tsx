@@ -169,7 +169,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
         }
       }
     }
-  }, [productData.data, selectedColor, selectedSize]);
+  }, [productData.data, selectedColor]);
   return (
     <>
       {productData.isLoading ? (

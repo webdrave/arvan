@@ -179,7 +179,7 @@ export default function ProductPage() {
     <div className="min-h-screen font-montserrat bg-black text-white overflow-x-hidden">
       <Navigation />
       {/* Hero Section */}
-      <section className="shop relative h-[100dvh]  lg:h-screen xl:h-[80dvh] flex items-center justify-center overflow-hidden">
+      <section className="shop relative h-[70dvh] overflow-visible  lg:h-screen xl:h-[80dvh] flex items-center justify-center ">
         <div
           className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 md:w-72 md:h-72 lg:w-96 lg:h-96 rounded-full bg-gray-200/40   blur-3xl"
           style={{
@@ -205,8 +205,8 @@ export default function ProductPage() {
       </section>
 
       {/* Products Section */}
-      <section className="container mx-auto px-4 py-16">
-        <div className="flex justify-between items-center mb-8">
+      <section className="w-full pb-10 ">
+        <div className="flex justify-between items-center mb-8 px-5">
           <h2 className="text-md md:text-xl font-medium">All Products</h2>
           <div className="flex items-center justify-end gap-2">
             <DropdownMenu>
@@ -288,17 +288,18 @@ export default function ProductPage() {
             </div>
           </>
         ) : getAllProducts.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {getAllProducts.length > 0 ? (
-              getAllProducts.map((product: Products, i: number) => (
-                <ProductGrid key={`${product.id}-${i}`} product={product} />
-              ))
-            ) : (
-              <div className="flex justify-center my-16">
-                <p>No Products available for this range.</p>
-              </div>
-            )}
-          </div>
+      
+          <div className="grid grid-cols-2 md:grid-cols-3  lg:grid-cols-4 gap-0 ">
+          {getAllProducts.length > 0 ? (
+            getAllProducts.map((product: Products, i: number) => (
+              <ProductGrid key={`${product.id}-${i}`} product={product} index={i} totalProducts={getAllProducts.length} />
+            ))
+          ) : (
+            <div className="flex w-full justify-center my-16 col-span-2">
+              <p>No Products available for this range.</p>
+            </div>
+          )}
+        </div>
         ) : isError ? (
           <h1>Something went wrong</h1>
         ) : (

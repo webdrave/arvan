@@ -16,8 +16,8 @@ const LandingPage = () => {
 
   const bannerBackground = [
     "/BannerImages/Banner-1.jpg",
-    "/BannerImages/Banner-2.jpg",
-    "/BannerImages/Banner-3.jpg",
+    // "/BannerImages/Banner-2.jpg",
+    // "/BannerImages/Banner-3.jpg",
   ];
 
   // const slidestext = ["JUNGLE WALKER", "LIFE IS GOOD", "A4 BLACK"];
