@@ -10,7 +10,7 @@ import { CartProvider } from "@/context/CartContext";
 
 import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "next-auth/react";
-// import { GoogleTagManager } from '@next/third-parties/google' 
+import { GoogleTagManager } from '@next/third-parties/google' 
 import { LenisProvider } from "@/context/LenisContext";
 
 const geistSans = Geist({
@@ -55,6 +55,7 @@ export default function RootLayout({
               </LenisProvider>
             </Theme>
           </QueryProvider>
+          <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID? process.env.NEXT_PUBLIC_GTM_ID : ""} />
         </body>
       </html>
     </SessionProvider>
