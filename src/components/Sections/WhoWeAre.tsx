@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const WhoWeAre = () => {
   return (
@@ -7,7 +8,7 @@ const WhoWeAre = () => {
       <div className="text-center relative py-10 sm:py-10">
         <h2 className="text-3xl sm:text-4xl md:text-6xl font-bold">
           Who <span className="text-lime-400">We</span>{" "}
-            <span className="relative">
+          <span className="relative">
             Are?
             <Image
               src={"/Star.svg"}
@@ -18,7 +19,7 @@ const WhoWeAre = () => {
               priority={false}
               unoptimized
             />
-            </span>
+          </span>
         </h2>
       </div>
 
@@ -40,9 +41,11 @@ const WhoWeAre = () => {
             with that little extra something that makes you feel like you’ve got
             it all together.
           </p>
-          <button className="relative text-lg sm:text-xl font-light px-6 sm:px-8 py-2 sm:py-3 bg-gradient-to-r from-[#c3e53a8a] to-[#b3d2343e] text-white uppercase shadow-[0px_0px_2px_#c3e53a] hover:shadow-[0px_0px_5px_#c3e53a] transition-all duration-300 mt-4 sm:mt-5">
-            EXPLORE
-          </button>
+          <Link href={"/shop"}>
+            <button className="relative text-lg sm:text-xl font-light px-6 sm:px-8 py-2 sm:py-3 bg-gradient-to-r from-[#c3e53a8a] to-[#b3d2343e] text-white uppercase shadow-[0px_0px_2px_#c3e53a] hover:shadow-[0px_0px_5px_#c3e53a] transition-all duration-300 mt-4 sm:mt-5">
+              EXPLORE
+            </button>
+          </Link>
         </div>
 
         {/* Right Content */}

@@ -29,7 +29,7 @@ export default function Footer() {
                 <Twitter className="w-5 h-5" />
               </Link>
               <Link
-                href="https://instagram.com"
+                href="https://www.instagram.com/thearvan.official?igsh=ZmlndGt0NGZ1bXF6"
                 className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:border-white/40 transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -78,7 +78,8 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="https://instagram.com"
+                  href="https://www.instagram.com/thearvan.official?igsh=ZmlndGt0NGZ1bXF6"
+                  target="_blank"
                   className="text-[#999999] hover:text-white transition-colors"
                 >
                   Instagram

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Session } from "next-auth";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -33,7 +33,7 @@ const TrackOrders = ({ user }: { user: Session["user"] }) => {
   const ordersPerPage = 2;
   const indexOfLastOrder = currentPage * ordersPerPage;
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
- 
+
   const { data, isLoading, isError } = useQuery({
     queryKey: ["orders", user.email],
     queryFn: async () =>
@@ -51,7 +51,7 @@ const TrackOrders = ({ user }: { user: Session["user"] }) => {
       );
       setTotalPages(Math.ceil(data!.orders.length / ordersPerPage));
     }
-  }, [data,indexOfFirstOrder, indexOfLastOrder]);
+  }, [data, indexOfFirstOrder, indexOfLastOrder]);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
