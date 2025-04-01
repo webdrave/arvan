@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Session } from "next-auth";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -30,7 +30,7 @@ const TrackOrders = ({ user }: { user: Session["user"] }) => {
   const ordersPerPage = 2;
   const indexOfLastOrder = currentPage * ordersPerPage;
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
- 
+
   const { data, isLoading, isError } = useQuery({
     queryKey: ["orders", user.email],
     queryFn: async () =>
@@ -49,7 +49,7 @@ const TrackOrders = ({ user }: { user: Session["user"] }) => {
       );
       setTotalPages(Math.ceil(data!.orders.length / ordersPerPage));
     }
-  }, [data,indexOfFirstOrder, indexOfLastOrder]);
+  }, [data, indexOfFirstOrder, indexOfLastOrder]);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -70,21 +70,23 @@ const TrackOrders = ({ user }: { user: Session["user"] }) => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen font-montserrat text-white">
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full font-montserrat text-white flex flex-col justify-center items-center gap-5">
         <Loader className="animate-spin" />
       </div>
     );
   }
 
   if (isError) {
-    <div className="flex items-center justify-center h-screen font-montserrat text-white">
-      <h1 className="text-2xl">Something went wrong</h1>
-      <Link href="/shop">
-        <button className="bg-[#C2E53A] text-black px-4 py-2 sm:px-6 sm:py-3 rounded-sm hover:bg-[#a8c72f] transition text-sm sm:text-base">
-          Go Back And Continue Shopping
-        </button>
-      </Link>
-    </div>;
+    return (
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full font-montserrat text-white flex flex-col justify-center items-center gap-5">
+        <h1 className="text-2xl text-center">Something went wrong</h1>
+        <Link href="/shop">
+          <button className="bg-[#C2E53A] text-black px-4 py-2 sm:px-6  sm:py-3 hover:bg-[#a8c72f] transition text-sm sm:text-base rounded-md">
+            Go Back And Continue Shopping
+          </button>
+        </Link>
+      </div>
+    );
   }
 
   return (
