@@ -107,7 +107,7 @@ const Checkout: React.FC = () => {
           addressId: selectedAddress,
           total,
           items: cart.map((item) => ({
-            productId: item.id,
+            productId: item.productId,
             color: item.color,
             productName: item.name,
             size: item.size,
@@ -219,7 +219,7 @@ const Checkout: React.FC = () => {
                 addressId: selectedAddress,
                 total,
                 items: cart.map((item) => ({
-                  productId: item.id,
+                  productId: item.productId,
                   color: item.color,
                   productName: item.name,
                   size: item.size,

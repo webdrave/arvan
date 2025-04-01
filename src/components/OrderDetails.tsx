@@ -1,55 +1,87 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Package, Truck, CheckCircle, Clock, MapPin, CreditCard } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { orderApi } from "@/lib/api/orders";
+import Loading from "@/app/loading";
 
 interface OrderDetailsProps {
   orderId: string;
 }
 
+const Oldorder = {
+  status: "Shipping",
+  message: "Expected Delivery On 19 March 2025",
+  actions: ["Cancel Order"],
+  awb: "987654321",
+  products: [
+    {
+      id: 1,
+      productName: "Skull Haunted Sliders",
+      size: "8",
+      quantity: 1,
+      productColor: "Red",
+      price: 599,
+      image: "/images/shoe1.png"
+    }
+  ],
+  totalPrice: 599,
+  orderDate: "5 March 2024",
+  orderId: "ORD456789123",
+  paymentMethod: "Cash on Delivery",
+  shippingAddress: {
+    name: "Mike Johnson",
+    street: "789 Lake Road",
+    city: "Bangalore",
+    state: "Karnataka",
+    pincode: "560001",
+    phone: "+91 9876543212"
+  },
+  // timeline: [
+  //   { status: "Order Placed", date: "5 March 2024, 10:30 AM", completed: true },
+  //   { status: "Payment Confirmed", date: "5 March 2024, 11:15 AM", completed: true },
+  //   { status: "Processing", date: "6 March 2024, 9:00 AM", completed: true },
+  //   { status: "Shipped", date: "7 March 2024, 2:45 PM", completed: true },
+  //   { status: "Out for Delivery", date: "Expected 19 March 2024", completed: false },
+  //   { status: "Delivered", date: "Expected 19 March 2024", completed: false }
+  // ]
+};
+
 const OrderDetails: React.FC<OrderDetailsProps> = ({ orderId }) => {
   // In a real app, you would fetch the order details using the orderId
   // For this example, I'll use mock data
-  const order = {
-    status: "Shipping",
-    message: "Expected Delivery On 19 March 2025",
-    color: "bg-yellow-500",
-    actions: ["Cancel Order"],
-    awb: "987654321",
-    products: [
-      {
-        productName: "Skull Haunted Sliders",
-        size: "8",
-        quantity: 1,
-        productColor: "Red",
-        price: 599,
-        image: "/images/shoe1.png"
-      }
-    ],
-    totalPrice: 599,
-    orderDate: "5 March 2024",
-    orderId: "ORD456789123",
-    paymentMethod: "Cash on Delivery",
-    shippingAddress: {
-      name: "Mike Johnson",
-      street: "789 Lake Road",
-      city: "Bangalore",
-      state: "Karnataka",
-      pincode: "560001",
-      phone: "+91 9876543212"
+
+  const [order, setOrder] = useState(Oldorder);
+
+  const { data ,isLoading } = useQuery({
+    queryKey: ["order", orderId],
+    queryFn: async () => {
+      const response = await orderApi.getOrderById(orderId);
+      return response;
     },
-    timeline: [
-      { status: "Order Placed", date: "5 March 2024, 10:30 AM", completed: true },
-      { status: "Payment Confirmed", date: "5 March 2024, 11:15 AM", completed: true },
-      { status: "Processing", date: "6 March 2024, 9:00 AM", completed: true },
-      { status: "Shipped", date: "7 March 2024, 2:45 PM", completed: true },
-      { status: "Out for Delivery", date: "Expected 19 March 2024", completed: false },
-      { status: "Delivered", date: "Expected 19 March 2024", completed: false }
-    ]
-  };
+  });
 
-  if(orderId !== order.orderId) return <div>Invalid Order ID</div>
+  useEffect(() => {
+    if (data) {
+      //@ts-expect-error: data is not undefined
+      setOrder(data);
+      console.log("order data" ,data);
+    }
+  }, [data]);
 
+
+  if(isLoading) return <Loading />
+  
+  if( !data ) return <div className="flex items-center flex-col justify-center h-screen font-montserrat text-white">
+    <h1 className="text-2xl">Invalid Order ID</h1>
+    <Link href="/track-order">
+      <button className="bg-[#C2E53A] text-black px-4 py-2 sm:px-6 sm:py-3 rounded-sm hover:bg-[#a8c72f] transition text-sm sm:text-base">
+        Go Back And Continue Shopping
+      </button>
+    </Link>
+  </div>;
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "Delivered":
@@ -100,39 +132,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ orderId }) => {
             </button>
           )}
         </div>
-      </div>
-
-      {/* Order Timeline */}
-      <div className="border border-gray-700 rounded-lg p-6 mb-8 bg-black/30 backdrop-blur-sm">
-        <h2 className="text-xl font-medium mb-6">Order Timeline</h2>
-        <div className="relative">
-          {/* Timeline line */}
-          <div className="absolute left-[15px] top-0 bottom-0 w-[2px] bg-gray-700"></div>
-          
-          {/* Timeline events */}
-          <div className="space-y-8">
-            {order.timeline.map((event, index) => (
-              <div key={index} className="flex items-start ml-2">
-                <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 z-10 ${
-                  event.completed ? "bg-[#C2E53A]" : "bg-gray-700"
-                }`}>
-                  {event.completed ? (
-                    <CheckCircle className="w-4 h-4 text-black" />
-                  ) : (
-                    <Clock className="w-4 h-4 text-gray-400" />
-                  )}
-                </div>
-                <div className="ml-4">
-                  <p className={`font-medium ${event.completed ? "text-white" : "text-gray-400"}`}>
-                    {event.status}
-                  </p>
-                  <p className="text-sm text-gray-400">{event.date}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      </div>     
 
       {/* Order Items */}
       <div className="border border-gray-700 rounded-lg overflow-hidden mb-8 bg-black/30 backdrop-blur-sm">
@@ -162,7 +162,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ orderId }) => {
                 
                 <div className="mt-4 flex justify-between items-center">
                   <span className="text-lg font-medium">₹{product.price}</span>
-                  <Link href={`/product-details/${product.productName.toLowerCase().replace(/\s+/g, '-')}`}>
+                  <Link href={`/product/${product.id}`}>
                     <button className="border border-gray-600 px-4 py-2 rounded-sm hover:bg-gray-800 transition text-sm">
                       View Product
                     </button>

@@ -292,7 +292,7 @@ export default function ProductPage() {
           <div className="grid grid-cols-2 md:grid-cols-3  lg:grid-cols-4 gap-0 ">
           {getAllProducts.length > 0 ? (
             getAllProducts.map((product: Products, i: number) => (
-              <ProductGrid key={`${product.id}-${i}`} product={product} index={i} totalProducts={getAllProducts.length} />
+              <ProductGrid key={`${product.id}-${i}`} product={product} index={i} />
             ))
           ) : (
             <div className="flex w-full justify-center my-16 col-span-2">
