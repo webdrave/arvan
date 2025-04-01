@@ -26,17 +26,13 @@ const Checkout: React.FC = () => {
   const { data: session } = useSession();
   const router = useRouter();
 
-  // Fetch addresses from API
-
-  // console.log("date" + new Date().toISOString().slice(0, 11))
-
   const { data: addresses } = useQuery({
     queryKey: ["address"],
     queryFn: async () => {
       const rawAddress = await AddressApi.getAddress();
       return rawAddress.map((addr: Address) => ({
         id: addr.id,
-        name: "Home", // Static name for now
+        name: addr.name? addr.name : "Home", // Static name for now
         details: `${addr.street}, ${addr.city}, ${addr.state}, ${addr.country} - ${addr.zipCode}`,
         street: addr.street,
         city: addr.city,
@@ -58,7 +54,7 @@ const Checkout: React.FC = () => {
         order_id: orderId || cuid(), // Ensure unique order ID
         order_date: new Date().toISOString().slice(0, 10),
         pickup_location: "work",
-        billing_customer_name: session?.user?.name || "Guest",
+        billing_customer_name: selectAddress.name || "Guest",
         billing_address: selectedAddr.details || "N/A",
         billing_city: selectedAddr.city || "N/A",
         billing_pincode: selectedAddr.zipCode || "000000",
