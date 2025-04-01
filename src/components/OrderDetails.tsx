@@ -65,7 +65,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ orderId }) => {
 
   useEffect(() => {
     if (data) {
-      //@ts-ignore
+      //@ts-expect-error: data is not undefined
       setOrder(data);
       console.log("order data" ,data);
     }

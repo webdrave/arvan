@@ -87,7 +87,7 @@ const TrackOrders = ({ user }: { user: Session["user"] }) => {
         <div className="text-center flexx flex-col items-center">
           <XCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
           <h1 className="text-2xl mb-4">Oops! Something went wrong</h1>
-          <p className="text-gray-400 mb-6">We're having trouble loading your orders</p>
+          <p className="text-gray-400 mb-6">We&apos;re having trouble loading your orders</p>
           <Link className="w-full" href="/shop">
             <button className="bg-[#C2E53A] text-black px-6 py-3 rounded-sm hover:bg-[#a8c72f] transition text-base flex items-center gap-2">
               <ShoppingBag className="w-5 h-5" />
@@ -105,7 +105,7 @@ const TrackOrders = ({ user }: { user: Session["user"] }) => {
         <div className="text-center flex flex-col items-center justify-center">
           <Package className="w-16 h-16 text-gray-500 mx-auto mb-4" />
           <h1 className="text-2xl mb-4">No Orders Found</h1>
-          <p className="text-gray-400 mb-6">Looks like you haven't made any orders yet</p>
+          <p className="text-gray-400 mb-6">Looks like you haven&apos;t placed any orders yet.</p>
           <Link className="flex justify-center" href="/shop">
             <button className="bg-[#C2E53A] text-black flex-1 px-6 py-3 rounded-sm hover:bg-[#a8c72f] transition text-base flex items-center gap-2">
               <ShoppingCart className="w-5 h-5" />
