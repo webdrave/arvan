@@ -5,15 +5,21 @@ import { Eye, Search, X } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
 import { orderApi, Order } from "@/lib/api/orders"
 import { useDebounce } from "@/hooks/useDebounce"
+import Image from "next/image"
 
 interface OrderWithCustomer extends Order {
   customer?: {
     name: string;
   };
+  
   date?: string;
+  fulfillment: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface PaginatedOrdersResponse {
+  success: boolean;
   orders: OrderWithCustomer[];
   pagination: {
     totalPages: number;
@@ -28,37 +34,44 @@ export function OrdersTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [selectedOrder, setSelectedOrder] = useState<OrderWithCustomer | null>(null);
+  const [orders, setOrders] = useState<OrderWithCustomer[]>([]);
   
-  // Debounce search term to avoid excessive API calls
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
-  // Reset to first page when search term changes
   useEffect(() => {
     setCurrentPage(1);
   }, [debouncedSearchTerm]);
 
   const { data, isLoading, error } = useQuery<PaginatedOrdersResponse>({
     queryKey: ["orders", currentPage, itemsPerPage, debouncedSearchTerm],
-    queryFn: () => orderApi.getOrders(
-      currentPage.toString(), 
-      itemsPerPage.toString(), 
-      debouncedSearchTerm
-    ),
+    queryFn: async () => {
+      const response = await orderApi.getOrders(
+        currentPage.toString(), 
+        itemsPerPage.toString(), 
+        debouncedSearchTerm
+      );
+      return response as PaginatedOrdersResponse;
+    },
   });
 
-  const orders = data?.orders || [];
+  useEffect(() => {
+    if (data) {
+      setCurrentPage(data.pagination.currentPage);
+      setItemsPerPage(data.pagination.itemsPerPage);
+      setOrders(data.orders);
+    }
+  }, [data]);
+
   const totalPages = data?.pagination?.totalPages || 1;
 
-  const getStatusColor = (paid: boolean | undefined) => {
-    if (paid === undefined) return "bg-gray-100 text-gray-800";
-    return paid 
-      ? "bg-green-100 text-green-800"
-      : "bg-yellow-100 text-yellow-800";
-  }
-
-  const getStatus = (paid: boolean | undefined) => {
-    if (paid === undefined) return "Processing";
-    return paid ? "Paid" : "Pending";
+  const getFulfillmentColor = (fulfillment: string) => {
+    switch (fulfillment) {
+      case 'pending': return "bg-yellow-100 text-yellow-800";
+      case 'processing': return "bg-blue-100 text-blue-800";
+      case 'shipped': return "bg-green-100 text-green-800";
+      case 'delivered': return "bg-purple-100 text-purple-800";
+      default: return "bg-gray-100 text-gray-800";
+    }
   }
 
   return (
@@ -91,11 +104,20 @@ export function OrdersTable() {
               <th className="px-3 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
               <th className="px-3 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Items</th>
               <th className="px-3 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fulfillment</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Items</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {orders.map((order: OrderWithCustomer) => (
               <tr key={order.id} className="hover:bg-gray-50">
+
                 <td className="px-3 md:px-6 py-3 md:py-4 whitespace-nowrap text-sm font-medium text-gray-900">{order.id}</td>
                 <td className="px-3 md:px-6 py-3 md:py-4 whitespace-nowrap text-sm text-gray-500">{order.userId}</td>
                 <td className="px-3 md:px-6 py-3 md:py-4 whitespace-nowrap text-sm text-gray-500">₹{order.total.toFixed(2)}</td>
@@ -104,6 +126,16 @@ export function OrdersTable() {
                     className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(order.paid)}`}
                   >
                     {getStatus(order.paid)}
+
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{order.id}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {new Date(order.createdAt).toLocaleDateString()}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">₹{order.total.toFixed(2)}</td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getFulfillmentColor(order.fulfillment)}`}>
+                    {order.fulfillment}
+
                   </span>
                 </td>
                 <td className="px-3 md:px-6 py-3 md:py-4 whitespace-nowrap text-sm text-gray-500">{order.items.length}</td>
@@ -261,6 +293,7 @@ export function OrdersTable() {
           onClick={() => setSelectedOrder(null)}
         >
           <div
+
             className="relative mx-auto p-4 sm:p-5 w-full max-w-sm sm:max-w-md shadow-lg rounded-md bg-white"
             onClick={(e) => e.stopPropagation()}
           >
@@ -308,8 +341,38 @@ export function OrdersTable() {
                           <p className="font-medium">₹{item.priceAtOrder.toFixed(2)}</p>
                         </div>
                       </li>
+
+            className="relative top-20 mx-auto p-5 border w-[480px] shadow-lg rounded-md bg-white"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mt-3">
+              <h3 className="text-lg leading-6 font-medium text-gray-900 text-center">Order Details</h3>
+              <div className="mt-2 px-7 py-3">
+                <p className="text-sm text-gray-500">Order ID: {selectedOrder.id}</p>
+                <p className="text-sm text-gray-500">Created: {new Date(selectedOrder.createdAt).toLocaleString()}</p>
+                <p className="text-sm text-gray-500">Updated: {new Date(selectedOrder.updatedAt).toLocaleString()}</p>
+                <p className="text-sm text-gray-500">Address ID: {selectedOrder.addressId}</p>
+                <p className="text-sm text-gray-500">Total: ₹{selectedOrder.total.toFixed(2)}</p>
+                <p className="text-sm text-gray-500">Fulfillment Status: {selectedOrder.fulfillment}</p>
+                <div className="mt-4">
+                  <h4 className="text-md font-medium text-gray-900">Items:</h4>
+                  <div className="space-y-3 mt-2">
+                    {selectedOrder.items.map((item) => (
+                      <div key={item.id} className="flex items-start space-x-3 p-2 border rounded-lg">
+                        <Image width={500} height={500} src={item.productImage} alt={item.productName} className="w-16 h-16 object-cover rounded" />
+                        <div>
+                          <p className="font-medium text-sm">{item.productName}</p>
+                          <p className="text-sm text-gray-500">
+                            Size: {item.size} | Color: {item.color}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            Quantity: {item.quantity} x ₹{item.priceAtOrder.toFixed(2)}
+                          </p>
+                        </div>
+                      </div>
+
                     ))}
-                  </ul>
+                  </div>
                 </div>
               </div>
             </div>

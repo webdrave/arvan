@@ -304,9 +304,6 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                     {/* Size Selection */}
                     <div className="flex items-center justify-between w-full">
                       <p className="text-base ">Select Size (UK):</p>
-                      {/* <button className="text-white underline text-sm font-medium font-montserrat  w-fit uppercase mt-4 sm:mt-0">
-                        Size Chart
-                      </button> */}
                       <Dialog>
                         <DialogTrigger asChild>
                           <button className="text-white underline text-sm font-medium font-montserrat  w-fit uppercase mt-4 sm:mt-0">
@@ -320,7 +317,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                         >
                           <div className="p-2 rounded-xl overflow-hidden  object-cover">
                             <Image
-                              width={100}
+                              width={2000}
                               height={100}
                               src={"/sizeChart.png"}
                               alt="Size Chart"

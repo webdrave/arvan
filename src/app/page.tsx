@@ -32,7 +32,7 @@ export default function Home() {
   }
 
   return (
-    <div className={`overflow-x-hidden ${!pageLoaded && 'overflow-hidden'}`}>
+    <div className={`overflow-x-hidden ${!pageLoaded && "overflow-hidden"}`}>
       <Landing_overlay></Landing_overlay>
       <div className="px-1 pt-1 md:px-2 md:pt-2">
         <LandingPage></LandingPage>
