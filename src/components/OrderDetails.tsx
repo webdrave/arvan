@@ -175,7 +175,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ orderId }) => {
         <div className="border-t border-gray-700 p-6 bg-black/20">
           <div className="flex justify-between items-center">
             <span className="text-lg">Order Total:</span>
-            <span className="text-2xl font-medium">₹{order.totalPrice}</span>
+            <span className="text-2xl font-medium">₹{order.totalPrice.toFixed(2)}</span>
           </div>
         </div>
       </div>
@@ -219,7 +219,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ orderId }) => {
             <div className="border-t border-gray-700 my-4 pt-4">
               <div className="flex justify-between">
                 <p>Subtotal:</p>
-                <p className="text-white">₹{order.totalPrice}</p>
+                <p className="text-white">₹{order.totalPrice.toFixed(2)}</p>
               </div>
               <div className="flex justify-between">
                 <p>Shipping:</p>
@@ -227,7 +227,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ orderId }) => {
               </div>
               <div className="flex justify-between mt-4">
                 <p className="font-medium text-white">Total:</p>
-                <p className="font-medium text-white">₹{order.totalPrice}</p>
+                <p className="font-medium text-white">₹{order.totalPrice.toFixed(2)}</p>
               </div>
             </div>
           </div>
