@@ -32,7 +32,7 @@ const HorizontalScroll = () => {
     },
     {
       image: "/shoe5.png",
-      heading: "Cube",
+      heading: "Monster",
       para: "Elevate your style with the Cube Slides – a perfect fusion of futuristic design and everyday comfort.",
     },
     {

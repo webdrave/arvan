@@ -212,7 +212,7 @@ const LandingPage = () => {
         </Swiper>
       </div>
 
-      <div className="block md:hidden absolute z-[20] w-full h-[25%] left-0 bottom-0  ">
+      <div className="block md:hidden absolute z-[20] w-full h-[25%] left-0 bottom-0 mb-1">
         <svg
           width="100%"
           height="100%"
