@@ -318,7 +318,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                             <Image
                               width={2000}
                               height={100}
-                              src={"/sizeChart.png"}
+                              src={"https://res.cloudinary.com/dficko9l8/image/upload/v1743685602/size_chart_u9j5gs.png"}
                               alt="Size Chart"
                               className="w-full h-full object-cover rounded-md"
                             />

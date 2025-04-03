@@ -169,7 +169,7 @@ const TrackOrders = ({ user }: { user: Session["user"] }) => {
                   <div className="text-start sm:text-right mt-4 sm:mt-0 w-full sm:w-auto">
                     <p className="text-xs text-gray-400 mb-1">TOTAL</p>
                     <p className="text-lg sm:text-xl font-medium">
-                      ₹{order.total}
+                      ₹{order.total.toFixed(2)}
                     </p>
                   </div>
                 </div>

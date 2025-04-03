@@ -9,13 +9,13 @@ const LandingPage = () => {
   const { animateOverlay } = useOverlayContext();
   // const [activeIndex, setActiveIndex] = useState(0);
   const backgroundImages = [
-    "/bgslides/bg-1.png",
-    // "/bgslides/bg-2.png",
-    // "/bgslides/bg-3.png",
+    ["https://res.cloudinary.com/dficko9l8/image/upload/v1743685582/Mobile_wcue4b.png","https://res.cloudinary.com/dficko9l8/image/upload/v1743685583/Desktop_tds6fg.png"],
+    // ["/bgslides/bg-1.png",""],
+    // ["/bgslides/bg-1.png",""],
   ];
 
   const bannerBackground = [
-    "/BannerImages/Banner-1.jpg",
+    "https://res.cloudinary.com/dficko9l8/image/upload/v1743685863/Banner_bne3ov.jpg",
     // "/BannerImages/Banner-2.jpg",
     // "/BannerImages/Banner-3.jpg",
   ];
@@ -105,7 +105,7 @@ const LandingPage = () => {
             e.stopPropagation(); // Prevent event bubbling (optional)
             animateOverlay(true);
           }}
-          className="w-fit  absolute top-[50%] lg:hidden -translate-y-1/2 -right-8 md:-right-12  font-semibold text-xs md:text-xl rotate-90  "
+          className="w-fit  absolute top-[50%] lg:hidden -translate-y-1/2 -right-8 md:-right-12 font-semibold text-xs md:text-xl rotate-90  "
         >
           BEST SELLER
         </button>
@@ -143,9 +143,18 @@ const LandingPage = () => {
           <SwiperSlide key={index} className="w-full h-full">
             <div className="relative w-full h-full">
               <Image
-                src={image}
+                src={image[0]}
                 alt={`Background Image ${index + 1}`}
                 layout="fill"
+                className="lg:hidden"
+                objectFit="cover"
+                quality={100}
+              />
+              <Image
+                src={image[1]}
+                alt={`Background Image ${index + 1}`}
+                layout="fill"
+                className="hidden lg:block"
                 objectFit="cover"
                 quality={100}
               />
@@ -161,7 +170,7 @@ const LandingPage = () => {
               e.stopPropagation(); // Prevent event bubbling (optional)
               animateOverlay(true);
             }}
-            className="mainText absolute sm:left-28 md:left-10 text-[25vw] md:text-[20vw] lg:text-[12vw] leading-none font-bold font-coluna tracking-wide max-sm:relative max-sm:left-4"
+            className="mainText absolute sm:left-28 md:left-10 text-[25vw] md:text-[20vw] lg:text-[12vw] leading-none font-normal md:font-bold font-coluna tracking-wide max-sm:relative max-sm:left-4"
           >
             THE <br />
             ARVAN
@@ -212,7 +221,7 @@ const LandingPage = () => {
         </Swiper>
       </div>
 
-      <div className="block md:hidden absolute z-[20] w-full h-[25%] left-0 bottom-0 mb-1">
+      <div className="block md:hidden absolute z-[20] w-full h-[25%] left-0 bottom-0 ">
         <svg
           width="100%"
           height="100%"
