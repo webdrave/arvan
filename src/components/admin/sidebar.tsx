@@ -24,7 +24,6 @@ import {
   X,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
-import { redirect } from "next/dist/server/api-utils";
 
 export function Sidebar() {
   const pathname = usePathname();
