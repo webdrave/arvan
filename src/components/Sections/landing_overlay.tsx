@@ -16,7 +16,6 @@ const Landing_overlay = forwardRef<HTMLDivElement>((_, ref) => {
     { name: "life is good", image: "/Menu-Images/img-6.jpg" },
     { name: "star mustard", image: "/Menu-Images/img-7.jpg" },
     { name: "the arvan", image: "/Menu-Images/img-8.jpg" },
-    // { name: "fancy", image: "/Menu-Images/img-9.jpg" },
   ];
 
   return (
@@ -66,7 +65,7 @@ const Landing_overlay = forwardRef<HTMLDivElement>((_, ref) => {
         ))}
 
         <button
-          className="absolute z-20 top-8 right-8 text-white hover:scale-110 cursor-pointer"
+          className="absolute z-20 top-8 right-8 text-white transition-all duration-700 hover:scale-110 cursor-pointer"
           onClick={() => {
             animateOverlay(false);
           }} // Slide back up when clicked

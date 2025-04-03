@@ -9,81 +9,13 @@ import { useQuery } from "@tanstack/react-query";
 import { analyticApi } from "@/lib/api/analytic";
 import Link from "next/link";
 
-// type Slide = {
-//   img: string;
-//   name: string;
-//   price: number;
-//   category: string;
-//   discount?: number;
-// };
-
 const NewArrivals: React.FC = () => {
-  // const slides: Slide[] = [
-  //   {
-  //     img: "/slides/slideImage1.jpg",
-  //     name: "Wireless Headphones",
-  //     price: 99.99,
-  //     category: "Electronics",
-  //     discount: 0,
-  //   },
-  //   {
-  //     img: "/slides/slideImage2.jpg",
-  //     name: "Leather Jacket",
-  //     price: 149.99,
-  //     category: "Fashion",
-  //     discount: 15,
-  //   },
-  //   {
-  //     img: "/slides/slideImage3.jpg",
-  //     name: "Smart Watch",
-  //     price: 199.99,
-  //     category: "Electronics",
-  //     discount: 0,
-  //   },
-  //   {
-  //     img: "/slides/slideImage4.jpg",
-  //     name: "Running Shoes",
-  //     price: 89.99,
-  //     category: "Sports",
-  //     discount: 20,
-  //   },
-  //   {
-  //     img: "/slides/slideImage5.jpg",
-  //     name: "Life Is Good",
-  //     price: 59.99,
-  //     category: "Home Appliances",
-  //     discount: 0,
-  //   },
-  //   {
-  //     img: "/slides/slideImage6.png",
-  //     name: "Red Dragon",
-  //     price: 49.99,
-  //     category: "Accessories",
-  //     discount: 10,
-  //   },
-  //   {
-  //     img: "/slides/slideImage7.jpg",
-  //     name: "Leo",
-  //     price: 79.99,
-  //     category: "Electronics",
-  //     discount: 0,
-  //   },
-  //   {
-  //     img: "/slides/slideImage8.jpg",
-  //     name: "Cube",
-  //     price: 79.99,
-  //     category: "Electronics",
-  //     discount: 0,
-  //   },
-  // ];
   const [autoplayDelay, setAutoplayDelay] = useState(3000); // Default delay
 
   const { data: slides } = useQuery({
     queryKey: ["top-products"],
     queryFn: async () => analyticApi.getNewArrivals(),
   });
-
-
 
   useEffect(() => {
     const updateAutoplay = () => {

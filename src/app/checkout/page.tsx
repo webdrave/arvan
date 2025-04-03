@@ -410,7 +410,7 @@ const Checkout: React.FC = () => {
                     onClick={() => setPaymentMethod(id)}>
                     <div className="flex items-center">
                       <div className="bg-white p-2 rounded mr-3">
-                        <Image src={icon} alt={label} width={40} height={40} />
+                        <Image src={icon} alt={label} width={40} height={40}  loading="lazy" />
                       </div>
                       <label htmlFor={`${id}-radio`} className="cursor-pointer">
                         {label}

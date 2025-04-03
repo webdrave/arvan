@@ -10,7 +10,7 @@ import { CartProvider } from "@/context/CartContext";
 
 import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "next-auth/react";
-import { GoogleTagManager } from '@next/third-parties/google' 
+import { GoogleTagManager } from "@next/third-parties/google";
 
 import { LenisProvider } from "@/context/LenisContext";
 
@@ -32,6 +32,15 @@ export const metadata: Metadata = {
     icon: "/logo.svg",
     shortcut: "/logo.svg",
     apple: "/logo.svg",
+  },
+  openGraph: {
+    title: "The Arvan",
+    description:
+      "Our Top Selling Products · LOOK WHITE · LIFE IS GOOD · A4 WHITE · A4 BLACK · FANCY · LOOK (SKY BLUE ) · JUNGLE WALKER · RED DRAGON",
+    url: "thearvan.com",
+    siteName: "The Arvan",
+    locale: "en_US",
+    type: "website",
   },
 };
 
@@ -63,7 +72,13 @@ export default function RootLayout({
               </LenisProvider>
             </Theme>
           </QueryProvider>
-          <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID? process.env.NEXT_PUBLIC_GTM_ID : ""} />
+          <GoogleTagManager
+            gtmId={
+              process.env.NEXT_PUBLIC_GTM_ID
+                ? process.env.NEXT_PUBLIC_GTM_ID
+                : ""
+            }
+          />
         </body>
       </html>
     </SessionProvider>

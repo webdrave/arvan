@@ -1,26 +1,8 @@
 "use client";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
-import "swiper/css";
 import Image from "next/image";
-// import { useState } from "react";
 import { useOverlayContext } from "@/context/OverlayContext";
 const LandingPage = () => {
   const { animateOverlay } = useOverlayContext();
-  // const [activeIndex, setActiveIndex] = useState(0);
-  const backgroundImages = [
-    "/bgslides/bg-1.png",
-    // "/bgslides/bg-2.png",
-    // "/bgslides/bg-3.png",
-  ];
-
-  const bannerBackground = [
-    "/BannerImages/Banner-1.jpg",
-    // "/BannerImages/Banner-2.jpg",
-    // "/BannerImages/Banner-3.jpg",
-  ];
-
-  // const slidestext = ["JUNGLE WALKER", "LIFE IS GOOD", "A4 BLACK"];
 
   return (
     <div className="relative h-[100dvh] overflow-hidden ">
@@ -127,32 +109,16 @@ const LandingPage = () => {
         />
       </div>
 
-      {/* Swiper for Background Images */}
-      <Swiper
-        modules={[Autoplay]}
-        autoplay={{
-          delay: 3000, // Delay between slides in milliseconds
-          disableOnInteraction: false, // Continue autoplay even after user interaction
-        }}
-        // onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
-        loop={true} // Enable infinite loop
-        speed={1000} // Transition speed in milliseconds
-        className="absolute inset-0 w-full h-full z-10"
-      >
-        {backgroundImages.map((image, index) => (
-          <SwiperSlide key={index} className="w-full h-full">
-            <div className="relative w-full h-full">
-              <Image
-                src={image}
-                alt={`Background Image ${index + 1}`}
-                layout="fill"
-                objectFit="cover"
-                quality={100}
-              />
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+      {/*  Background Images */}
+      <div className="relative w-full h-full">
+        <Image
+          src="/bgslides/bg-1.png"
+          alt={`Background Image `}
+          width={500}
+          height={100}
+          className="w-full h-full object-cover"
+        />
+      </div>
 
       <main className=" absolute inset-0 z-10 min-h-screen h-screen w-full bg-black/30 pointer-events-auto">
         <div className="w-full h-full p-2 flex justify-center items-center relative max-sm:flex-col max-sm:items-start">
@@ -166,7 +132,7 @@ const LandingPage = () => {
             THE <br />
             ARVAN
           </h2>
-          <p className="absolute bottom-0 md:bottom-6 left-6 text-md w-[25%] md:w-[45%] lg:w-[25%] font-montserrat max-sm:relative max-sm:w-[90%]">
+          <p className="absolute bottom-0 md:bottom-6 left-6 text-sm md:text-md w-[25%] md:w-[45%] lg:w-[25%] font-montserrat max-sm:relative max-sm:w-[90%]">
             Ready to level up your comfort game? <br />
             Slip into The Arvan, and feel the difference. We’ve got the perfect
             pair waiting for you.
@@ -187,29 +153,18 @@ const LandingPage = () => {
           </defs>
         </svg>
 
-        {/* Swiper with Clipping Path */}
-        <Swiper
-          modules={[Autoplay]}
-          autoplay={{ delay: 3000, disableOnInteraction: false }}
-          loop={true}
-          speed={1000}
-          className="absolute inset-0 w-full h-full z-[100] overflow-hidden"
+        <div
+          className="relative w-full h-full"
           style={{ clipPath: "url(#customClip)" }}
         >
-          {bannerBackground.map((image, index) => (
-            <SwiperSlide key={index} className="w-full h-full overflow-hidden">
-              <div className="relative w-full h-full">
-                <Image
-                  src={image}
-                  alt={`Background Image ${index + 1}`}
-                  layout="fill"
-                  objectFit="cover"
-                  quality={100}
-                />
-              </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
+          <Image
+            src="/BannerImages/Banner-1.jpg"
+            alt={`Banner Image `}
+            width={10000}
+            height={100}
+            className="w-full h-full object-cover"
+          />
+        </div>
       </div>
 
       <div className="block md:hidden absolute z-[20] w-full h-[25%] left-0 bottom-0  ">
@@ -225,42 +180,19 @@ const LandingPage = () => {
           </defs>
         </svg>
 
-        <Swiper
-          modules={[Autoplay]}
-          autoplay={{ delay: 3000, disableOnInteraction: false }}
-          loop={true}
-          speed={1000}
-          className="absolute inset-0 w-full h-full  overflow-hidden"
+        <div
+          className="relative w-full h-full"
           style={{ clipPath: "url(#customClipM)" }}
         >
-          {bannerBackground.map((image, index) => (
-            <SwiperSlide key={index} className="w-full h-full overflow-hidden">
-              <div className="relative w-full h-full z-[20]">
-                <Image
-                  src={image}
-                  alt={`Background Image ${index + 1}`}
-                  layout="fill"
-                  objectFit="cover"
-                  quality={100}
-                  priority
-                />
-              </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
+          <Image
+            src="/BannerImages/Banner-1.jpg"
+            alt={`Banner Image `}
+            width={10000}
+            height={100}
+            className="w-full h-full object-cover"
+          />
+        </div>
       </div>
-
-      {/* <button
-        onClick={(e) => {
-          e.stopPropagation();
-          animateOverlay(true);
-        }}
-        className="px-2 lg:hidden py-1 top-4 md:top-3 lg:top-6 left-3 md:left-10 absolute border-2 border-white cursor-pointer w-42 lg:w-52 z-[50] "
-      >
-        <span className="text-center font-montserrat text-white text-xs md:text-md transition-all">
-          {"Best Sellers"}
-        </span>
-      </button> */}
     </div>
   );
 };
