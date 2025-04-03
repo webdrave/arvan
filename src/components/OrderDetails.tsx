@@ -118,7 +118,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ orderId }) => {
           </div>
           {order.awb && (
             <a
-              href={`https://track.delhivery.com/p/${order.awb}`}
+              href={`https://shiprocket.co/tracking/${order.awb}`}
               target="_blank"
               rel="noopener noreferrer"
               className="bg-[#C2E53A] text-black px-4 py-2 rounded-sm text-sm hover:bg-[#a8c72f] transition"
