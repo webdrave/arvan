@@ -8,7 +8,7 @@ export default function Footer() {
   return (
     <footer className="bg-[#1A1A1A] font-montserrat text-white py-16">
       <div className="container mx-auto max-w-4xl xl:max-w-7xl px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-10">
           {/* Company Info */}
           <div className="space-y-8">
             <Link href="/" className="inline-block">
@@ -100,7 +100,7 @@ export default function Footer() {
           </div>
 
           {/* Newsletter */}
-          <div className="space-y-6">
+          {/* <div className="space-y-6">
             <h3 className="text-lg font-medium">NEWSLETTER</h3>
             <p className="text-[#999999] text-sm">
               Sign up for our newsletter and get the latest updates, news and
@@ -119,7 +119,7 @@ export default function Footer() {
                 →
               </Button>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Bottom Section */}

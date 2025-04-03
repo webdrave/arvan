@@ -8,15 +8,12 @@ const Landing_overlay = forwardRef<HTMLDivElement>((_, ref) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null); // Track hovered item
 
   const slides = [
-    { name: "leather", image: "/Menu-Images/img-1.jpg" },
-    { name: "red dragon", image: "/Menu-Images/img-2.jpg" },
-    { name: "jungle walker", image: "/Menu-Images/img-3.png" },
-    { name: "haunted skull", image: "/Menu-Images/img-4.jpg" },
-    { name: "leo", image: "/Menu-Images/img-5.jpg" },
-    { name: "life is good", image: "/Menu-Images/img-6.jpg" },
-    { name: "star mustard", image: "/Menu-Images/img-7.jpg" },
-    { name: "the arvan", image: "/Menu-Images/img-8.jpg" },
-    // { name: "fancy", image: "/Menu-Images/img-9.jpg" },
+    { name: "red dragon", image: "https://res.cloudinary.com/dficko9l8/image/upload/v1743693176/RedDragon_wybpoi.png" },
+    { name: "monster", image: "https://res.cloudinary.com/dficko9l8/image/upload/v1743693176/Monster_yhqbgo.png" },
+    { name: "Cube", image: "https://res.cloudinary.com/dficko9l8/image/upload/v1743693176/Cube_vent5d.png" },
+    { name: "life is good", image: "https://res.cloudinary.com/dficko9l8/image/upload/v1743693176/Life_Is_good_pja00c.png" },
+    { name: "leo", image: "https://res.cloudinary.com/dficko9l8/image/upload/v1743693176/Leo_floo51.png" },
+    { name: "haunted skull", image: "https://res.cloudinary.com/dficko9l8/image/upload/v1743693175/Haunted_Skull_jtlmst.png" },
   ];
 
   return (
