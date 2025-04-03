@@ -98,7 +98,6 @@ const Checkout: React.FC = () => {
       alert("Select a payment method first..");
     }
     setIsLoading(true);
-
     if (paymentMethod === "cod") {
       orderMutaion.mutate(
         {
