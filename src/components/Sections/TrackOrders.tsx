@@ -195,7 +195,7 @@ const TrackOrders = ({ user }: { user: Session["user"] }) => {
                   </span> */}
                   {order?.awb && (
                     <a
-                      href={`https://shiprocket.co/tracking//${order.awb}`}
+                      href={`https://shiprocket.co/tracking/${order.awb}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="ml-0 sm:ml-auto text-xs sm:text-sm text-[#C2E53A] hover:underline flex items-center mt-2 sm:mt-0"
