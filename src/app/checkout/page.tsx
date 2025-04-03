@@ -54,13 +54,13 @@ const Checkout: React.FC = () => {
     const orderData = {
       order_id: orderId || cuid(), // Ensure unique order ID
       order_date: new Date().toISOString().slice(0, 10),
-      pickup_location: "work",
+      pickup_location: "Home",
       billing_customer_name: selectedAddr.name.split(" ")[0] || "Guest",
       billing_address: selectedAddr.details || "N/A",
       billing_city: selectedAddr.city || "N/A",
       billing_pincode: selectedAddr.zipCode || "000000",
       billing_state: selectedAddr.state || "N/A",
-      billing_last_name: session?.user?.name.split(" ")[1] || "N/A",
+      billing_last_name: selectedAddr.name.split(" ")[1] || " ",
       billing_country: "India",
       billing_email: session?.user?.email || "test@test.com",
       billing_phone: session?.user?.mobile_no
