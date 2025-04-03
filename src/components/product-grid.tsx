@@ -49,9 +49,9 @@ export default function ProductGrid({
   return (
     <Link
       href={`/product/${product.id}`}
-      className={`group  ${borderClasses} p-2  font-montserrat`}
+      className={`group  ${borderClasses}   font-montserrat`}
     >
-      <div className="relative aspect-square overflow-hidden ">
+      <div className="relative aspect-square overflow-hidden  ">
         {product.discountPrice && (
           <span className="absolute top-2 right-2 bg-[#CCFF00] text-black px-2 py-1 text-sm rounded">
             {(
@@ -69,7 +69,7 @@ export default function ProductGrid({
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
       </div>
-      <div className="px-2">
+      <div className="px-3 py-5">
         <div className="flex flex-col md:flex-row items-start text-xs lg:text-lg md:items-center gap-2 md:gap-0 md:justify-between mb-2">
           <h3 className="font-bold ">{product.name}</h3>
           <div className="text-right">

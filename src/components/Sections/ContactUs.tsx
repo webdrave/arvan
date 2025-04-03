@@ -1,53 +1,53 @@
 "use client";
 
-import { useState, ChangeEvent, FormEvent } from "react";
 import { FaInstagram, FaFacebook } from "react-icons/fa";
 import Image from "next/image";
 import { apiClient } from "@/lib/axiosClient";
 import { toast } from "react-hot-toast";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+  Form,
+} from "../ui/form";
+import { Input } from "../ui/input";
 
 // Define the type for the form data
-interface FormData {
-  name: string;
-  email: string;
-  mobile: string;
-  message: string;
-}
+const contactFormSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Invalid email address"),
+  mobile: z
+    .string()
+    .min(1, "Mobile number is required")
+    .regex(/^(\+?\d{1,3})?\d{10}$/, "Invalid mobile number format"),
+  message: z.string().min(1, "Message is required"),
+});
 
 export default function ContactForm() {
-  const [formData, setFormData] = useState<FormData>({
-    name: "",
-    email: "",
-    mobile: "",
-    message: "",
+  const form = useForm<z.infer<typeof contactFormSchema>>({
+    resolver: zodResolver(contactFormSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      mobile: "",
+      message: "",
+    },
   });
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const onSubmit = async (data: z.infer<typeof contactFormSchema>) => {
     try {
       await apiClient.post("/api/send", {
-        ...formData,
-        phone: formData.mobile,
+        ...data,
+        phone: data.mobile,
       });
       toast.success("Message sent successfully!");
-      setFormData({
-        name: "",
-        email: "",
-        mobile: "",
-        message: "",
-      });
+      form.reset();
     } catch (error) {
       console.error("Error sending message:", error);
       toast.error("Failed to send message. Please try again.");
@@ -76,7 +76,8 @@ export default function ContactForm() {
           <Image
             src="/border.svg"
             alt="Border"
-            fill
+            width={1000}
+            height={100}
             className="object-fill"
             priority
           />
@@ -86,7 +87,8 @@ export default function ContactForm() {
           <Image
             src="/border_mobile.svg"
             alt="Border"
-            fill
+            width={1000}
+            height={100}
             className="object-fill scale-x-[1.2] scale-y-[1.25] sm:scale-y-[1.2]"
             priority
           />
@@ -95,16 +97,18 @@ export default function ContactForm() {
           <Image
             src="/background.svg"
             alt="Background"
-            layout="fill"
-            objectFit="cover"
+            width={1000}
+            height={100}
+            className="w-full h-full object-cover"
           />
         </div>
         <div className="absolute inset-0 z-0 opacity-50 md:opacity-70 blur-md block md:hidden">
           <Image
             src="/background_mobile.svg"
             alt="Background"
-            layout="fill"
-            objectFit="cover"
+            width={1000}
+            height={100}
+            className="w-full h-full object-cover"
           />
         </div>
 
@@ -118,63 +122,98 @@ export default function ContactForm() {
             <p className="text-gray-300 mt-2 text-[10px] sm:text-sm md:text-sm lg:text-base leading-relaxed">
               Got a question or need assistance? We&apos;re here to help!
             </p>
-            <form
-              className="mt-6 space-y-4 sm:space-y-6"
-              onSubmit={handleSubmit}
-            >
-              <input
-                type="text"
-                name="name"
-                placeholder="Name"
-                className="w-full bg-transparent border-b border-gray-500 p-2 focus:outline-none text-sm sm:text-base md:text-sm lg:text-base"
-                onChange={handleChange}
-                value={formData.name}
-              />
-              <input
-                type="email"
-                name="email"
-                placeholder="Email"
-                className="w-full bg-transparent border-b border-gray-500 p-2 focus:outline-none text-sm sm:text-base md:text-sm lg:text-base"
-                onChange={handleChange}
-                value={formData.email}
-              />
-              {/* <input
-                type="text"
-                name="mobile"
-                placeholder="Mobile No."
-                className="w-full bg-transparent border-b border-gray-500 p-2 focus:outline-none text-sm sm:text-base md:text-sm lg:text-base"
-                onChange={handleChange}
-                value={formData.mobile}
-              /> */}
-              <PhoneInput
-                country={"in"}
-                value={formData.mobile}
-                onChange={() => handleChange}
-                inputClass="!w-full !p-5 !px-10 !sm:p-5 !border-b !text-white !bg-transparent !border-0  !outline-none !ring-0"
-                containerClass="!bg-transparent"
-                buttonClass="!bg-transparent !border-0"
-                dropdownClass="!bg-[#1a1a1a] !text-white text-black"
-                searchClass="!bg-[#1a1a1a] !text-white"
-                inputProps={{
-                  required: true,
-                  placeholder: "Mobile Number",
-                }}
-              />
-              <textarea
-                name="message"
-                placeholder="Message"
-                className="w-full bg-transparent border-b border-gray-500 p-2 focus:outline-none text-sm sm:text-base md:text-sm lg:text-base"
-                onChange={handleChange}
-                value={formData.message}
-                style={{ resize: "none" }}
-              ></textarea>
-              <button
-                type="submit"
-                className="relative text-base sm:text-xl md:text-lg lg:text-xl font-light px-6 sm:px-8 py-2 sm:py-3 bg-gradient-to-r from-[#c3e53a8a] to-[#b3d2343e] text-white uppercase shadow-[0px_0px_2px_#c3e53a] hover:shadow-[0px_0px_5px_#c3e53a] transition-all duration-300 mt-4 sm:mt-5 md:ml-10 lg:ml-0"
+            <Form {...form}>
+              <form
+                className="mt-6 space-y-4 sm:space-y-6"
+                onSubmit={form.handleSubmit(onSubmit)}
               >
-                Submit
-              </button>
-            </form>
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Name"
+                          className="w-full bg-transparent border-b border-gray-500 p-2 focus:outline-none text-sm sm:text-base md:text-sm lg:text-base"
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-400 text-xs mt-1" />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="email"
+                          placeholder="Email"
+                          className="w-full bg-transparent border-b border-gray-500 p-2 focus:outline-none text-sm sm:text-base md:text-sm lg:text-base"
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-400 text-xs mt-1" />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="mobile"
+                  render={({ field: { onChange, ...field } }) => (
+                    <FormItem>
+                      <FormControl>
+                        <PhoneInput
+                          country={"in"}
+                          value={field.value}
+                          onChange={(phone) => onChange(phone)}
+                          inputClass="!w-full !p-5 !px-10 !sm:p-5 !border-b !text-white !bg-transparent !border-0  !outline-none !ring-0"
+                          containerClass="!bg-transparent"
+                          buttonClass="!bg-transparent !border-0"
+                          dropdownClass="!bg-[#1a1a1a] !text-white text-black"
+                          searchClass="!bg-[#1a1a1a] !text-white"
+                          inputProps={{
+                            required: true,
+                            placeholder: "Mobile Number",
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-400 text-xs mt-1" />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="message"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <textarea
+                          {...field}
+                          placeholder="Message"
+                          className="w-full bg-transparent border-b border-gray-500 p-2 focus:outline-none text-sm sm:text-base md:text-sm lg:text-base"
+                          style={{ resize: "none" }}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-400 text-xs mt-1" />
+                    </FormItem>
+                  )}
+                />
+
+                <button
+                  type="submit"
+                  className="relative text-base sm:text-xl md:text-lg lg:text-xl font-light px-6 sm:px-8 py-2 sm:py-3 bg-gradient-to-r from-[#c3e53a8a] to-[#b3d2343e] text-white uppercase shadow-[0px_0px_2px_#c3e53a] hover:shadow-[0px_0px_5px_#c3e53a] transition-all duration-300 mt-4 sm:mt-5 md:ml-10 lg:ml-0"
+                >
+                  Submit
+                </button>
+              </form>
+            </Form>
           </div>
 
           {/* Right Side - Contact Details */}

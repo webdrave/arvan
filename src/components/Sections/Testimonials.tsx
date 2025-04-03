@@ -69,7 +69,7 @@ export default function Testimonials() {
         <Swiper
           centeredSlides={true}
           slidesPerView={1}
-          spaceBetween={10}
+          spaceBetween={0}
           loop={true}
           breakpoints={{
             640: {
@@ -79,7 +79,6 @@ export default function Testimonials() {
             },
             1024: {
               slidesPerView: 3,
-              spaceBetween: 20,
               centeredSlides: true,
             },
           }}
@@ -97,16 +96,19 @@ export default function Testimonials() {
             });
           }}
           modules={[Pagination, Navigation]}
-          className="mySwiper w-full h-full center-testimonial-swiper">
+          className="mySwiper w-full h-full center-testimonial-swiper"
+        >
           {testimonials.map((testimonial, index) => (
             <SwiperSlide
               key={index}
-              className="flex justify-center items-center testimonial-slide">
+              className="flex justify-center items-center testimonial-slide"
+            >
               <div
                 ref={(el) => {
                   cardRefs.current[index] = el;
                 }}
-                className="testimonial-card relative w-full h-[20rem] sm:h-[25rem] md:h-[25rem] bg-[#1E1E1E] border border-gray-700 rounded-xl p-4 sm:p-6  flex flex-col justify-between text-center shadow-lg overflow-hidden transition-all duration-300 ease-in-out transform scale-75 opacity-80 ">
+                className="testimonial-card relative w-full h-[20rem] sm:h-[25rem] md:h-[25rem] bg-[#1E1E1E] border border-gray-700 rounded-xl p-4 sm:p-6  flex flex-col justify-between text-center shadow-lg overflow-hidden transition-all duration-300 ease-in-out transform scale-75 opacity-80 "
+              >
                 <div className="absolute w-1/2 h-1/2 bg-gradient-to-br blur-2xl from-[#6FD351] to-[#C2E53A] rounded-3xl opacity-30 -top-[10%] left-[20%]"></div>
 
                 <div className="flex flex-col flex-1">
@@ -123,7 +125,7 @@ export default function Testimonials() {
 
                   {/* Star Rating */}
                   <div className="flex justify-start mb-3">
-                    {[...Array(5)].map((_, i) => (
+                    {[...Array(testimonial.ratings)].map((_, i) => (
                       <FaStar
                         key={i}
                         className={`text-base sm:text-lg ${
@@ -159,12 +161,14 @@ export default function Testimonials() {
 
         <button
           ref={prevRef}
-          className="absolute left-[-7%] sm:left-[-5%] top-1/2 transform -translate-y-1/2 cursor-pointer z-10 text-white text-xl sm:text-2xl md:text-3xl p-2 bg-black/40 rounded-full">
+          className="absolute left-[-7%] sm:left-[-5%] top-1/2 transform -translate-y-1/2 cursor-pointer z-10 text-white text-xl sm:text-2xl md:text-3xl p-2 bg-black/40 rounded-full"
+        >
           <FaChevronLeft />
         </button>
         <button
           ref={nextRef}
-          className="absolute right-[-7%] sm:right-[-5%] top-1/2 transform -translate-y-1/2 cursor-pointer z-10 text-white text-xl sm:text-2xl md:text-3xl p-2 bg-black/40 rounded-full">
+          className="absolute right-[-7%] sm:right-[-5%] top-1/2 transform -translate-y-1/2 cursor-pointer z-10 text-white text-xl sm:text-2xl md:text-3xl p-2 bg-black/40 rounded-full"
+        >
           <FaChevronRight />
         </button>
       </div>

@@ -87,6 +87,7 @@ export default function CartPage() {
                           alt={item.name}
                           width={96}
                           height={96}
+                          loading="lazy"
                           className="w-full h-full object-contain"
                         />
                       </div>
@@ -96,7 +97,9 @@ export default function CartPage() {
                             {item.name}
                           </span>
                           <button
-                            onClick={() => removeFromCart(item.id, item.size, item.color)}
+                            onClick={() =>
+                              removeFromCart(item.id, item.size, item.color)
+                            }
                             className="text-gray-400 hover:text-white"
                           >
                             <X className="w-5 h-5" />
@@ -106,7 +109,12 @@ export default function CartPage() {
                         <div className="flex items-center justify-end mt-2">
                           <button
                             onClick={() =>
-                              updateQuantity(item.id, item.size, item.color, item.quantity - 1)
+                              updateQuantity(
+                                item.id,
+                                item.size,
+                                item.color,
+                                item.quantity - 1
+                              )
                             }
                             className="w-8 h-8 flex items-center justify-center rounded-full bg-[#CCFF00] text-black"
                           >
@@ -117,7 +125,12 @@ export default function CartPage() {
                           </span>
                           <button
                             onClick={() =>
-                              updateQuantity(item.id, item.size, item.color, item.quantity + 1)
+                              updateQuantity(
+                                item.id,
+                                item.size,
+                                item.color,
+                                item.quantity + 1
+                              )
                             }
                             className="w-8 h-8 flex items-center justify-center rounded-full bg-[#CCFF00] text-black"
                           >
@@ -135,6 +148,7 @@ export default function CartPage() {
                           alt={item.name}
                           width={64}
                           height={64}
+                          loading="lazy"
                           className="w-full h-full object-contain"
                         />
                       </div>
@@ -149,7 +163,12 @@ export default function CartPage() {
                     <div className="hidden md:flex items-center">
                       <button
                         onClick={() =>
-                          updateQuantity(item.id, item.size, item.color, item.quantity - 1)
+                          updateQuantity(
+                            item.id,
+                            item.size,
+                            item.color,
+                            item.quantity - 1
+                          )
                         }
                         className="w-8 h-8 flex items-center justify-center border border-gray-700 rounded-l hover:bg-gray-800"
                       >
@@ -160,7 +179,12 @@ export default function CartPage() {
                       </span>
                       <button
                         onClick={() =>
-                          updateQuantity(item.id, item.size, item.color, item.quantity + 1)
+                          updateQuantity(
+                            item.id,
+                            item.size,
+                            item.color,
+                            item.quantity + 1
+                          )
                         }
                         className="w-8 h-8 flex items-center justify-center border border-gray-700 rounded-r hover:bg-gray-800"
                       >
@@ -172,7 +196,9 @@ export default function CartPage() {
 
                     <div className="hidden md:flex justify-center ">
                       <button
-                        onClick={() => removeFromCart(item.id, item.size, item.color)}
+                        onClick={() =>
+                          removeFromCart(item.id, item.size, item.color)
+                        }
                         className="text-gray-400 hover:text-white "
                       >
                         <X className="w-5 h-5" />
