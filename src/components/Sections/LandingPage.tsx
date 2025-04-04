@@ -129,13 +129,15 @@ const LandingPage = () => {
         <Image
           alt="/bgslides/bg-1.png"
           src={backgroundImages[0][0]}
-          layout="fill"
+          width={1000}
+          height={1000}
           className="w-full h-full lg:hidden object-cover"
         />
         <Image
           alt="/bgslides/bg-1.png"
           src={backgroundImages[0][1]}
-          layout="fill"
+          width={1000}
+          height={1000}
           className="w-full h-full object-cover hidden lg:block"
         />
       </div>
