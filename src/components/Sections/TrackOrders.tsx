@@ -31,11 +31,9 @@ const TrackOrders = ({ user }: { user: Session["user"] }) => {
   const [currentOrders, setCurrentOrders] = useState<Order[]>([]);
   const [totalPages, setTotalPages] = useState(0);
   const ordersPerPage = 2;
-  const indexOfLastOrder = currentPage * ordersPerPage;
-  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["orders", user.email],
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ["orders", user.email, currentPage, ordersPerPage],
     queryFn: async () =>
       await orderApi.getOrders(
         currentPage.toString(),
@@ -46,12 +44,26 @@ const TrackOrders = ({ user }: { user: Session["user"] }) => {
 
   useEffect(() => {
     if (data) {
-      setCurrentOrders(() =>
-        data.orders.slice(indexOfFirstOrder, indexOfLastOrder)
-      );
-      setTotalPages(Math.ceil(data!.orders.length / ordersPerPage));
+      setCurrentOrders(data.orders);
+      setTotalPages(Math.ceil(data.pagination.totalItems / ordersPerPage));
     }
-  }, [data, indexOfFirstOrder, indexOfLastOrder]);
+  }, [data]);
+
+  const handlePrevPage = async () => {
+    if (currentPage > 1) {
+      const newPage = currentPage - 1;
+      setCurrentPage(newPage);
+      await refetch();
+    }
+  };
+
+  const handleNextPage = async () => {
+    if (currentPage < totalPages) {
+      const newPage = currentPage + 1;
+      setCurrentPage(newPage);
+      await refetch();
+    }
+  };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -72,7 +84,7 @@ const TrackOrders = ({ user }: { user: Session["user"] }) => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center  font-montserrat text-white">
+      <div className="flex items-center justify-center font-montserrat text-white">
         <div className="flex flex-col items-center">
           <Loader className="animate-spin w-12 h-12 mb-4" />
           <p className="text-gray-400">Loading your orders...</p>
@@ -83,11 +95,13 @@ const TrackOrders = ({ user }: { user: Session["user"] }) => {
 
   if (isError) {
     return (
-      <div className="flex items-center justify-center  font-montserrat text-white">
+      <div className="flex items-center justify-center font-montserrat text-white">
         <div className="text-center flexx flex-col items-center">
           <XCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
           <h1 className="text-2xl mb-4">Oops! Something went wrong</h1>
-          <p className="text-gray-400 mb-6">We&apos;re having trouble loading your orders</p>
+          <p className="text-gray-400 mb-6">
+            We&apos;re having trouble loading your orders
+          </p>
           <Link className="w-full" href="/shop">
             <button className="bg-[#C2E53A] text-black px-6 py-3 rounded-sm hover:bg-[#a8c72f] transition text-base flex items-center gap-2">
               <ShoppingBag className="w-5 h-5" />
@@ -101,11 +115,13 @@ const TrackOrders = ({ user }: { user: Session["user"] }) => {
 
   if (data && data.orders.length === 0) {
     return (
-      <div className="flex items-center flex-col justify-center  font-montserrat text-white">
+      <div className="flex items-center flex-col justify-center font-montserrat text-white">
         <div className="text-center flex flex-col items-center justify-center">
           <Package className="w-16 h-16 text-gray-500 mx-auto mb-4" />
           <h1 className="text-2xl mb-4">No Orders Found</h1>
-          <p className="text-gray-400 mb-6">Looks like you haven&apos;t placed any orders yet.</p>
+          <p className="text-gray-400 mb-6">
+            Looks like you haven&apos;t placed any orders yet.
+          </p>
           <Link className="flex justify-center" href="/shop">
             <button className="bg-[#C2E53A] text-black flex-1 px-6 py-3 rounded-sm hover:bg-[#a8c72f] transition text-base flex items-center gap-2">
               <ShoppingCart className="w-5 h-5" />
@@ -116,6 +132,7 @@ const TrackOrders = ({ user }: { user: Session["user"] }) => {
       </div>
     );
   }
+  
   return (
     data &&
     data.orders.length > 0 && (
@@ -123,7 +140,8 @@ const TrackOrders = ({ user }: { user: Session["user"] }) => {
         <div className="flex flex-col sm:flex-row items-center justify-between mb-8">
           <h2 className="text-4xl font-coluna mb-2 sm:mb-0">My Orders</h2>
           <div className="text-xs sm:text-sm text-gray-400 ">
-            Showing {currentOrders.length} of {data.orders.length} orders
+            Showing {currentOrders.length} of {data.pagination.totalItems}{" "}
+            orders
           </div>
         </div>
 
@@ -147,8 +165,7 @@ const TrackOrders = ({ user }: { user: Session["user"] }) => {
             {currentOrders.map((order, index) => (
               <div
                 key={index}
-                className="border border-gray-700 rounded-lg overflow-hidden bg-black/30 backdrop-blur-sm transition-all duration-300 hover:border-[#C2E53A]/50"
-              >
+                className="border border-gray-700 rounded-lg overflow-hidden bg-black/30 backdrop-blur-sm transition-all duration-300 hover:border-[#C2E53A]/50">
                 {/* Order Header */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 sm:p-6 border-b border-gray-700 bg-black/40">
                   <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 w-full sm:w-auto">
@@ -185,21 +202,16 @@ const TrackOrders = ({ user }: { user: Session["user"] }) => {
                           : order.status === "Shipping"
                           ? "text-yellow-500"
                           : "text-yellow-500"
-                      }`}
-                    >
+                      }`}>
                       {order.status}
                     </span>
                   </div>
-                  {/* <span className="text-xs sm:text-sm text-gray-400 ml-0 sm:ml-2 mt-2 sm:mt-0">
-                    {order?.message || "Delivered on 24 Date"}
-                  </span> */}
                   {order?.awb && (
                     <a
                       href={`https://shiprocket.co/tracking/${order.awb}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="ml-0 sm:ml-auto text-xs sm:text-sm text-[#C2E53A] hover:underline flex items-center mt-2 sm:mt-0"
-                    >
+                      className="ml-0 sm:ml-auto text-xs sm:text-sm text-[#C2E53A] hover:underline flex items-center mt-2 sm:mt-0">
                       Track Package <ChevronRight className="w-4 h-4 ml-1" />
                     </a>
                   )}
@@ -212,8 +224,7 @@ const TrackOrders = ({ user }: { user: Session["user"] }) => {
                       (product: OrderItems, productIndex: number) => (
                         <div
                           key={productIndex}
-                          className="flex flex-col sm:flex-row gap-6"
-                        >
+                          className="flex flex-col sm:flex-row gap-6">
                           <div className="w-full sm:w-24 h-24 bg-white rounded-md overflow-hidden flex-shrink-0">
                             <Image
                               src={product.productImage}
@@ -229,7 +240,7 @@ const TrackOrders = ({ user }: { user: Session["user"] }) => {
                               {product.productName}
                             </h3>
                             <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-1 text-xs sm:text-sm text-gray-400 mb-3">
-                              <p>Size: {product.size.split("_")[1]}</p>
+                              <p>Size: {product.size}</p>
                               <p>Color: {product.color}</p>
                               <p>Qty: {product.quantity}</p>
                               <p>Price: ₹{product.priceAtOrder}</p>
@@ -261,25 +272,21 @@ const TrackOrders = ({ user }: { user: Session["user"] }) => {
         )}
 
         {/* Pagination */}
-        {data.orders.length > ordersPerPage && (
+        {totalPages > 1 && (
           <div className="flex flex-col sm:flex-row justify-center items-center mt-10 gap-4 sm:gap-0">
             <button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              onClick={handlePrevPage}
               disabled={currentPage === 1}
-              className="px-3 py-1 sm:px-4 sm:py-2 border border-gray-700 rounded-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-800 transition text-sm sm:text-base"
-            >
+              className="px-3 py-1 sm:px-4 sm:py-2 border border-gray-700 rounded-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-800 transition text-sm sm:text-base">
               Previous
             </button>
             <div className="px-4 sm:px-6 py-2 font-medium text-sm sm:text-base">
               {currentPage} of {totalPages}
             </div>
             <button
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(prev + 1, totalPages || 0))
-              }
+              onClick={handleNextPage}
               disabled={currentPage === totalPages}
-              className="px-3 py-1 sm:px-4 sm:py-2 border border-gray-700 rounded-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-800 transition text-sm sm:text-base"
-            >
+              className="px-3 py-1 sm:px-4 sm:py-2 border border-gray-700 rounded-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-800 transition text-sm sm:text-base">
               Next
             </button>
           </div>

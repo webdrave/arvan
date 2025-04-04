@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
+
 import { Twitter, Instagram, Youtube } from "lucide-react";
 import Image from "next/image";
 

@@ -30,9 +30,10 @@ const Checkout: React.FC = () => {
     queryKey: ["address"],
     queryFn: async () => {
       const rawAddress = await AddressApi.getAddress();
+      console.log("Addresses:", rawAddress);
       return rawAddress.map((addr: Address) => ({
         id: addr.id,
-        name: addr.name ? addr.name : "Home", // Static name for now
+        name: addr.name ? addr.name : "Guest",
         details: `${addr.street}, ${addr.city}, ${addr.state}, ${addr.country} - ${addr.zipCode}`,
         street: addr.street,
         city: addr.city,
@@ -53,13 +54,13 @@ const Checkout: React.FC = () => {
     const orderData = {
       order_id: orderId || cuid(), // Ensure unique order ID
       order_date: new Date().toISOString().slice(0, 10),
-      pickup_location: "work",
-      billing_customer_name: selectAddress.name || "Guest",
+      pickup_location: "Home",
+      billing_customer_name: selectedAddr.name.split(" ")[0] || "Guest",
       billing_address: selectedAddr.details || "N/A",
       billing_city: selectedAddr.city || "N/A",
       billing_pincode: selectedAddr.zipCode || "000000",
       billing_state: selectedAddr.state || "N/A",
-      billing_last_name: session?.user?.name.split(" ")[1] || "N/A",
+      billing_last_name: selectedAddr.name.split(" ")[1] || " ",
       billing_country: "India",
       billing_email: session?.user?.email || "test@test.com",
       billing_phone: session?.user?.mobile_no
@@ -140,11 +141,13 @@ const Checkout: React.FC = () => {
   // Sync selected address with fetched data
   useEffect(() => {
     if (addresses && addresses.length > 0 && !selectedAddress) {
+      console.log("Selected Address:", selectedAddress);
       setSelectedAddress(addresses[0].id); // Only set default if no address is selected
     }
   }, [addresses, selectedAddress]);
 
   const selectAddress = (id: string) => {
+    console.log("Selected Address:", id);
     setSelectedAddress(id);
     // Optionally, update backend state if needed
     // AddressApi.updateSelectedAddress(id);
