@@ -127,11 +127,16 @@ const LandingPage = () => {
       {/*  Background Images */}
       <div className="relative w-full h-full">
         <Image
-          src="/bgslides/bg-1.png"
-          alt={`Background Image `}
-          width={500}
-          height={100}
-          className="w-full h-full object-cover"
+          alt="/bgslides/bg-1.png"
+          src={backgroundImages[0][0]}
+          layout="fill"
+          className="w-full h-full lg:hidden object-cover"
+        />
+        <Image
+          alt="/bgslides/bg-1.png"
+          src={backgroundImages[0][1]}
+          layout="fill"
+          className="w-full h-full object-cover hidden lg:block"
         />
       </div>
       <main className=" absolute inset-0 z-10 min-h-screen h-screen w-full bg-black/30 pointer-events-auto">
@@ -172,7 +177,7 @@ const LandingPage = () => {
           style={{ clipPath: "url(#customClip)" }}
         >
           <Image
-            src="/BannerImages/Banner-1.jpg"
+            src={bannerBackground[0]}
             alt={`Banner Image `}
             width={10000}
             height={100}
@@ -199,7 +204,7 @@ const LandingPage = () => {
           style={{ clipPath: "url(#customClipM)" }}
         >
           <Image
-            src="/BannerImages/Banner-1.jpg"
+            src={bannerBackground[0]}
             alt={`Banner Image `}
             width={10000}
             height={100}
