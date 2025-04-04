@@ -31,7 +31,7 @@ export default function Navigation() {
   const { cart } = useCart();
 
   return (
-    <nav className=" text-white w-full overflow-x-hidden py-4 px-6 border-b border-gray-800">
+    <nav className=" text-white w-full overflow-x-hidden py-4 px-6 border-b border-gray-800 relative z-50">
       <div className="container mx-auto flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="text-2xl font-bold">
