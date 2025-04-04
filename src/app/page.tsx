@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import Loader from "@/components/Loader";
 import ContactForm from "@/components/Sections/ContactUs";
 import Section2 from "@/components/Sections/Section2";
@@ -16,15 +16,8 @@ import Landing_overlay from "@/components/Sections/landing_overlay";
 export default function Home() {
   const [pageLoaded, setPageLoaded] = useState(false);
 
-  useEffect(() => {
-    // Handle initial page load
-    if (document.readyState === "complete") {
-      setPageLoaded(true);
-    } else {
-      window.addEventListener("load", () => setPageLoaded(true));
-    }
-
-    return () => window.removeEventListener("load", () => setPageLoaded(true));
+  useLayoutEffect(() => {
+    setPageLoaded(document.readyState === "complete");
   }, []);
 
   if (!pageLoaded) {

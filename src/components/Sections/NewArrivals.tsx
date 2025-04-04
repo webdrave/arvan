@@ -13,9 +13,10 @@ const NewArrivals: React.FC = () => {
   const [autoplayDelay, setAutoplayDelay] = useState(3000); // Default delay
 
   const { data: slides } = useQuery({
-    queryKey: ["top-products"],
+    queryKey: ["new-products"],
     queryFn: async () => analyticApi.getNewArrivals(),
   });
+
 
   useEffect(() => {
     const updateAutoplay = () => {
