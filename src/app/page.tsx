@@ -6,9 +6,9 @@ import Testimonials from "@/components/Sections/Testimonials";
 import Navbar from "@/components/Navbar";
 import LandingPage from "@/components/Sections/LandingPage";
 import Footer from "@/components/Footer";
+import Landing_overlay from "@/components/Sections/landing_overlay";
 import NewArrivals from "@/components/Sections/NewArrivals";
 import BestSellers from "@/components/Sections/bestSellers";
-import Landing_overlay from "@/components/Sections/landing_overlay";
 
 export default function Home() {
   return (
@@ -19,8 +19,8 @@ export default function Home() {
       </div>
       <Navbar></Navbar>
       <Section2></Section2>
-      <NewArrivals></NewArrivals>
-      <BestSellers></BestSellers>
+      <NewArrivals />
+      <BestSellers />
       <section className="mt-10 md:mt-20">
         <WhoWeAre></WhoWeAre>
       </section>
@@ -31,5 +31,3 @@ export default function Home() {
     </div>
   );
 }
-
-
