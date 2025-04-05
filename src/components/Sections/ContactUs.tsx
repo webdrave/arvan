@@ -1,6 +1,5 @@
 "use client";
 
-import { FaInstagram, FaFacebook } from "react-icons/fa";
 import Image from "next/image";
 import { apiClient } from "@/lib/axiosClient";
 import { toast } from "react-hot-toast";
@@ -17,6 +16,14 @@ import {
   Form,
 } from "../ui/form";
 import { Input } from "../ui/input";
+import {
+  Facebook,
+  GalleryThumbnailsIcon,
+  Instagram,
+  InstagramIcon,
+  MailIcon,
+} from "lucide-react";
+import Link from "next/link";
 
 // Define the type for the form data
 const contactFormSchema = z.object({
@@ -243,10 +250,18 @@ export default function ContactForm() {
                     FOLLOW US ON
                   </h3>
                   <div className="flex space-x-4 mt-4">
-                    <FaInstagram className="text-white text-2xl sm:text-4xl md:text-3xl lg:text-4xl cursor-pointer" />
-                    <FaInstagram className="text-white text-2xl sm:text-4xl md:text-3xl lg:text-4xl cursor-pointer" />
-                    <FaInstagram className="text-white text-2xl sm:text-4xl md:text-3xl lg:text-4xl cursor-pointer" />
-                    <FaFacebook className="text-white text-2xl sm:text-4xl md:text-3xl lg:text-4xl cursor-pointer" />
+                    <Link href={"mailto:support@arvan.com"}>
+                      <MailIcon className="text-white text-2xl sm:text-4xl md:text-3xl lg:text-4xl cursor-pointer" />
+                    </Link>
+                    <Link
+                      href="https://www.instagram.com/thearvan.official?igsh=ZmlndGt0NGZ1bXF6"
+                      target="_blank"
+                    >
+                      <InstagramIcon className="text-white text-2xl sm:text-4xl md:text-3xl lg:text-4xl cursor-pointer" />
+                    </Link>
+                    <Link href={"https://www.facebook.com"} target="_blank">
+                      <Facebook className="text-white text-2xl sm:text-4xl md:text-3xl lg:text-4xl cursor-pointer" />
+                    </Link>
                   </div>
                 </div>
 
@@ -256,7 +271,7 @@ export default function ContactForm() {
                     PHONE NO.
                   </h3>
                   <p className="text-gray-300 mt-2 text-[10px] sm:text-sm md:text-sm lg:text-base leading-relaxed">
-                    +91 90391 XXXXX
+                    +91 917428637234
                   </p>
                 </div>
               </div>
