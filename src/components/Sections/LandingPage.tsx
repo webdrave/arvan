@@ -3,22 +3,24 @@ import Image from "next/image";
 import { useOverlayContext } from "@/context/OverlayContext";
 const LandingPage = () => {
   const { animateOverlay } = useOverlayContext();
-  //  const [activeIndex, setActiveIndex] = useState(0);
-   const backgroundImages = [
-     ["https://res.cloudinary.com/dficko9l8/image/upload/v1743685582/Mobile_wcue4b.png","https://res.cloudinary.com/dficko9l8/image/upload/v1743685583/Desktop_tds6fg.png"],
-     // ["/bgslides/bg-1.png",""],
-     // ["/bgslides/bg-1.png",""],
-   ];
- 
-   const bannerBackground = [
-     "https://res.cloudinary.com/dficko9l8/image/upload/v1743685863/Banner_bne3ov.jpg",
-     // "/BannerImages/Banner-2.jpg",
-     // "/BannerImages/Banner-3.jpg",
-   ];
- 
-   // const slidestext = ["JUNGLE WALKER", "LIFE IS GOOD", "A4 BLACK"];
- 
-  
+
+  // const [activeIndex, setActiveIndex] = useState(0);
+
+  const backgroundImages = [
+    [
+      "https://res.cloudinary.com/dficko9l8/image/upload/v1743685582/Mobile_wcue4b.png",
+      "https://res.cloudinary.com/dficko9l8/image/upload/v1743685583/Desktop_tds6fg.png",
+    ],
+    // ["/bgslides/bg-1.png",""],
+    // ["/bgslides/bg-1.png",""],
+  ];
+
+  const bannerBackground = [
+    "https://res.cloudinary.com/dficko9l8/image/upload/v1743685863/Banner_bne3ov.jpg",
+    // "/BannerImages/Banner-2.jpg",
+    // "/BannerImages/Banner-3.jpg",
+  ];
+
   return (
     <div className="relative h-[100dvh] overflow-hidden ">
       {/* Top ClipPath with logo */}
@@ -129,13 +131,15 @@ const LandingPage = () => {
         <Image
           alt="/bgslides/bg-1.png"
           src={backgroundImages[0][0]}
-          layout="fill"
+          width={1000}
+          height={1000}
           className="w-full h-full lg:hidden object-cover"
         />
         <Image
           alt="/bgslides/bg-1.png"
           src={backgroundImages[0][1]}
-          layout="fill"
+          width={1000}
+          height={1000}
           className="w-full h-full object-cover hidden lg:block"
         />
       </div>

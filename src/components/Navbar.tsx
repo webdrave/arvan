@@ -56,7 +56,7 @@ const Navbar = () => {
     <>
       <nav
         className={`
-      fixed top-0 flex p-6 w-full z-30 
+      fixed top-0 flex p-6 w-full z-50 
       transition-all duration-300 
       ${isScrolled ? "bg-black/30 backdrop-blur-md" : "bg-transparent"}
     `}
