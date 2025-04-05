@@ -18,8 +18,6 @@ import {
 import { Input } from "../ui/input";
 import {
   Facebook,
-  GalleryThumbnailsIcon,
-  Instagram,
   InstagramIcon,
   MailIcon,
 } from "lucide-react";

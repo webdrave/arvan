@@ -105,21 +105,4 @@ export const SignUpSchema = z
     path: ["confirmPassword"],
   })
 
-
-  export interface BestSeller {
-    productid: string;
-    name: string;
-    price: number;
-    discount?: number;
-    category: string;
-    img : string
-}
-
-export interface NewArrival {
-  id : string;
-  name : string,
-  img : string,
-  price : number,
-  discount?: number,
-  category : string
-}
+  

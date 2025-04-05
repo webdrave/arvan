@@ -9,4 +9,5 @@ const NewArrival = async () => {
   return <NewArrivalClient slides={response} />;
 };
 
-export default NewArrival;
+export default NewArrivals;
+

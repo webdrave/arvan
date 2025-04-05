@@ -9,4 +9,6 @@ const BestSeller = async () => {
   return <BestSellers slides={response} />;
 };
 
-export default BestSeller;
+export default BestSellers;
+
+

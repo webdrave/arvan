@@ -19,6 +19,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import { Swiper as Swiper2 } from "swiper/types";
 
 const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
   const [showReviewModal, setShowReviewModal] = useState(false);
@@ -26,7 +27,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
   const [selectedSize, setSelectedSize] = useState("7");
   const [selectedImage, setSelectedImage] = useState("");
   const [images, setImages] = useState<string[]>([]);
-  const swiperRef = useRef<any>(null);
+  const swiperRef = useRef<Swiper2 | null>(null);
   const [availableSizes, setAvailableSizes] = useState<string[]>([]);
   const { addToCart } = useCart();
   const router = useRouter();
