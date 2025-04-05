@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useOverlayContext } from "@/context/OverlayContext";
 const LandingPage = () => {
   const { animateOverlay } = useOverlayContext();
+
   // const [activeIndex, setActiveIndex] = useState(0);
 
   const backgroundImages = [
