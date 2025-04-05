@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Star, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import ReviewWritings from "../reviewWriting";
@@ -15,6 +15,10 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import cuid from "cuid";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
   const [showReviewModal, setShowReviewModal] = useState(false);
@@ -22,6 +26,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
   const [selectedSize, setSelectedSize] = useState("7");
   const [selectedImage, setSelectedImage] = useState("");
   const [images, setImages] = useState<string[]>([]);
+  const swiperRef = useRef<any>(null);
   const [availableSizes, setAvailableSizes] = useState<string[]>([]);
   const { addToCart } = useCart();
   const router = useRouter();
@@ -31,6 +36,10 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
   };
   const handleWriteReview = () => {
     setShowReviewModal(true);
+  };
+
+  const handleThumbClick = (index: number) => {
+    swiperRef.current?.slideTo(index);
   };
 
   const results = useQueries({
@@ -179,7 +188,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
           <div className="w-full min-h-screen relative mx-auto pt-10 pb-10 px-6 md:px-12 ">
             <div className="w-full h-full relative mx-auto pb-10  grid grid-cols-1 lg:grid-cols-2 items-start gap-6 lg:gap-8 ">
               {/* Left Section - Image Gallery */}
-              <div className="flex flex-col  lg:sticky lg:top-5 sm:flex-row items-center gap-4 ">
+              <div className="hidden lg:flex lg:sticky lg:top-5  items-center gap-4 ">
                 <div className="flex sm:flex-col overflow-x-auto gap-3 order-2 sm:order-1">
                   {images.map((img, index) => (
                     <>
@@ -212,6 +221,54 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                 </div>
               </div>
 
+              {/* Mobile Left Section - using Swiper */}
+              <div className="flex flex-col sm:flex-row-reverse  lg:hidden   items-center gap-4 ">
+                <div className="flex sm:flex-col lg:hidden overflow-x-auto gap-3 order-2 sm:order-1">
+                  {images.map((img, index) => (
+                    <>
+                      <Image
+                        key={index}
+                        src={img || ""}
+                        alt="Thumbnail"
+                        height={200}
+                        width={200}
+                        className={`h-12 w-14 cursor-pointer border-2 transition-all duration-200 ${
+                          selectedImage === img
+                            ? "border-[#c2e53a]"
+                            : "border-white"
+                        }`}
+                        onClick={() => handleThumbClick(index)}
+                      />
+                    </>
+                  ))}
+                </div>
+                {selectedImage !== "" && (
+                  <Swiper
+                    speed={700}
+                    spaceBetween={20}
+                    onSwiper={(swiper) => (swiperRef.current = swiper)}
+                    onSlideChange={(swiper) =>
+                      setSelectedImage(images[swiper.activeIndex])
+                    }
+                    className="w-full h-full"
+                  >
+                    {images.map((img, index) => (
+                      <SwiperSlide key={index}>
+                        <div className="w-full sm:h-[50dvh]   my-10 md:my-0 md:h-[80dvh] order-1 sm:order-2 bg-white rounded-2xl overflow-hidden ">
+                          <Image
+                            src={img}
+                            alt={`Slide ${index}`}
+                            width={500}
+                            height={500}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                )}
+              </div>
+
               <div>
                 <div className="flex flex-col sm:flex-row justify-between w-full  items-start sm:items-center mt-3">
                   <div className="md:w-[80%]">
@@ -220,8 +277,8 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                     </h2>
                     <div className="flex items-center gap-2  my-2 flex-wrap">
                       <p className="text-white font-montserrat text-lg sm:text-xl font-bold">
-                        {/* {remainProduct.currency} */}
-                        ₹ {productData.data.discountPrice
+                        {/* {remainProduct.currency} */}₹{" "}
+                        {productData.data.discountPrice
                           ? productData.data.discountPrice
                           : productData.data.price}
                       </p>
@@ -318,7 +375,9 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                             <Image
                               width={2000}
                               height={100}
-                              src={"https://res.cloudinary.com/dficko9l8/image/upload/v1743685602/size_chart_u9j5gs.png"}
+                              src={
+                                "https://res.cloudinary.com/dficko9l8/image/upload/v1743685602/size_chart_u9j5gs.png"
+                              }
                               alt="Size Chart"
                               className="w-full h-full object-cover rounded-md"
                             />
