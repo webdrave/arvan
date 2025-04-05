@@ -123,11 +123,11 @@ export default function Footer() {
 
         {/* Bottom Section */}
         <div className="mt-16 pt-8 border-t border-white/10">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-8">
+          <div className="flex flex-col md:flex-row md:justify-center items-center gap-8">
             <p className="text-sm text-[#999999]">
               © ARVAN | 2025 | ALL RIGHTS RESERVED
             </p>
-            <div className="flex items-center gap-8">
+            {/* <div className="flex items-center gap-8">
               <div className="flex gap-2"></div>
               <div className="text-sm text-[#999999]">
                 MADE BY:{" "}
@@ -138,7 +138,7 @@ export default function Footer() {
                   WEBDRAVE
                 </Link>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
