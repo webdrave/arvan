@@ -120,3 +120,4 @@ const NewArrivals: React.FC = () => {
 };
 
 export default NewArrivals;
+

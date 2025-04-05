@@ -104,3 +104,5 @@ export const SignUpSchema = z
     message: "Passwords don't match",
     path: ["confirmPassword"],
   })
+
+  
