@@ -1,3 +1,4 @@
+import { Size } from "recharts/types/util/types";
 import { apiClient } from "../axiosClient";
 import { Varient } from "@/types/types";
 
@@ -14,12 +15,12 @@ export const varientApi = {
     const response = await apiClient.post("/api/products/color", varient);
     return response.data;
   },
-  updateVarient: async (id: string | undefined, varient: Varient): Promise<Varient> => {
+  updateVarient: async (id: string | undefined, name: string, assets: { url: string; type: string }[]): Promise<Varient> => {
     if(!id) throw new Error("Invalid varient id");
-    const response = await apiClient.put(`/api/products/color/${id}`, varient);
+    const response = await apiClient.put(`/api/products/color/${id}`, {name, assets});
     return response.data;
   },
   deleteVarient: async (id: string): Promise<void> => {
     await apiClient.delete(`/api/products/color/${id}`);
-  },        
+  },
 }; 
