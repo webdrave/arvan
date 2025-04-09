@@ -2,8 +2,11 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, Package, Truck, CheckCircle, Clock, MapPin, CreditCard, XCircle } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import {
+  ArrowLeft, Package, Truck, CheckCircle, Clock, MapPin, CreditCard, XCircle, Loader2,
+  Link2
+} from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { orderApi } from "@/lib/api/orders";
 import Loading from "@/app/loading";
 import { apiClient } from "@/lib/axiosClient";
@@ -11,7 +14,6 @@ import { apiClient } from "@/lib/axiosClient";
 interface OrderDetailsProps {
   orderId: string;
 }
-
 const Oldorder = {
   status: "Shipping",
   message: "Expected Delivery On 19 March 2025",
@@ -49,63 +51,87 @@ const Oldorder = {
   //   { status: "Delivered", date: "Expected 19 March 2024", completed: false }
   // ]
 };
-
-const OrderDetails: React.FC<OrderDetailsProps> = ({ orderId }) => {
   // In a real app, you would fetch the order details using the orderId
   // For this example, I'll use mock data
 
-  const [order, setOrder] = useState(Oldorder);
-
-  const { data ,isLoading } = useQuery({
-    queryKey: ["order", orderId],
-    queryFn: async () => {
-      const response = await orderApi.getOrderById(orderId);
-      return response;
-    },
-  });
-
-  useEffect(() => {
-    if (data) {
-      //@ts-expect-error: data is not undefined
-      setOrder(data);
-      console.log("order data" ,data);
-    }
-  }, [data]);
-
-
-  if(isLoading) return <Loading />
+  const OrderDetails: React.FC<OrderDetailsProps> = ({ orderId }) => {
+    const queryClient = useQueryClient();
+    const [order, setOrder] = useState(Oldorder);
+    const [isCancelling, setIsCancelling] = useState(false);
   
-  if( !data ) return <div className="flex items-center flex-col justify-center h-screen font-montserrat text-white">
-    <h1 className="text-2xl">Invalid Order ID</h1>
-    <Link href="/track-order">
-      <button className="bg-[#C2E53A] text-black px-4 py-2 sm:px-6 sm:py-3 rounded-sm hover:bg-[#a8c72f] transition text-sm sm:text-base">
-        Go Back And Continue Shopping
-      </button>
-    </Link>
-  </div>;
-  const getStatusIcon = (status: string) => {
-    console.log("status", status);
-    switch (status) {
-    case "DELIVERED":
-        return <CheckCircle className="w-5 h-5 text-green-500" />;
-      case "SHIPPING":
-        return <Truck className="w-5 h-5 text-yellow-500" />;
-      case "PENDING":
-        return <Package className="w-5 h-5 text-yellow-500" />;
-      case "CANCELED":
-        return <XCircle className="w-5 h-5 text-gray-400" />;
-      default:
-        return <Clock className="w-5 h-5 text-gray-400" />;
-    }
-  };
-
+    const { data, isLoading, isFetching, refetch } = useQuery({
+      queryKey: ["order", orderId],
+      queryFn: async () => {
+        const response = await orderApi.getOrderById(orderId);
+        return response;
+      },
+    });
+  
+    useEffect(() => {
+      if (data) {
+        //@ts-expect-error: data is not undefined
+        setOrder(data);
+      }
+    }, [data]);
+  
+    const handleCancelOrder = async () => {
+      const confirmed = confirm("Are you sure you want to cancel this order?");
+      if (!confirmed) return;
+  
+      try {
+        setIsCancelling(true);
+        await apiClient.post("/api/shiprocket/cancel", { orderId });
+        await refetch(); // refetch updated order status
+      } catch (err) {
+        alert("Failed to cancel the order. Please try again later.");
+      } finally {
+        setIsCancelling(false);
+      }
+    };
+  
+    const getStatusIcon = (status: string) => {
+      switch (status.toUpperCase()) {
+        case "DELIVERED":
+          return <CheckCircle className="w-5 h-5 text-green-500" />;
+        case "SHIPPING":
+          return <Truck className="w-5 h-5 text-yellow-500" />;
+        case "PENDING":
+          return <Package className="w-5 h-5 text-yellow-500" />;
+        case "CANCELED":
+          return <XCircle className="w-5 h-5 text-gray-400" />;
+        default:
+          return <Clock className="w-5 h-5 text-gray-400" />;
+      }
+    };
+  
+    if (isLoading) return <Loading />;
+  
+    if (!data)
+      return (
+        <div className="flex items-center flex-col justify-center h-screen font-montserrat text-white">
+          <h1 className="text-2xl">Invalid Order ID</h1>
+          <Link href="/track-order">
+            <button className="bg-[#C2E53A] text-black px-4 py-2 sm:px-6 sm:py-3 rounded-sm hover:bg-[#a8c72f] transition text-sm sm:text-base">
+              Go Back And Continue Shopping
+            </button>
+          </Link>
+        </div>
+      );
+  
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      <div className="mb-8">
+       <div className="mb-8 flex items-center justify-between">
         <Link href="/track-order" className="inline-flex items-center text-gray-400 hover:text-white transition">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Orders
         </Link>
+
+        {isFetching && (
+          <div className="flex items-center gap-2 text-sm text-gray-400">
+            <Loader2 className="animate-spin w-4 h-4" />
+            Refreshing...
+          </div>
+        )}
       </div>
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
@@ -114,6 +140,12 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ orderId }) => {
           <p className="text-gray-400 font-montserrat">
             Order ID: <span className="font-mono">{order.orderId}</span>
           </p>
+          {order.awb && (
+            <p className="text-gray-400 font-montserrat">
+              Order AWB: <span className="font-mono">{order.awb}</span>
+              <Link2  className="ml-2 w-4 h-4" onClick={() => window.open(`https://www.shiprocket.in/shipment-tracking`, "_blank")}/>
+            </p>
+          )}
         </div>
         <div className="mt-4 md:mt-0 flex items-center gap-3">
           <div className="flex items-center gap-2">
@@ -131,8 +163,15 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ orderId }) => {
             </a>
           )}
           {order.actions.includes("Cancel Order") && (
-            <button onClick={() => apiClient.post("/api/shiprocket/cancel" , {orderId })} className="bg-[#9C2918] hover:bg-[#7a1f12] px-4 py-2 rounded-sm text-sm transition"> 
-              Cancel Order
+            <button
+              onClick={handleCancelOrder}
+              disabled={isCancelling}
+              className={`flex items-center justify-center gap-2 bg-[#9C2918] hover:bg-[#7a1f12] px-4 py-2 rounded-sm text-sm transition ${
+                isCancelling ? "opacity-70 cursor-not-allowed" : ""
+              }`}
+            >
+              {isCancelling && <Loader2 className="w-4 h-4 animate-spin" />}
+              {isCancelling ? "Cancelling..." : "Cancel Order"}
             </button>
           )}
         </div>
