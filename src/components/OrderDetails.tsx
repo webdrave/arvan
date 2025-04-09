@@ -6,7 +6,7 @@ import {
   ArrowLeft, Package, Truck, CheckCircle, Clock, MapPin, CreditCard, XCircle, Loader2,
   Link2
 } from "lucide-react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { orderApi } from "@/lib/api/orders";
 import Loading from "@/app/loading";
 import { apiClient } from "@/lib/axiosClient";
@@ -55,7 +55,6 @@ const Oldorder = {
   // For this example, I'll use mock data
 
   const OrderDetails: React.FC<OrderDetailsProps> = ({ orderId }) => {
-    const queryClient = useQueryClient();
     const [order, setOrder] = useState(Oldorder);
     const [isCancelling, setIsCancelling] = useState(false);
   
@@ -81,8 +80,9 @@ const Oldorder = {
       try {
         setIsCancelling(true);
         await apiClient.post("/api/shiprocket/cancel", { orderId });
-        await refetch(); // refetch updated order status
-      } catch (err) {
+        await refetch();
+      } catch (error) {
+        console.error("Failed to cancel order:", error);
         alert("Failed to cancel the order. Please try again later.");
       } finally {
         setIsCancelling(false);

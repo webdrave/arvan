@@ -375,7 +375,7 @@ export function EditProductForm({ productId }: { productId: string }) {
               assets: variant.images,
             });
 
-            let newSizes = [] as { size: string; stock: number }[];
+            const newSizes = [] as { size: string; stock: number }[];
 
             variant.sizes.forEach((size) => {
               if (size.isNew) {
@@ -417,7 +417,6 @@ export function EditProductForm({ productId }: { productId: string }) {
             //   })),
             // });
 
-            const varientId = variant.id;
           }
         });
       }

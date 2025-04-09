@@ -1,4 +1,3 @@
-import { Size } from "recharts/types/util/types";
 import { apiClient } from "../axiosClient";
 import { Varient } from "@/types/types";
 
