@@ -12,7 +12,6 @@ import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "next-auth/react";
 import { GoogleTagManager } from "@next/third-parties/google";
 
-import { LenisProvider } from "@/context/LenisContext";
 import { Analytics } from "@vercel/analytics/react";
 
 const geistSans = Geist({
@@ -63,7 +62,6 @@ export default function RootLayout({
             <Theme>
               <AdminStyles />
 
-              <LenisProvider>
                 <GSAPProvider>
                   <OverlayProvider>
                     <CartProvider>{children}</CartProvider>
@@ -71,7 +69,6 @@ export default function RootLayout({
                     <Analytics />
                   </OverlayProvider>
                 </GSAPProvider>
-              </LenisProvider>
             </Theme>
           </QueryProvider>
           <GoogleTagManager
