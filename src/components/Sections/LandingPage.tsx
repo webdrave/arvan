@@ -54,7 +54,7 @@ const LandingPage = () => {
           }}
           className="w-fit  absolute top-[45%] -translate-y-1/2 -right-11 font-semibold text-xl rotate-90  "
         >
-          BEST SELLER
+          BESTSELLER
         </button>
       </div>
       {/* Left side */}
@@ -106,7 +106,7 @@ const LandingPage = () => {
           }}
           className="w-fit absolute top-[50%] lg:hidden -translate-y-1/2 -right-6 md:-right-12 font-semibold text-xs md:text-xl rotate-90  "
         >
-          BEST SELLER
+          BESTSELLER
         </button>
       </div>
 

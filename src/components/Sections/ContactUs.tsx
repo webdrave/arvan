@@ -269,7 +269,7 @@ export default function ContactForm() {
                     PHONE NO.
                   </h3>
                   <p className="text-gray-300 mt-2 text-[10px] sm:text-sm md:text-sm lg:text-base leading-relaxed">
-                    +91 917428637234
+                    +91 7428637234
                   </p>
                 </div>
               </div>

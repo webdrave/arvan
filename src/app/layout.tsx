@@ -40,6 +40,19 @@ export const metadata: Metadata = {
     url: "thearvan.com",
     siteName: "The Arvan",
     locale: "en_US",
+    images: [
+      {
+        url: "/logo.svg",
+        width: 800,
+        height: 600,
+      },
+      {
+        url: "/logo.svg",
+        width: 1800,
+        height: 1600,
+        alt: "The Arvan",
+      },
+    ],
     type: "website",
   },
 };
