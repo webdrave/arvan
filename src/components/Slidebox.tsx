@@ -39,7 +39,7 @@ const Slidebox: React.FC<SlideboxProps> = ({
         <span className="uppercase">{name}</span>
         <span>
         ₹ {discount > 0
-            ? (price - (price * discount) / 100).toFixed(2)
+            ? discount.toFixed(2)
             : price.toFixed(2)}
         </span>
       </div>
@@ -47,7 +47,7 @@ const Slidebox: React.FC<SlideboxProps> = ({
         <span className="uppercase">{category}</span>
         {discount > 0 && (
           <span className="line-through text-gray-500">
-            ${price.toFixed(2)}
+           ₹{price.toFixed(2)}
           </span>
         )}
       </div>

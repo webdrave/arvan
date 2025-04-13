@@ -7,7 +7,6 @@ const verifyOtp = async(data:any)=>{
 }
 
 const resendOtp = async(data:any)=>{
-    console.log(data);
     return  (await apiClient.post(`/api/customers/resend-otp`,data)).data;
 }
 

@@ -12,7 +12,7 @@ import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "next-auth/react";
 import { GoogleTagManager } from "@next/third-parties/google";
 
-import { LenisProvider } from "@/context/LenisContext";
+import { Analytics } from "@vercel/analytics/react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,6 +40,19 @@ export const metadata: Metadata = {
     url: "thearvan.com",
     siteName: "The Arvan",
     locale: "en_US",
+    images: [
+      {
+        url: "/logo.svg",
+        width: 800,
+        height: 600,
+      },
+      {
+        url: "/logo.svg",
+        width: 1800,
+        height: 1600,
+        alt: "The Arvan",
+      },
+    ],
     type: "website",
   },
 };
@@ -62,14 +75,13 @@ export default function RootLayout({
             <Theme>
               <AdminStyles />
 
-              <LenisProvider>
                 <GSAPProvider>
                   <OverlayProvider>
                     <CartProvider>{children}</CartProvider>
                     <Toaster />
+                    <Analytics />
                   </OverlayProvider>
                 </GSAPProvider>
-              </LenisProvider>
             </Theme>
           </QueryProvider>
           <GoogleTagManager

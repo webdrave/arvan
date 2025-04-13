@@ -38,14 +38,7 @@ const NewPassword = ({id}: {id: string}) => {
     try {
       
       // Replace with your actual password update logic
-     await mutate({password:values.password,token:id},{
-        onSuccess: (data) => {
-          console.log(data);
-        },
-        onError: (error) => {
-          console.error(error);
-        },
-     })
+     await mutate({password:values.password,token:id})
 
       // Redirect to login or confirmation page
       router.push("/signin")

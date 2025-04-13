@@ -10,7 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { analyticApi } from "@/lib/api/analytic";
 
 const BestSellers = () => {
-  const [autoplayDelay, setAutoplayDelay] = useState(3000); // Default delay
+  const [autoplayDelay, setAutoplayDelay] = useState(3000);
 
   const { data: slides } = useQuery({
     queryKey: ["top-products"],
@@ -38,7 +38,7 @@ const BestSellers = () => {
       <div className="flex sm:flex-row gap-4 items-center justify-start w-full px-6">
         <div className="w-full sm:w-fit p-2 flex items-center gap-4 max-sm:gap-1 sm:justify-start">
           <h5 className="font-general_sans text-2xl max-sm:text-xl font-semibold whitespace-nowrap">
-            Best Sellers • Best Sellers
+            Bestsellers • Bestsellers
           </h5>
           {/* ArrowLeft Icon */}
           <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-lime-400 flex items-center justify-center relative overflow-hidden group cursor-pointer -rotate-[130deg] shrink-0">

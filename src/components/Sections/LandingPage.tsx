@@ -4,22 +4,15 @@ import { useOverlayContext } from "@/context/OverlayContext";
 const LandingPage = () => {
   const { animateOverlay } = useOverlayContext();
 
-  // const [activeIndex, setActiveIndex] = useState(0);
-
   const backgroundImages = [
     [
       "https://res.cloudinary.com/dficko9l8/image/upload/v1743685582/Mobile_wcue4b.png",
       "https://res.cloudinary.com/dficko9l8/image/upload/v1743685583/Desktop_tds6fg.png",
     ],
-    // ["/bgslides/bg-1.png",""],
-    // ["/bgslides/bg-1.png",""],
+
   ];
 
-  const bannerBackground = [
-    "https://res.cloudinary.com/dficko9l8/image/upload/v1743685863/Banner_bne3ov.jpg",
-    // "/BannerImages/Banner-2.jpg",
-    // "/BannerImages/Banner-3.jpg",
-  ];
+
 
   return (
     <div className="relative h-[100dvh] overflow-hidden ">
@@ -54,7 +47,7 @@ const LandingPage = () => {
           }}
           className="w-fit  absolute top-[45%] -translate-y-1/2 -right-11 font-semibold text-xl rotate-90  "
         >
-          BEST SELLER
+          BESTSELLER
         </button>
       </div>
       {/* Left side */}
@@ -72,14 +65,14 @@ const LandingPage = () => {
           clipPath: "polygon(0% 100%, 40% 100%, 45% 96%, 55% 96%, 60% 100%)",
         }}
       >
-        <h2 className="w-fit font-montserrat absolute bottom-0 hidden  lg:block left-1/2 -translate-x-1/2 text-md   ">
+        <h2 className="w-fit font-montserrat absolute bottom-1 hidden  lg:block left-1/2 -translate-x-1/2 text-md   ">
           SCROLL DOWN
         </h2>
       </div>
 
       {/* Mobile Bottom ClipPath */}
-      <div className=" absolute clipP bottom-0 z-[20] right-0 bg-[#121212] text-white w-full h-[20%] md:h-full md:[clip-path:polygon(0%_100%,35%_100%,40%_96%,60%_96%,65%_100%)] block lg:hidden ">
-        <h2 className="w-fit  absolute font-montserrat bottom-1 left-1/2 -translate-x-1/2 text-xs md:text-xl  block lg:hidden">
+      <div className=" absolute clipP bottom-0 z-[20] right-0 text-white w-full h-full [clip-path:polygon(0%_100%,35%_100%,40%_96%,60%_96%,65%_100%)] block lg:hidden ">
+        <h2 className="w-fit  absolute font-montserrat bottom-4 left-1/2 -translate-x-1/2 text-xs md:text-xl  block lg:hidden">
           SCROLL DOWN
         </h2>
       </div>
@@ -104,9 +97,9 @@ const LandingPage = () => {
             e.stopPropagation(); // Prevent event bubbling (optional)
             animateOverlay(true);
           }}
-          className="w-fit  absolute top-[50%] lg:hidden -translate-y-1/2 -right-8 md:-right-12 font-semibold text-xs md:text-xl rotate-90  "
+          className="w-fit absolute top-[50%] lg:hidden -translate-y-1/2 -right-6 md:-right-12 font-semibold text-xs md:text-xl rotate-90  "
         >
-          BEST SELLER
+          BESTSELLER
         </button>
       </div>
 
@@ -126,7 +119,6 @@ const LandingPage = () => {
         />
       </div>
 
-      {/*  Background Images */}
       <div className="relative w-full h-full">
         <Image
           alt="/bgslides/bg-1.png"
@@ -144,10 +136,10 @@ const LandingPage = () => {
         />
       </div>
       <main className=" absolute inset-0 z-10 min-h-screen h-screen w-full bg-black/30 pointer-events-auto">
-        <div className="w-full h-full p-2 flex justify-center items-center relative max-sm:flex-col max-sm:items-start">
+        <div className="w-full h-full p-2 flex gap-y-80 items-center max-sm:pt-28 relative max-sm:flex-col max-sm:items-start">
           <h2
             onClick={(e) => {
-              e.stopPropagation(); // Prevent event bubbling (optional)
+              e.stopPropagation(); 
               animateOverlay(true);
             }}
             className="mainText absolute sm:left-28 md:left-10 text-[25vw] md:text-[20vw] lg:text-[12vw] leading-none font-normal md:font-bold font-coluna tracking-wide max-sm:relative max-sm:left-4"
@@ -162,60 +154,6 @@ const LandingPage = () => {
           </p>
         </div>
       </main>
-
-      <div className="absolute hidden md:block w-[35%] h-[35%] right-0 bottom-0 md:h-[25%] lg:h-[35%] px-5 py-2">
-        {/* SVG Clip Path Definition */}
-        <svg width="0" height="0">
-          <defs>
-            <clipPath id="customClip" clipPathUnits="objectBoundingBox">
-              <path
-                d="M0 0.133C0 0.13 0.001 0.126 0.003 0.123L0.053 0.004C0.054 0.002 0.057 0 0.061 0H0.932H0.994C0.998 0 1 0.002 1 0.006V0.867C1 0.87 0.999 0.873 0.998 0.875L0.947 0.996C0.946 0.998 0.943 1 0.939 1H0.069H0.006C0.002 1 0 0.998 0 0.994V0.133Z"
-                fill="white"
-              />
-            </clipPath>
-          </defs>
-        </svg>
-
-        <div
-          className="relative w-full h-full"
-          style={{ clipPath: "url(#customClip)" }}
-        >
-          <Image
-            src={bannerBackground[0]}
-            alt={`Banner Image `}
-            width={10000}
-            height={100}
-            className="w-full h-full object-cover"
-          />
-        </div>
-      </div>
-
-      <div className="block md:hidden absolute z-[20] w-full h-[25%] left-0 bottom-0 ">
-        <svg
-          width="100%"
-          height="100%"
-          className="absolute inset-0 w-screen h-full"
-        >
-          <defs>
-            <clipPath id="customClipM" clipPathUnits="objectBoundingBox">
-              <path d="M1,0.95V0.05C1,0.02,0.99,0,0.98,0H0.02C0.01,0,0,0.02,0,0.05V0.95C0,0.98,0.01,1,0.02,1H0.33L0.35,0.89H0.64L0.66,1H0.98C0.99,1,1,0.98,1,0.95Z" />
-            </clipPath>
-          </defs>
-        </svg>
-
-        <div
-          className="relative w-full h-full"
-          style={{ clipPath: "url(#customClipM)" }}
-        >
-          <Image
-            src={bannerBackground[0]}
-            alt={`Banner Image `}
-            width={10000}
-            height={100}
-            className="w-full h-full object-cover"
-          />
-        </div>
-      </div>
     </div>
   );
 };

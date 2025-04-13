@@ -10,8 +10,10 @@ import { productApi } from "@/lib/api/productdetails";
 import { varientApi } from "@/lib/api/varients";
 import { categoryApi } from "@/lib/api/categories";
 import MultiUploadPopup from "../MultiUploadPopup";
+import cuid from "cuid";
+import { inventoryApi } from "@/lib/api/inventory";
 
-export function EditProductForm({productId}: { productId: string }) {
+export function EditProductForm({ productId }: { productId: string }) {
   const [isUploadPopupOpen, setIsUploadPopupOpen] = useState(false);
   const [varientId, setVarientId] = useState<string>("");
   const [varientImgPopUp, setVarientImgPopUp] = useState<boolean>(false);
@@ -34,6 +36,7 @@ export function EditProductForm({productId}: { productId: string }) {
   ];
 
   interface Variant {
+    isNew: boolean;
     isOpen: boolean;
     id: string;
     color: string;
@@ -41,11 +44,13 @@ export function EditProductForm({productId}: { productId: string }) {
     images: {
       url: string;
       type: "IMAGE" | "VIDEO";
+      isNew: boolean;
     }[];
     sizes: {
       id: string;
       name: string;
       quantity: number;
+      isNew: boolean;
     }[];
   }
   const [variants, setVariants] = useState<Variant[]>([]);
@@ -120,11 +125,15 @@ export function EditProductForm({productId}: { productId: string }) {
     return Object.values(newErrors).every((error) => !error);
   };
 
-  const { data, isLoading, error: productError } = useQuery({
+  const {
+    data,
+    isLoading,
+    error: productError,
+  } = useQuery({
     queryKey: ["product", productId],
     queryFn: async () => {
       const res = await productApi.getById(productId);
-      return res
+      return res;
     },
   });
 
@@ -138,39 +147,50 @@ export function EditProductForm({productId}: { productId: string }) {
         material: data.material,
         status: data.status,
         discountPrice: data.discountPrice ?? 1,
-        assets: data.assets?.map((asset: { asset_url: string; type?: "IMAGE" | "VIDEO" }) => ({
-          ...asset,
-          url: asset.asset_url || "",
-          type: asset.type || "IMAGE", // Ensuring type is present
-        })),
+        assets: data.assets?.map(
+          (asset: { asset_url: string; type?: "IMAGE" | "VIDEO" }) => ({
+            ...asset,
+            url: asset.asset_url || "",
+            type: asset.type || "IMAGE", // Ensuring type is present
+          })
+        ),
       };
-  
+
       setProduct(product);
       setPrice(product.price);
       setDiscountPrice(product.discountPrice);
-  
-      const variants = data.colors.map((color: { id: string; color: string; assets: { asset_url: string, }[]; sizes: {id:string, size: string; stock: number }[] }) => ({
-        id: color.id, 
-        color: color.color, 
-        isOpen: false,
-        customColor: true,
-        images: color.assets?.map((asset) => ({
-          ...asset,
-          url: asset.asset_url || "",
-          type: "IMAGE" as "IMAGE" | "VIDEO",
-        })),
-        sizes: color.sizes?.map((size) => ({
-          ...size,
-          id: size.id,
-          name: size.size,
-          quantity: size.stock
-        })),
-      }));
-  
+
+      const variants = data.colors.map(
+        (color: {
+          id: string;
+          color: string;
+          assets: { asset_url: string }[];
+          sizes: { id: string; size: string; stock: number }[];
+        }) => ({
+          id: color.id,
+          color: color.color,
+          isNew: false,
+          isOpen: false,
+          customColor: true,
+          images: color.assets?.map((asset) => ({
+            ...asset,
+            url: asset.asset_url || "",
+            type: "IMAGE" as "IMAGE" | "VIDEO",
+            isNew: false,
+          })),
+          sizes: color.sizes?.map((size) => ({
+            ...size,
+            id: size.id,
+            name: size.size,
+            quantity: size.stock,
+            isNew: false,
+          })),
+        })
+      );
+
       setVariants(variants);
     }
   }, [data]);
-  
 
   const addVariant = () => {
     setVariants([
@@ -180,12 +200,16 @@ export function EditProductForm({productId}: { productId: string }) {
         color: "",
         customColor: false,
         images: [],
-        sizes: [{
-          id: crypto.randomUUID(),
-          name: "SIZE_5",
-          quantity: 0
-        }],
+        sizes: [
+          {
+            id: crypto.randomUUID(),
+            name: "SIZE_5",
+            quantity: 0,
+            isNew: true,
+          },
+        ],
         isOpen: true,
+        isNew: true,
       },
     ]);
   };
@@ -198,7 +222,7 @@ export function EditProductForm({productId}: { productId: string }) {
             ...variant,
             sizes: [
               ...variant.sizes,
-              { id: crypto.randomUUID(), name: "", quantity: 0 },
+              { id: cuid(), name: "", quantity: 0, isNew: true },
             ],
           };
         }
@@ -225,13 +249,20 @@ export function EditProductForm({productId}: { productId: string }) {
     );
   };
 
-  const handleAddVarientImage = (Urls : string[]) => {
+  const handleAddVarientImage = (Urls: string[]) => {
     setVariants(
       variants.map((variant) => {
         if (variant.id === varientId) {
           return {
             ...variant,
-            images: [...variant.images, ...Urls.map((url) => ({ url, type: "IMAGE" as const }))],
+            images: [
+              ...variant.images,
+              ...Urls.map((url) => ({
+                url,
+                isNew: true,
+                type: "IMAGE" as const,
+              })),
+            ],
           };
         }
         return variant;
@@ -259,15 +290,18 @@ export function EditProductForm({productId}: { productId: string }) {
   const categoryQuery = useQuery({
     queryKey: ["categories"],
     queryFn: async () => {
-      const response = await categoryApi.getAll()
+      const response = await categoryApi.getAll();
       return response;
-    }
+    },
   });
 
-  const handleAddImage = (Urls : string[]) => {
+  const handleAddImage = (Urls: string[]) => {
     setProduct({
       ...product,
-      assets: [...(product.assets || []), ...Urls.map((url) => ({ url, type: "IMAGE" as const }))],
+      assets: [
+        ...(product.assets || []),
+        ...Urls.map((url) => ({ url, type: "IMAGE" as const })),
+      ],
     });
     setIsUploadPopupOpen(false);
   };
@@ -281,29 +315,110 @@ export function EditProductForm({productId}: { productId: string }) {
     });
   };
   const variantMutation = useMutation({
-    mutationFn: async (variant: Varient) => {
-      await varientApi.updateVarient(variant.id,variant);
-    }
+    mutationFn: async (data: { variantId: string; name: string, assets: { url: string; type: string }[] }) => {
+      await varientApi.updateVarient(data.variantId, data.name, data.assets);
+    },
   });
 
+  const addVariantMu = useMutation({
+    mutationFn: async (variant: Varient) => {
+      await varientApi.addVarient(variant);
+    },
+  });
+
+  const addSizeMutation = useMutation({
+    mutationFn: async (data: {
+      colorId: string;
+      sizes: { size: string; stock: number }[];
+    }) => {
+      await inventoryApi.addNewSize(data.colorId, data.sizes);
+    },
+  });
+
+  const updateSizeMutation = useMutation({
+    mutationFn: async (data : {varientId: string, stock:number}) => {
+      await inventoryApi.updateStock(
+        data.varientId,data.stock
+      );
+    }
+  })
+
   const productMutation = useMutation({
-    mutationFn: (newProduct:Product)=>productApi.updateProduct(productId,newProduct),
+    mutationFn: (newProduct: Product) =>
+      productApi.updateProduct(productId, newProduct),
     onSuccess: (data) => {
       if (data) {
         const productId = data.id;
-        // Iterate through variants and call the mutation for each one
         variants.forEach((variant) => {
-          variantMutation.mutate({
-            id: variant.id,
-            productId,
-            color: variant.color,
-            assets: variant.images,
-            sizes: variant.sizes.map((size) => ({
-              size: size.name as "SIZE_5" | "SIZE_6" | "SIZE_7" | "SIZE_8" | "SIZE_9" | "SIZE_10" | "SIZE_11" | "SIZE_12",
-              stock: size.quantity,
-            })),
-          });
-        });      
+          if (variant.isNew) {
+            addVariantMu.mutate({
+              productId,
+              color: variant.color,
+              assets: variant.images,
+              sizes: variant.sizes.map((size) => ({
+                size: size.name as
+                  | "SIZE_5"
+                  | "SIZE_6"
+                  | "SIZE_7"
+                  | "SIZE_8"
+                  | "SIZE_9"
+                  | "SIZE_10"
+                  | "SIZE_11"
+                  | "SIZE_12",
+                stock: size.quantity,
+              })),
+            });
+          } else {
+            variantMutation.mutate({
+              variantId: variant.id,
+              name: variant.color,
+              assets: variant.images,
+            });
+
+            const newSizes = [] as { size: string; stock: number }[];
+
+            variant.sizes.forEach((size) => {
+              if (size.isNew) {
+                newSizes.push({
+                  size: size.name as
+                    | "SIZE_5"
+                    | "SIZE_6"
+                    | "SIZE_7"
+                    | "SIZE_8"
+                    | "SIZE_9"
+                    | "SIZE_10"
+                    | "SIZE_11"
+                    | "SIZE_12",
+                  stock: size.quantity,
+                });
+              } else {
+                updateSizeMutation.mutate({
+                  varientId: size.id,
+                  stock: size.quantity,
+                });
+              }
+            });
+
+            if (newSizes.length > 0) {
+              addSizeMutation.mutate({
+                colorId: variant.id,
+                sizes: newSizes,
+              });
+            }
+
+            // variantMutation.mutate({
+            //   id: variant.id,
+            //   productId,
+            //   color: variant.color,
+            //   assets: variant.images,
+            //   sizes: variant.sizes.map((size) => ({
+            //     size: size.name as "SIZE_5" | "SIZE_6" | "SIZE_7" | "SIZE_8" | "SIZE_9" | "SIZE_10" | "SIZE_11" | "SIZE_12",
+            //     stock: size.quantity,
+            //   })),
+            // });
+
+          }
+        });
       }
 
       router.push(`/product/${productId}`);
@@ -316,8 +431,11 @@ export function EditProductForm({productId}: { productId: string }) {
   };
 
   if (isLoading) return <div className="p-4 text-center">Loading...</div>;
-  if (productError) return <div className="p-4 text-center text-red-500">Error loading product</div>;
-  
+  if (productError)
+    return (
+      <div className="p-4 text-center text-red-500">Error loading product</div>
+    );
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
       {/* Main content section - takes 2 columns on large screens */}
@@ -361,15 +479,19 @@ export function EditProductForm({productId}: { productId: string }) {
                 placeholder="Enter product description"
               />
               {errors.description && (
-                <p className="text-red-500 text-xs mt-1">{errors.description}</p>
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.description}
+                </p>
               )}
             </div>
           </div>
         </div>
-        
+
         {/* Media Section */}
         <div className="bg-white rounded-lg p-4 md:p-6 shadow-sm">
-          <h2 className="text-lg font-medium mb-3 md:mb-4 text-[#4f507f]">Media</h2>
+          <h2 className="text-lg font-medium mb-3 md:mb-4 text-[#4f507f]">
+            Media
+          </h2>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-4">
             {product.assets?.map((image, index) => (
@@ -400,10 +522,12 @@ export function EditProductForm({productId}: { productId: string }) {
             <p className="text-red-500 text-xs mt-2">{errors.images}</p>
           )}
         </div>
-        
+
         {/* Pricing Section */}
         <div className="bg-white rounded-lg p-4 md:p-6 shadow-sm">
-          <h2 className="text-lg font-medium mb-3 md:mb-4 text-[#4f507f]">Pricing</h2>
+          <h2 className="text-lg font-medium mb-3 md:mb-4 text-[#4f507f]">
+            Pricing
+          </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
@@ -475,7 +599,7 @@ export function EditProductForm({productId}: { productId: string }) {
             </div>
           </div>
         </div>
-        
+
         {/* Product Variants Section */}
         <div className="bg-white rounded-lg p-4 md:p-6 shadow-sm">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 md:mb-6 gap-3 sm:gap-0">
@@ -547,8 +671,7 @@ export function EditProductForm({productId}: { productId: string }) {
                                 )
                               );
                             }}
-                            className="px-3 py-1.5 text-xs sm:text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 mt-1 sm:mt-0"
-                          >
+                            className="px-3 py-1.5 text-xs sm:text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 mt-1 sm:mt-0">
                             Back
                           </button>
                         </div>
@@ -732,7 +855,7 @@ export function EditProductForm({productId}: { productId: string }) {
           </div>
         </div>
       </div>
-      
+
       {/* Sidebar section */}
       <div className="space-y-4 md:space-y-6">
         {/* Organization section */}
@@ -843,7 +966,7 @@ export function EditProductForm({productId}: { productId: string }) {
             </div>
           </div>
         </div>
-        
+
         {/* Action buttons */}
         <div className="flex gap-2 sm:gap-3">
           <button
@@ -859,7 +982,7 @@ export function EditProductForm({productId}: { productId: string }) {
           </button>
         </div>
       </div>
-      
+
       {/* Popups */}
       {isUploadPopupOpen && (
         <MultiUploadPopup
