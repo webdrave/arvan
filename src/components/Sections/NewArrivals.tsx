@@ -107,7 +107,7 @@ const NewArrivals = () => {
                     name={slide.name}
                     price={slide.price}
                     category={slide.category}
-                    discount={slide.discount}
+                    discount={slide.discountPrice}
                   />
                 </Link>
               </SwiperSlide>

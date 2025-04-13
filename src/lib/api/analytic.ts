@@ -21,7 +21,7 @@ export interface NewArrivals {
     name : string,
     img : string,
     price : number,
-    discount?: number,
+    discountPrice: number,
     category : string
 }
 
