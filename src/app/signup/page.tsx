@@ -54,7 +54,6 @@ const SignUp = () => {
         error: (error) => error.message || "Something went wrong", // Show on error
       });
       const response = await promise;
-      console.log(response);
 
       if (response.jwt) {
         router.push(`/otp/${response.jwt}`); // Redirect if signup is successful

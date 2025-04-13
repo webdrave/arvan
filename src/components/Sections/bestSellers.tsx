@@ -10,7 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { analyticApi } from "@/lib/api/analytic";
 
 const BestSellers = () => {
-  const [autoplayDelay, setAutoplayDelay] = useState(3000); // Default delay
+  const [autoplayDelay, setAutoplayDelay] = useState(3000);
 
   const { data: slides } = useQuery({
     queryKey: ["top-products"],

@@ -4,22 +4,15 @@ import { useOverlayContext } from "@/context/OverlayContext";
 const LandingPage = () => {
   const { animateOverlay } = useOverlayContext();
 
-  // const [activeIndex, setActiveIndex] = useState(0);
-
   const backgroundImages = [
     [
       "https://res.cloudinary.com/dficko9l8/image/upload/v1743685582/Mobile_wcue4b.png",
       "https://res.cloudinary.com/dficko9l8/image/upload/v1743685583/Desktop_tds6fg.png",
     ],
-    // ["/bgslides/bg-1.png",""],
-    // ["/bgslides/bg-1.png",""],
+
   ];
 
-  // const bannerBackground = [
-  //   "https://res.cloudinary.com/dficko9l8/image/upload/v1743685863/Banner_bne3ov.jpg",
-  //   // "/BannerImages/Banner-2.jpg",
-  //   // "/BannerImages/Banner-3.jpg",
-  // ];
+
 
   return (
     <div className="relative h-[100dvh] overflow-hidden ">
@@ -126,7 +119,6 @@ const LandingPage = () => {
         />
       </div>
 
-      {/*  Background Images */}
       <div className="relative w-full h-full">
         <Image
           alt="/bgslides/bg-1.png"
@@ -147,7 +139,7 @@ const LandingPage = () => {
         <div className="w-full h-full p-2 flex gap-y-80 items-center max-sm:pt-28 relative max-sm:flex-col max-sm:items-start">
           <h2
             onClick={(e) => {
-              e.stopPropagation(); // Prevent event bubbling (optional)
+              e.stopPropagation(); 
               animateOverlay(true);
             }}
             className="mainText absolute sm:left-28 md:left-10 text-[25vw] md:text-[20vw] lg:text-[12vw] leading-none font-normal md:font-bold font-coluna tracking-wide max-sm:relative max-sm:left-4"
@@ -162,59 +154,6 @@ const LandingPage = () => {
           </p>
         </div>
       </main>
-
-      {/* <div className="absolute hidden md:block w-[35%] h-[35%] right-0 bottom-0 md:h-[25%] lg:h-[35%] px-5 py-2">
-        <svg width="0" height="0">
-          <defs>
-            <clipPath id="customClip" clipPathUnits="objectBoundingBox">
-              <path
-                d="M0 0.133C0 0.13 0.001 0.126 0.003 0.123L0.053 0.004C0.054 0.002 0.057 0 0.061 0H0.932H0.994C0.998 0 1 0.002 1 0.006V0.867C1 0.87 0.999 0.873 0.998 0.875L0.947 0.996C0.946 0.998 0.943 1 0.939 1H0.069H0.006C0.002 1 0 0.998 0 0.994V0.133Z"
-                fill="white"
-              />
-            </clipPath>
-          </defs>
-        </svg>
-
-        <div
-          className="relative w-full h-full"
-          style={{ clipPath: "url(#customClip)" }}
-        >
-          <Image
-            src={bannerBackground[0]}
-            alt={`Banner Image `}
-            width={10000}
-            height={100}
-            className="w-full h-full object-cover"
-          />
-        </div>
-      </div> */}
-
-      {/* <div className="block md:hidden absolute z-[20] w-full h-[25%] left-0 bottom-0 ">
-        <svg
-          width="100%"
-          height="100%"
-          className="absolute inset-0 w-screen h-full"
-        >
-          <defs>
-            <clipPath id="customClipM" clipPathUnits="objectBoundingBox">
-              <path d="M1,0.95V0.05C1,0.02,0.99,0,0.98,0H0.02C0.01,0,0,0.02,0,0.05V0.95C0,0.98,0.01,1,0.02,1H0.33L0.35,0.89H0.64L0.66,1H0.98C0.99,1,1,0.98,1,0.95Z" />
-            </clipPath>
-          </defs>
-        </svg>
-
-        <div
-          className="relative w-full h-full"
-          style={{ clipPath: "url(#customClipM)" }}
-        >
-          <Image
-            src={bannerBackground[0]}
-            alt={`Banner Image `}
-            width={10000}
-            height={100}
-            className="w-full h-full object-cover"
-          />
-        </div>
-      </div> */}
     </div>
   );
 };

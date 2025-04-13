@@ -30,7 +30,6 @@ const Checkout: React.FC = () => {
     queryKey: ["address"],
     queryFn: async () => {
       const rawAddress = await AddressApi.getAddress();
-      console.log("Addresses:", rawAddress);
       return rawAddress.map((addr: Address) => ({
         id: addr.id,
         name: addr.name ? addr.name : "Guest",
@@ -87,11 +86,9 @@ const Checkout: React.FC = () => {
     };
 
     const response = await apiClient.post("/api/shiprocket", orderData);
-    console.log("Shiprocket Order Response:", response.data);
   };
 
   const handleSubmit = async () => {
-    console.log("Selected Address:", selectedAddress);
     if (!selectAddress) {
       alert("Select an address first..");
     }
@@ -141,13 +138,11 @@ const Checkout: React.FC = () => {
   // Sync selected address with fetched data
   useEffect(() => {
     if (addresses && addresses.length > 0 && !selectedAddress) {
-      console.log("Selected Address:", selectedAddress);
       setSelectedAddress(addresses[0].id); // Only set default if no address is selected
     }
   }, [addresses, selectedAddress]);
 
   const selectAddress = (id: string) => {
-    console.log("Selected Address:", id);
     setSelectedAddress(id);
     // Optionally, update backend state if needed
     // AddressApi.updateSelectedAddress(id);
@@ -231,7 +226,6 @@ const Checkout: React.FC = () => {
               {
                 onSuccess: async (data) => {
                   const orderId = data?.id;
-                  console.log("Order Created with ID:", orderId);
 
                   // 🔥 Shiprocket Order
                   await createShiprocketOrder(orderId as string);

@@ -18,7 +18,6 @@ export async function handleSignOut() {
 
 export async function handleSignup(data: z.infer<typeof SignUpSchema>) {
     try {
-      console.log(data);
   
       const existingUser = await prisma.user.findUnique({
         where: { mobile_no: data.mobileNumber },
@@ -38,10 +37,8 @@ export async function handleSignup(data: z.infer<typeof SignUpSchema>) {
           password: hashedPassword,
         },
       });
-      console.log(response);
   
       const otpResponse = await apiClient.post("/api/customers/otp", { mobile_no: response.mobile_no, type: "verify" });
-      console.log(otpResponse.data);
      
       
       
