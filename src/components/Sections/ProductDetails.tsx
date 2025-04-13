@@ -63,12 +63,19 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
   // First useEffect - runs when productData.data changes
   useEffect(() => {
     if (productData.data) {
-      // console.log(productData.data)
-      // No default color selection
-      setSelectedColor(""); // Empty string or null, depending on your preference
-
-      // Set available sizes to empty initially
-      setAvailableSizes([]);
+      // Set first color if available
+      if (productData.data.colors.length > 0) {
+        setSelectedColor(productData.data.colors[0].color);
+        // Set first available size for the first color
+        const firstColorSizes = productData.data.colors[0].sizes
+          .map((size) => size.size.replace("SIZE_", ""))
+          .sort((a, b) => Number(a) - Number(b));
+        if (firstColorSizes.length > 0) {
+          setSelectedSize(firstColorSizes[0]);
+        }
+      } else {
+        setSelectedColor("");
+      }
 
       // Get all color-specific image IDs to exclude them
       const colorImageIds = new Set(
@@ -178,7 +185,8 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
         }
       }
     }
-  }, [productData.data, selectedColor]);
+  }, [productData.data, selectedColor]);    
+  
   return (
     <>
       {productData.isLoading ? (
@@ -251,8 +259,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                     onSlideChange={(swiper) =>
                       setSelectedImage(images[swiper.activeIndex])
                     }
-                    className="w-full h-full"
-                  >
+                    className="w-full h-full">
                     {images.map((img, index) => (
                       <SwiperSlide key={index}>
                         <div className="w-full sm:h-[50dvh]   my-10 md:my-0 md:h-[80dvh] order-1 sm:order-2 bg-white rounded-2xl overflow-hidden ">
@@ -316,8 +323,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                     </div>
                     <button
                       className="text-[#bababa] w-full text-sm underline"
-                      onClick={handleWriteReview}
-                    >
+                      onClick={handleWriteReview}>
                       Write a Review
                     </button>
                     {showReviewModal && (
@@ -370,8 +376,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                         <DialogContent
                           aria-describedby="Size Chart"
                           aria-description="Size Chart"
-                          className="bg-black/95 text-white border-white/20"
-                        >
+                          className="bg-black/95 text-white border-white/20">
                           <div className="p-2 rounded-xl overflow-hidden  object-cover">
                             <Image
                               width={2000}
@@ -396,8 +401,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                                 ? "border-[#c2e53a]"
                                 : "border-white"
                             }`}
-                            onClick={() => setSelectedSize(size)}
-                          >
+                            onClick={() => setSelectedSize(size)}>
                             {size}
                           </button>
                         ))
@@ -456,8 +460,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                           );
 
                           router.push("/cart");
-                        }}
-                      >
+                        }}>
                         Buy Now
                       </button>
                       <div className="w-full flex items-center  justify-center gap-1">
@@ -501,8 +504,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                                 duration: 2500,
                               }
                             );
-                          }}
-                        >
+                          }}>
                           <ShoppingCart className="h-5 w-5" /> Add to Cart
                         </button>
                       </div>
@@ -553,8 +555,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                     {/* Rate Product Button */}
                     <button
                       className="text-base px-4 py-2 rounded-lg bg-gradient-to-r from-[#c3e53a85] via-[#3a5b0b] to-[#3a5b0b5e] border border-[#C2E53A] w-full sm:w-48 h-10"
-                      onClick={handleWriteReview}
-                    >
+                      onClick={handleWriteReview}>
                       Rate Product
                     </button>
                   </div>
@@ -565,8 +566,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                       (filter) => (
                         <button
                           key={filter}
-                          className="border border-[#c2e53a] px-3 sm:px-6 py-1 rounded-sm text-sm sm:text-base"
-                        >
+                          className="border border-[#c2e53a] px-3 sm:px-6 py-1 rounded-sm text-sm sm:text-base">
                           {filter}
                         </button>
                       )
@@ -583,8 +583,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                           <>
                             <div
                               className=" w-full  flex  gap-2 items-center"
-                              key={i}
-                            >
+                              key={i}>
                               <h1 className="font-montserrat text-zinc-500 text-xl">
                                 {review.title}
                               </h1>

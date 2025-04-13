@@ -67,6 +67,7 @@ const HorizontalScroll = () => {
 
   const ctx = useGSAPContext();
 
+
   // Desktop horizontal scroll animation
   useGSAP(() => {
     if (isMobile || !innerDivRef.current || !wrapperRef.current) return;
@@ -401,6 +402,7 @@ const HorizontalScroll = () => {
 
   const router = useRouter();
 
+  if (!isMobile) return null;
   return (
     <>
       {/* Desktop/Laptop Version */}
