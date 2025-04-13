@@ -85,7 +85,7 @@ const Checkout: React.FC = () => {
       weight: 1,
     };
 
-    const response = await apiClient.post("/api/shiprocket", orderData);
+    await apiClient.post("/api/shiprocket", orderData);
   };
 
   const handleSubmit = async () => {

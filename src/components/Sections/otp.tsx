@@ -13,13 +13,10 @@ const OTPVerification = ({id}:{id:string}) => {
   const [otp,setOtp] = useState<string[]>(Array(6).fill(''));
   const verifyOtp  = useVerifyOtp();
   const resendOtp = useResendOtp();
-
-
   const router = useRouter();
 
   
 const handleResendOtp = async() => {
-
   await resendOtp.mutate({jwt:id},{
     onSuccess:(data)=>{
       router.push(`/otp/${data.jwt}`);
@@ -28,20 +25,15 @@ const handleResendOtp = async() => {
 }
 
   const handleOTPSubmit = async() => {
-
-
    const parsedOtp = otpschema.safeParse(otp);
 
-
    if(parsedOtp.success){
-
     const otpString = parsedOtp.data.join('');
 
     const data = {otp:otpString,jwt:id}
 
     verifyOtp.mutate(data,{
       onSuccess:(data)=>{
-
         toast.success("OTP verified successfully");
         if(data?.jwt){
           router.push(`/new-password/${data.jwt}`);
@@ -49,12 +41,8 @@ const handleResendOtp = async() => {
           router.push("/signin");
         }
       },
-      onError:(error)=>{
-
-        toast.error("Invalid OTP");
-      }
+      
     });
-
 
    }else{
   toast.error("Invalid OTP");
