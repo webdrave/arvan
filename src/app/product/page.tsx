@@ -7,7 +7,7 @@ import { productApi } from "@/lib/api/productdetails";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Loader, SlidersHorizontal } from "lucide-react";
 import Image from "next/image";
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import { Products } from "@/components/admin/products-table";
 import {
   DropdownMenu,
@@ -60,6 +60,8 @@ export default function ProductPage() {
     priceRanges: [],
   });
 
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
     if (document.readyState === "complete") {
       setPageLoaded(true);
@@ -67,7 +69,8 @@ export default function ProductPage() {
       window.addEventListener("load", () => setPageLoaded(true));
     }
 
-    return () => window.removeEventListener("load", () => setPageLoaded(true));
+    return () =>
+      window.removeEventListener("load", () => setPageLoaded(true));
   }, []);
 
   const fetchProducts = async ({
@@ -77,7 +80,7 @@ export default function ProductPage() {
     pageParam: number;
     search?: string;
   }) => {
-    const limit = 10;
+    const limit = 12;
     const response = await productApi.getProducts(
       pageParam,
       limit,
@@ -96,7 +99,7 @@ export default function ProductPage() {
     isLoading,
     isError,
   } = useInfiniteQuery({
-    queryKey: ["products"],
+    queryKey: ["products", filters, sortBy],
     queryFn: ({ pageParam = 1 }) => fetchProducts({ pageParam }),
     getNextPageParam: (lastPage) => {
       const { pagination } = lastPage;
@@ -106,6 +109,27 @@ export default function ProductPage() {
     },
     initialPageParam: 1,
   });
+
+  useEffect(() => {
+    if (!loadMoreRef.current || !hasNextPage) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { rootMargin: "100px" }
+    );
+
+    observer.observe(loadMoreRef.current);
+
+    return () => {
+      if (loadMoreRef.current) {
+        observer.unobserve(loadMoreRef.current);
+      }
+    };
+  }, [hasNextPage, fetchNextPage, isFetchingNextPage]);
 
   const getAllProducts = useMemo(() => {
     if (!products?.pages) return [];
@@ -123,11 +147,13 @@ export default function ProductPage() {
             return b.name.localeCompare(a.name);
           case "newest":
             return (
-              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+              new Date(b.createdAt).getTime() -
+              new Date(a.createdAt).getTime()
             );
           case "oldest":
             return (
-              new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+              new Date(a.createdAt).getTime() -
+              new Date(b.createdAt).getTime()
             );
           default:
             return 0;
@@ -178,18 +204,17 @@ export default function ProductPage() {
   return (
     <div className="min-h-screen font-montserrat bg-black text-white overflow-x-hidden">
       <Navigation />
+
       {/* Hero Section */}
-      <section className="shop relative h-[70dvh] overflow-visible  lg:h-screen xl:h-[80dvh] flex items-center justify-center ">
+      <section className="shop relative h-[70dvh] lg:h-screen xl:h-[80dvh] flex items-center justify-center">
         <div
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 md:w-72 md:h-72 lg:w-96 lg:h-96 rounded-full bg-gray-200/40   blur-3xl"
-          style={{
-            boxShadow: "0 0 80px 120px rgba(255, 255, 255, 0.2)",
-          }}
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 md:w-72 md:h-72 lg:w-96 lg:h-96 rounded-full bg-gray-200/40 blur-3xl"
+          style={{ boxShadow: "0 0 80px 120px rgba(255, 255, 255, 0.2)" }}
         ></div>
 
-        <div className="w-full relative h-full  flex justify-center items-center p-2">
-          <h1 className="text-[25vw] md:text-[20vw]  lg:text-[15vw] xl:text-[15vw]  absolute top-[45%] md:top-[45%] lg:top-[50%] xl:top-[50%] -translate-y-1/2  left-[25%] lg:left-[35%] -translate-x-1/2 font-coluna font-bold tracking-wider z-10 text-center">
-            STEP{" "}
+        <div className="w-full relative h-full flex justify-center items-center p-2">
+          <h1 className="text-[25vw] md:text-[20vw] lg:text-[15vw] absolute top-[45%] left-[25%] lg:left-[35%] -translate-x-1/2 -translate-y-1/2 font-coluna font-bold tracking-wider z-10 text-center">
+            STEP
           </h1>
           <Image
             src={"/slides/2.png"}
@@ -198,14 +223,14 @@ export default function ProductPage() {
             height={500}
             className="w-full h-full object-contain relative z-[15] -rotate-12"
           />
-          <h1 className="text-[25vw] md:text-[20vw] lg:text-[15vw] top-[62%] md:top-[60%] lg:top-[65%] -translate-y-1/2  absolute left-[70%] -translate-x-1/2  font-coluna font-bold tracking-wider z-[20] text-center flex flex-col leading-none">
-            <span className=" text-4xl inline-block ">INTO</span>STYLE.
+          <h1 className="text-[25vw] md:text-[20vw] lg:text-[15vw] top-[62%] absolute left-[70%] -translate-x-1/2 -translate-y-1/2 font-coluna font-bold tracking-wider z-[20] text-center flex flex-col leading-none">
+            <span className="text-4xl inline-block">INTO</span>STYLE.
           </h1>
         </div>
       </section>
 
       {/* Products Section */}
-      <section className="w-full pb-10 ">
+      <section className="w-full pb-10">
         <div className="flex justify-between items-center mb-8 px-5">
           <h2 className="text-md md:text-xl font-medium">All Products</h2>
           <div className="flex items-center justify-end gap-2">
@@ -219,7 +244,7 @@ export default function ProductPage() {
                   {sortOptions.find((option) => option.value === sortBy)?.label}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-black/90 w-full border-white/20">
+              <DropdownMenuContent className="bg-black/90 border-white/20">
                 {sortOptions.map((option) => (
                   <DropdownMenuItem
                     key={option.value}
@@ -233,20 +258,15 @@ export default function ProductPage() {
             </DropdownMenu>
 
             <Dialog>
-              <DialogTrigger asChild aria-describedby="Filter Trigger">
+              <DialogTrigger asChild>
                 <Button
                   variant="outline"
-                  className="text-white w-fit flex items-center justify-center border-white/20"
+                  className="text-white flex items-center border-white/20"
                 >
-                  <SlidersHorizontal className="w-4 h-4 " />
-                  {/* {filters.priceRanges.length > 0 && "(Active)"} */}
+                  <SlidersHorizontal className="w-4 h-4" />
                 </Button>
               </DialogTrigger>
-              <DialogContent
-                aria-describedby="Fileter By price"
-                aria-description="Filter by product"
-                className="bg-black/95 text-white border-white/20"
-              >
+              <DialogContent className="bg-black/95 text-white border-white/20">
                 <DialogHeader>
                   <DialogTitle>Filter Products</DialogTitle>
                 </DialogHeader>
@@ -282,26 +302,21 @@ export default function ProductPage() {
         </div>
 
         {isLoading ? (
-          <>
-            <div className="flex justify-center my-16">
-              <Loader className="animate-spin" />
-            </div>
-          </>
-        ) : getAllProducts.length > 0 ? (
-      
-          <div className="grid grid-cols-2 md:grid-cols-3  lg:grid-cols-4 gap-0 ">
-          {getAllProducts.length > 0 ? (
-            getAllProducts.map((product: Products, i: number) => (
-              <ProductGrid key={`${product.id}-${i}`} product={product} index={i} />
-            ))
-          ) : (
-            <div className="flex w-full justify-center my-16 col-span-2">
-              <p>No Products available for this range.</p>
-            </div>
-          )}
-        </div>
+          <div className="flex justify-center my-16">
+            <Loader className="animate-spin" />
+          </div>
         ) : isError ? (
-          <h1>Something went wrong</h1>
+          <h1 className="text-center mt-16">Something went wrong</h1>
+        ) : getAllProducts.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-0">
+            {getAllProducts.map((product: Products, i: number) => (
+              <ProductGrid
+                key={`${product.id}-${i}`}
+                product={product}
+                index={i}
+              />
+            ))}
+          </div>
         ) : (
           <div className="flex justify-center my-16">
             <p>No Products available for this range.</p>
@@ -309,19 +324,8 @@ export default function ProductPage() {
         )}
 
         {hasNextPage && (
-          <div className="flex justify-center mt-16">
-            <Button
-              variant="outline"
-              className="text-white border-white/20 px-8 py-6 uppercase text-lg hover:bg-white/5"
-              onClick={() => fetchNextPage()}
-              disabled={isFetchingNextPage}
-            >
-              {isFetchingNextPage ? (
-                <Loader className="animate-spin" />
-              ) : (
-                "Load More"
-              )}
-            </Button>
+          <div ref={loadMoreRef} className="flex justify-center mt-16">
+            <Loader className="animate-spin" />
           </div>
         )}
       </section>
