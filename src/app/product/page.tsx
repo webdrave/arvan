@@ -113,6 +113,7 @@ export default function ProductPage() {
   useEffect(() => {
     if (!loadMoreRef.current || !hasNextPage) return;
 
+    const currentRef = loadMoreRef.current;
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
@@ -122,11 +123,11 @@ export default function ProductPage() {
       { rootMargin: "100px" }
     );
 
-    observer.observe(loadMoreRef.current);
+    observer.observe(currentRef);
 
     return () => {
-      if (loadMoreRef.current) {
-        observer.unobserve(loadMoreRef.current);
+      if (currentRef) {
+        observer.unobserve(currentRef);
       }
     };
   }, [hasNextPage, fetchNextPage, isFetchingNextPage]);

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { GSAPProvider } from "@/context/GSAPContext";
 import AdminStyles from "@/components/AdminStyles";
 import { OverlayProvider } from "@/context/OverlayContext";
 import { Theme } from "@radix-ui/themes";
@@ -29,7 +28,7 @@ export const metadata: Metadata = {
   description:
     "Our Top Selling Products · LOOK WHITE · LIFE IS GOOD · A4 WHITE · A4 BLACK · FANCY · LOOK (SKY BLUE ) · JUNGLE WALKER · RED DRAGON.",
   icons: {
-    icon: "/logo.svg",
+    icon: "/logo/logo.png",
     shortcut: "/logo.svg",
     apple: "/logo.svg",
   },
@@ -42,12 +41,12 @@ export const metadata: Metadata = {
     locale: "en_US",
     images: [
       {
-        url: "/logo.svg",
+        url: "/logo/logo.png",
         width: 800,
         height: 600,
       },
       {
-        url: "/logo.svg",
+        url: "/logo/logo.png",
         width: 1800,
         height: 1600,
         alt: "The Arvan",
@@ -74,14 +73,11 @@ export default function RootLayout({
           <QueryProvider>
             <Theme>
               <AdminStyles />
-
-                <GSAPProvider>
                   <OverlayProvider>
                     <CartProvider>{children}</CartProvider>
                     <Toaster />
                     <Analytics />
                   </OverlayProvider>
-                </GSAPProvider>
             </Theme>
           </QueryProvider>
           <GoogleTagManager

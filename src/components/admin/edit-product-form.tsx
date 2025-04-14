@@ -245,10 +245,8 @@ export function EditProductForm({ productId }: { productId: string }) {
 
   const removeVariant = (variantId: string) => {
     setVariants(
-      variants.map((variant) => 
-        variant.id === variantId 
-          ? { ...variant, isDelete: true }
-          : variant
+      variants.map((variant) =>
+        variant.id === variantId ? { ...variant, isDelete: true } : variant
       )
     );
   };
@@ -259,10 +257,8 @@ export function EditProductForm({ productId }: { productId: string }) {
         if (variant.id === variantId) {
           return {
             ...variant,
-            sizes: variant.sizes.map((size) => 
-              size.id === sizeId 
-                ? { ...size, isDelete: true }
-                : size
+            sizes: variant.sizes.map((size) =>
+              size.id === sizeId ? { ...size, isDelete: true } : size
             ),
           };
         }
@@ -663,240 +659,258 @@ export function EditProductForm({ productId }: { productId: string }) {
             quantities for your product.
           </p>
           <div className="grid gap-4 md:gap-6">
-            {variants.map((variant) => !variant.isDelete && (
-              <div
-                key={variant.id}
-                className="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 md:p-6 shadow-sm hover:border-[#4f507f] transition-colors duration-200">
-                <div
-                  className="flex justify-between items-center mb-4 sm:mb-6 cursor-pointer"
-                  onClick={() => {
-                    setVariants(
-                      variants.map((v) =>
-                        v.id === variant.id ? { ...v, isOpen: !v.isOpen } : v
-                      )
-                    );
-                  }}>
-                  <div className="flex items-center gap-2 sm:gap-4">
+            {variants.map(
+              (variant) =>
+                !variant.isDelete && (
+                  <div
+                    key={variant.id}
+                    className="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 md:p-6 shadow-sm hover:border-[#4f507f] transition-colors duration-200">
                     <div
-                      className={`transform transition-transform ${
-                        variant.isOpen ? "rotate-90" : ""
-                      }`}>
-                      <ChevronRight size={18} />
-                    </div>
-                    <div className="w-full max-w-[14rem]">
-                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
-                        Color Variant
-                      </label>
-                      {variant.customColor ? (
-                        <div className="flex flex-col sm:flex-row gap-2">
-                          <input
-                            type="text"
-                            className="w-full px-2 sm:px-4 py-1.5 sm:py-2 border rounded-lg focus:ring-2 focus:ring-[#4f507f] focus:border-[#4f507f] bg-white shadow-sm text-sm"
-                            value={variant.color}
-                            onClick={(e) => e.stopPropagation()}
-                            onChange={(e) => {
-                              setVariants(
-                                variants.map((v) =>
-                                  v.id === variant.id
-                                    ? { ...v, color: e.target.value }
-                                    : v
-                                )
-                              );
-                            }}
-                            placeholder="Enter custom color"
-                          />
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setVariants(
-                                variants.map((v) =>
-                                  v.id === variant.id
-                                    ? { ...v, customColor: false, color: "" }
-                                    : v
-                                )
-                              );
-                            }}
-                            className="px-3 py-1.5 text-xs sm:text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 mt-1 sm:mt-0">
-                            Back
-                          </button>
+                      className="flex justify-between items-center mb-4 sm:mb-6 cursor-pointer"
+                      onClick={() => {
+                        setVariants(
+                          variants.map((v) =>
+                            v.id === variant.id
+                              ? { ...v, isOpen: !v.isOpen }
+                              : v
+                          )
+                        );
+                      }}>
+                      <div className="flex items-center gap-2 sm:gap-4">
+                        <div
+                          className={`transform transition-transform ${
+                            variant.isOpen ? "rotate-90" : ""
+                          }`}>
+                          <ChevronRight size={18} />
                         </div>
-                      ) : (
-                        <select
-                          className="w-full px-2 sm:px-4 py-1.5 sm:py-2 border rounded-lg focus:ring-2 focus:ring-[#4f507f] focus:border-[#4f507f] bg-white shadow-sm text-sm"
-                          value={variant.color}
-                          onClick={(e) => e.stopPropagation()}
-                          onChange={(e) => {
-                            if (e.target.value === "custom") {
-                              setVariants(
-                                variants.map((v) =>
-                                  v.id === variant.id
-                                    ? { ...v, customColor: true, color: "" }
-                                    : v
-                                )
-                              );
-                            } else {
-                              setVariants(
-                                variants.map((v) =>
-                                  v.id === variant.id
-                                    ? { ...v, color: e.target.value }
-                                    : v
-                                )
-                              );
-                            }
-                          }}>
-                          <option value="">Select Color</option>
-                          <option value="Red">Red</option>
-                          <option value="Blue">Blue</option>
-                          <option value="Green">Green</option>
-                          <option value="Black">Black</option>
-                          <option value="White">White</option>
-                          <option value="custom">Custom Color...</option>
-                        </select>
-                      )}
-                    </div>
-                  </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      removeVariant(variant.id);
-                    }}
-                    className="text-gray-400 hover:text-red-500 transition-colors duration-200 p-1.5 rounded-full hover:bg-red-50"
-                    title="Remove Color Variant">
-                    <Trash2 size={16} />
-                  </button>
-                </div>
-                {variant.isOpen && (
-                  <div className="space-y-4 md:space-y-6">
-                    <div>
-                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 sm:mb-3">
-                        Variant Images
-                      </label>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-4">
-                        {variant.images?.map((image, index) => (
-                          <div key={index} className="relative group">
-                            <Image
-                              src={image.url || "/logo.svg"}
-                              width={200}
-                              height={200}
-                              alt={`${variant.color} variant image ${
-                                index + 1
-                              }`}
-                              className="w-full h-20 sm:h-24 md:h-28 object-contain rounded-md border border-gray-200"
-                            />
-                            <button
-                              onClick={() =>
-                                handleRemoveVariantImage(variant.id, index)
-                              }
-                              className="absolute top-1 right-1 bg-white rounded-full p-1 sm:p-1.5 shadow-md opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-                              <X size={12} />
-                            </button>
-                          </div>
-                        ))}
-
-                        <button
-                          onClick={() => {
-                            setVarientId(variant.id);
-                            setVarientImgPopUp(true);
-                          }}
-                          className="w-full h-20 sm:h-24 md:h-28 border-2 border-dashed border-gray-300 rounded-md flex flex-col items-center justify-center text-gray-500 hover:text-[#4f507f] hover:border-[#4f507f] transition-colors">
-                          <Upload size={16} className="mb-1" />
-                          <span className="text-xs">Add Image</span>
-                        </button>
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 sm:mb-3">
-                        Size Options
-                      </label>
-                      <div className="grid gap-3 sm:gap-4">
-                        {variant.sizes.map((size) => !size.isDelete && (
-                          <div
-                            key={size.id}
-                            className="flex flex-col sm:flex-row gap-3 sm:gap-6 sm:items-center bg-gray-50 p-3 sm:p-4 rounded-lg">
-                            <div className="w-full sm:w-48">
-                              <label className="block text-xs text-gray-500 mb-1">
-                                Size
-                              </label>
-                              <select
-                                className="w-full px-2 sm:px-4 py-1.5 sm:py-2 border rounded-lg focus:ring-2 focus:ring-[#4f507f] focus:border-[#4f507f] bg-white shadow-sm text-sm"
-                                value={size.name}
-                                onChange={(e) => {
-                                  setVariants(
-                                    variants.map((v) => {
-                                      if (v.id === variant.id) {
-                                        return {
-                                          ...v,
-                                          sizes: v.sizes.map((s) =>
-                                            s.id === size.id
-                                              ? { ...s, name: e.target.value }
-                                              : s
-                                          ),
-                                        };
-                                      }
-                                      return v;
-                                    })
-                                  );
-                                }}>
-                                {Sizes.map((size) => (
-                                  <option key={size} value={size}>
-                                    {size.replace(/[^0-9]/g, "")}
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
-                            <div className="w-full sm:w-48">
-                              <label className="block text-xs text-gray-500 mb-1">
-                                Stock Quantity
-                              </label>
+                        <div className="w-full max-w-[14rem]">
+                          <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
+                            Color Variant
+                          </label>
+                          {variant.customColor ? (
+                            <div className="flex flex-col sm:flex-row gap-2">
                               <input
-                                type="number"
-                                placeholder="Enter quantity"
-                                className="w-full px-2 sm:px-4 py-1.5 sm:py-2 border bg-white rounded-lg focus:ring-2 focus:ring-[#4f507f] focus:border-[#4f507f] shadow-sm text-sm"
-                                value={size.quantity}
+                                type="text"
+                                className="w-full px-2 sm:px-4 py-1.5 sm:py-2 border rounded-lg focus:ring-2 focus:ring-[#4f507f] focus:border-[#4f507f] bg-white shadow-sm text-sm"
+                                value={variant.color}
+                                onClick={(e) => e.stopPropagation()}
                                 onChange={(e) => {
                                   setVariants(
-                                    variants.map((v) => {
-                                      if (v.id === variant.id) {
-                                        return {
-                                          ...v,
-                                          sizes: v.sizes.map((s) =>
-                                            s.id === size.id
-                                              ? {
-                                                  ...s,
-                                                  quantity:
-                                                    parseInt(e.target.value) ||
-                                                    0,
-                                                }
-                                              : s
-                                          ),
-                                        };
-                                      }
-                                      return v;
-                                    })
+                                    variants.map((v) =>
+                                      v.id === variant.id
+                                        ? { ...v, color: e.target.value }
+                                        : v
+                                    )
                                   );
                                 }}
+                                placeholder="Enter custom color"
                               />
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setVariants(
+                                    variants.map((v) =>
+                                      v.id === variant.id
+                                        ? {
+                                            ...v,
+                                            customColor: false,
+                                            color: "",
+                                          }
+                                        : v
+                                    )
+                                  );
+                                }}
+                                className="px-3 py-1.5 text-xs sm:text-sm bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 mt-1 sm:mt-0">
+                                Back
+                              </button>
                             </div>
-                            <button
-                              onClick={() => removeSize(variant.id, size.id)}
-                              className="text-gray-400 hover:text-red-500 transition-colors duration-200 p-1.5 rounded-full hover:bg-red-50 mx-auto sm:mt-6"
-                              title="Remove Size Option">
-                              <X size={16} />
-                            </button>
-                          </div>
-                        ))}
+                          ) : (
+                            <select
+                              className="w-full px-2 sm:px-4 py-1.5 sm:py-2 border rounded-lg focus:ring-2 focus:ring-[#4f507f] focus:border-[#4f507f] bg-white shadow-sm text-sm"
+                              value={variant.color}
+                              onClick={(e) => e.stopPropagation()}
+                              onChange={(e) => {
+                                if (e.target.value === "custom") {
+                                  setVariants(
+                                    variants.map((v) =>
+                                      v.id === variant.id
+                                        ? { ...v, customColor: true, color: "" }
+                                        : v
+                                    )
+                                  );
+                                } else {
+                                  setVariants(
+                                    variants.map((v) =>
+                                      v.id === variant.id
+                                        ? { ...v, color: e.target.value }
+                                        : v
+                                    )
+                                  );
+                                }
+                              }}>
+                              <option value="">Select Color</option>
+                              <option value="Red">Red</option>
+                              <option value="Blue">Blue</option>
+                              <option value="Green">Green</option>
+                              <option value="Black">Black</option>
+                              <option value="White">White</option>
+                              <option value="custom">Custom Color...</option>
+                            </select>
+                          )}
+                        </div>
                       </div>
                       <button
-                        onClick={() => addSize(variant.id)}
-                        className="mt-3 sm:mt-4 text-xs sm:text-sm text-[#4f507f] hover:text-[#3e3f63] flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-md hover:bg-[#edeefc] transition-colors duration-200">
-                        <Plus size={14} />
-                        Add Size Option
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeVariant(variant.id);
+                        }}
+                        className="text-gray-400 hover:text-red-500 transition-colors duration-200 p-1.5 rounded-full hover:bg-red-50"
+                        title="Remove Color Variant">
+                        <Trash2 size={16} />
                       </button>
                     </div>
+                    {variant.isOpen && (
+                      <div className="space-y-4 md:space-y-6">
+                        <div>
+                          <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 sm:mb-3">
+                            Variant Images
+                          </label>
+                          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-4">
+                            {variant.images?.map((image, index) => (
+                              <div key={index} className="relative group">
+                                <Image
+                                  src={image.url || "/logo.svg"}
+                                  width={200}
+                                  height={200}
+                                  alt={`${variant.color} variant image ${
+                                    index + 1
+                                  }`}
+                                  className="w-full h-20 sm:h-24 md:h-28 object-contain rounded-md border border-gray-200"
+                                />
+                                <button
+                                  onClick={() =>
+                                    handleRemoveVariantImage(variant.id, index)
+                                  }
+                                  className="absolute top-1 right-1 bg-white rounded-full p-1 sm:p-1.5 shadow-md opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                                  <X size={12} />
+                                </button>
+                              </div>
+                            ))}
+
+                            <button
+                              onClick={() => {
+                                setVarientId(variant.id);
+                                setVarientImgPopUp(true);
+                              }}
+                              className="w-full h-20 sm:h-24 md:h-28 border-2 border-dashed border-gray-300 rounded-md flex flex-col items-center justify-center text-gray-500 hover:text-[#4f507f] hover:border-[#4f507f] transition-colors">
+                              <Upload size={16} className="mb-1" />
+                              <span className="text-xs">Add Image</span>
+                            </button>
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 sm:mb-3">
+                            Size Options
+                          </label>
+                          <div className="grid gap-3 sm:gap-4">
+                            {variant.sizes.map(
+                              (size) =>
+                                !size.isDelete && (
+                                  <div
+                                    key={size.id}
+                                    className="flex flex-col sm:flex-row gap-3 sm:gap-6 sm:items-center bg-gray-50 p-3 sm:p-4 rounded-lg">
+                                    <div className="w-full sm:w-48">
+                                      <label className="block text-xs text-gray-500 mb-1">
+                                        Size
+                                      </label>
+                                      <select
+                                        className="w-full px-2 sm:px-4 py-1.5 sm:py-2 border rounded-lg focus:ring-2 focus:ring-[#4f507f] focus:border-[#4f507f] bg-white shadow-sm text-sm"
+                                        value={size.name}
+                                        onChange={(e) => {
+                                          setVariants(
+                                            variants.map((v) => {
+                                              if (v.id === variant.id) {
+                                                return {
+                                                  ...v,
+                                                  sizes: v.sizes.map((s) =>
+                                                    s.id === size.id
+                                                      ? {
+                                                          ...s,
+                                                          name: e.target.value,
+                                                        }
+                                                      : s
+                                                  ),
+                                                };
+                                              }
+                                              return v;
+                                            })
+                                          );
+                                        }}>
+                                        {Sizes.map((size) => (
+                                          <option key={size} value={size}>
+                                            {size.replace(/[^0-9]/g, "")}
+                                          </option>
+                                        ))}
+                                      </select>
+                                    </div>
+                                    <div className="w-full sm:w-48">
+                                      <label className="block text-xs text-gray-500 mb-1">
+                                        Stock Quantity
+                                      </label>
+                                      <input
+                                        type="number"
+                                        placeholder="Enter quantity"
+                                        className="w-full px-2 sm:px-4 py-1.5 sm:py-2 border bg-white rounded-lg focus:ring-2 focus:ring-[#4f507f] focus:border-[#4f507f] shadow-sm text-sm"
+                                        value={size.quantity}
+                                        onChange={(e) => {
+                                          setVariants(
+                                            variants.map((v) => {
+                                              if (v.id === variant.id) {
+                                                return {
+                                                  ...v,
+                                                  sizes: v.sizes.map((s) =>
+                                                    s.id === size.id
+                                                      ? {
+                                                          ...s,
+                                                          quantity:
+                                                            parseInt(
+                                                              e.target.value
+                                                            ) || 0,
+                                                        }
+                                                      : s
+                                                  ),
+                                                };
+                                              }
+                                              return v;
+                                            })
+                                          );
+                                        }}
+                                      />
+                                    </div>
+                                    <button
+                                      onClick={() =>
+                                        removeSize(variant.id, size.id)
+                                      }
+                                      className="text-gray-400 hover:text-red-500 transition-colors duration-200 p-1.5 rounded-full hover:bg-red-50 mx-auto sm:mt-6"
+                                      title="Remove Size Option">
+                                      <X size={16} />
+                                    </button>
+                                  </div>
+                                )
+                            )}
+                          </div>
+                          <button
+                            onClick={() => addSize(variant.id)}
+                            className="mt-3 sm:mt-4 text-xs sm:text-sm text-[#4f507f] hover:text-[#3e3f63] flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-md hover:bg-[#edeefc] transition-colors duration-200">
+                            <Plus size={14} />
+                            Add Size Option
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            ))}
+                )
+            )}
           </div>
         </div>
       </div>
@@ -1016,10 +1030,12 @@ export function EditProductForm({ productId }: { productId: string }) {
         <div className="flex gap-2 sm:gap-3">
           <button
             type="submit"
-            className="flex-1 bg-[#4f507f] text-white py-2 px-3 sm:px-4 rounded-md hover:bg-[#3e3f63] transition-colors text-sm sm:text-base"
+            className={`flex-1 bg-[#4f507f] text-white py-2 px-3 sm:px-4 rounded-md hover:bg-[#3e3f63] transition-colors text-sm sm:text-base ${
+              productMutation.isPending ? "opacity-50 cursor-not-allowed" : ""
+            }`}
             onClick={saveProduct}
             disabled={productMutation.isPending}>
-              {productMutation.isPending ? "Saving..." : "Save Product"}
+            {productMutation.isPending ? "Saving..." : "Save Product"}
           </button>
           <button
             type="button"
