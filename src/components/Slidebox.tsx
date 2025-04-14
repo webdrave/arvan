@@ -23,7 +23,7 @@ const Slidebox: React.FC<SlideboxProps> = ({
       <div className="p-2 bg-white aspect-square rounded-md relative">
         {discount > 0 && (
           <span className="absolute top-2 left-2 text-black rounded-md bg-[#C2E53A] px-2 py-1 text-xs font-bold font-montserrat">
-            {discount}% OFF
+            {(discount / price * 100).toFixed(2)}% OFF
           </span>
         )}
         <Image
