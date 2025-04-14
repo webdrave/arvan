@@ -38,6 +38,7 @@ export function EditProductForm({ productId }: { productId: string }) {
   interface Variant {
     isNew: boolean;
     isOpen: boolean;
+    isDelete: boolean;
     id: string;
     color: string;
     customColor: boolean;
@@ -51,6 +52,7 @@ export function EditProductForm({ productId }: { productId: string }) {
       name: string;
       quantity: number;
       isNew: boolean;
+      isDelete: boolean;
     }[];
   }
   const [variants, setVariants] = useState<Variant[]>([]);
@@ -171,6 +173,7 @@ export function EditProductForm({ productId }: { productId: string }) {
           color: color.color,
           isNew: false,
           isOpen: false,
+          isDelete: false,
           customColor: true,
           images: color.assets?.map((asset) => ({
             ...asset,
@@ -184,6 +187,7 @@ export function EditProductForm({ productId }: { productId: string }) {
             name: size.size,
             quantity: size.stock,
             isNew: false,
+            isDelete: false,
           })),
         })
       );
@@ -206,10 +210,12 @@ export function EditProductForm({ productId }: { productId: string }) {
             name: "SIZE_5",
             quantity: 0,
             isNew: true,
+            isDelete: false,
           },
         ],
         isOpen: true,
         isNew: true,
+        isDelete: false,
       },
     ]);
   };
@@ -222,7 +228,13 @@ export function EditProductForm({ productId }: { productId: string }) {
             ...variant,
             sizes: [
               ...variant.sizes,
-              { id: cuid(), name: "", quantity: 0, isNew: true },
+              {
+                id: cuid(),
+                name: "",
+                quantity: 0,
+                isNew: true,
+                isDelete: false,
+              },
             ],
           };
         }
@@ -232,7 +244,13 @@ export function EditProductForm({ productId }: { productId: string }) {
   };
 
   const removeVariant = (variantId: string) => {
-    setVariants(variants.filter((v) => v.id !== variantId));
+    setVariants(
+      variants.map((variant) => 
+        variant.id === variantId 
+          ? { ...variant, isDelete: true }
+          : variant
+      )
+    );
   };
 
   const removeSize = (variantId: string, sizeId: string) => {
@@ -241,7 +259,11 @@ export function EditProductForm({ productId }: { productId: string }) {
         if (variant.id === variantId) {
           return {
             ...variant,
-            sizes: variant.sizes.filter((size) => size.id !== sizeId),
+            sizes: variant.sizes.map((size) => 
+              size.id === sizeId 
+                ? { ...size, isDelete: true }
+                : size
+            ),
           };
         }
         return variant;
@@ -315,7 +337,11 @@ export function EditProductForm({ productId }: { productId: string }) {
     });
   };
   const variantMutation = useMutation({
-    mutationFn: async (data: { variantId: string; name: string, assets: { url: string; type: string }[] }) => {
+    mutationFn: async (data: {
+      variantId: string;
+      name: string;
+      assets: { url: string; type: string }[];
+    }) => {
       await varientApi.updateVarient(data.variantId, data.name, data.assets);
     },
   });
@@ -336,12 +362,22 @@ export function EditProductForm({ productId }: { productId: string }) {
   });
 
   const updateSizeMutation = useMutation({
-    mutationFn: async (data : {varientId: string, stock:number}) => {
-      await inventoryApi.updateStock(
-        data.varientId,data.stock
-      );
-    }
-  })
+    mutationFn: async (data: { varientId: string; stock: number }) => {
+      await inventoryApi.updateStock(data.varientId, data.stock);
+    },
+  });
+
+  const deleteVariantMutation = useMutation({
+    mutationFn: async (data: { variantId: string }) => {
+      await varientApi.deleteVarient(data.variantId);
+    },
+  });
+
+  const deleteSizeMutation = useMutation({
+    mutationFn: async (data: { sizeId: string }) => {
+      await inventoryApi.deleteSize(data.sizeId);
+    },
+  });
 
   const productMutation = useMutation({
     mutationFn: (newProduct: Product) =>
@@ -350,23 +386,29 @@ export function EditProductForm({ productId }: { productId: string }) {
       if (data) {
         const productId = data.id;
         variants.forEach((variant) => {
-          if (variant.isNew) {
+          if (variant.isNew && !variant.isDelete) {
             addVariantMu.mutate({
               productId,
               color: variant.color,
               assets: variant.images,
-              sizes: variant.sizes.map((size) => ({
-                size: size.name as
-                  | "SIZE_5"
-                  | "SIZE_6"
-                  | "SIZE_7"
-                  | "SIZE_8"
-                  | "SIZE_9"
-                  | "SIZE_10"
-                  | "SIZE_11"
-                  | "SIZE_12",
-                stock: size.quantity,
-              })),
+              sizes: variant.sizes
+                .filter((size) => !size.isDelete)
+                .map((size) => ({
+                  size: size.name as
+                    | "SIZE_5"
+                    | "SIZE_6"
+                    | "SIZE_7"
+                    | "SIZE_8"
+                    | "SIZE_9"
+                    | "SIZE_10"
+                    | "SIZE_11"
+                    | "SIZE_12",
+                  stock: size.quantity,
+                })),
+            });
+          } else if (variant.isDelete && !variant.isNew) {
+            deleteVariantMutation.mutate({
+              variantId: variant.id,
             });
           } else {
             variantMutation.mutate({
@@ -378,7 +420,7 @@ export function EditProductForm({ productId }: { productId: string }) {
             const newSizes = [] as { size: string; stock: number }[];
 
             variant.sizes.forEach((size) => {
-              if (size.isNew) {
+              if (size.isNew && !size.isDelete) {
                 newSizes.push({
                   size: size.name as
                     | "SIZE_5"
@@ -390,6 +432,10 @@ export function EditProductForm({ productId }: { productId: string }) {
                     | "SIZE_11"
                     | "SIZE_12",
                   stock: size.quantity,
+                });
+              } else if (size.isDelete && !size.isNew) {
+                deleteSizeMutation.mutate({
+                  sizeId: size.id,
                 });
               } else {
                 updateSizeMutation.mutate({
@@ -416,7 +462,6 @@ export function EditProductForm({ productId }: { productId: string }) {
             //     stock: size.quantity,
             //   })),
             // });
-
           }
         });
       }
@@ -618,7 +663,7 @@ export function EditProductForm({ productId }: { productId: string }) {
             quantities for your product.
           </p>
           <div className="grid gap-4 md:gap-6">
-            {variants.map((variant) => (
+            {variants.map((variant) => !variant.isDelete && (
               <div
                 key={variant.id}
                 className="bg-white border border-gray-200 rounded-lg p-3 sm:p-4 md:p-6 shadow-sm hover:border-[#4f507f] transition-colors duration-200">
@@ -764,7 +809,7 @@ export function EditProductForm({ productId }: { productId: string }) {
                         Size Options
                       </label>
                       <div className="grid gap-3 sm:gap-4">
-                        {variant.sizes.map((size) => (
+                        {variant.sizes.map((size) => !size.isDelete && (
                           <div
                             key={size.id}
                             className="flex flex-col sm:flex-row gap-3 sm:gap-6 sm:items-center bg-gray-50 p-3 sm:p-4 rounded-lg">
@@ -972,8 +1017,9 @@ export function EditProductForm({ productId }: { productId: string }) {
           <button
             type="submit"
             className="flex-1 bg-[#4f507f] text-white py-2 px-3 sm:px-4 rounded-md hover:bg-[#3e3f63] transition-colors text-sm sm:text-base"
-            onClick={saveProduct}>
-            Save Product
+            onClick={saveProduct}
+            disabled={productMutation.isPending}>
+              {productMutation.isPending ? "Saving..." : "Save Product"}
           </button>
           <button
             type="button"
