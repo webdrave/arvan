@@ -11,7 +11,13 @@ export const productApi = {
     currentPage: number,
     itemsPerPage: number,
     debouncedSearchTerm: string,
-    status?: string
+    status?: string,
+    sortBy?: string,
+    sortOrder?: 'asc' | 'desc',
+    category?: string,
+    minPrice?: number,
+    maxPrice?: number,
+    rating?: number
   ): Promise<{
     success: boolean,
     products: Products[];
@@ -28,6 +34,12 @@ export const productApi = {
         limit: itemsPerPage,
         search: debouncedSearchTerm,
         ...(status && { status }),
+        ...(sortBy && { sortBy }),
+        ...(sortOrder && { sortOrder }),
+        ...(category && { category }),
+        ...(minPrice !== undefined && { minPrice }),
+        ...(maxPrice !== undefined && { maxPrice }),
+        ...(rating !== undefined && { rating }),
       },
     });
     return response.data;

@@ -45,6 +45,7 @@ const sortOptions: SortOption[] = [
   { label: "Oldest First", value: "oldest" },
 ];
 
+
 type FilterOptions = {
   priceRanges: string[];
 };
@@ -75,21 +76,69 @@ export default function ProductPage() {
 
   const fetchProducts = async ({
     pageParam = 1,
-    search = "",
   }: {
     pageParam: number;
-    search?: string;
   }) => {
     const limit = 12;
+  
+    // Convert price ranges to actual numbers
+    let minPrice: number | undefined;
+    let maxPrice: number | undefined;
+  
+    const ranges = filters.priceRanges;
+  
+    if (ranges.includes("Under ₹1000")) {
+      minPrice = 0;
+      maxPrice = 999;
+    }
+    if (ranges.includes("₹1000 - ₹2000")) {
+      minPrice = minPrice !== undefined ? Math.min(minPrice, 1000) : 1000;
+      maxPrice = maxPrice !== undefined ? Math.max(maxPrice, 2000) : 2000;
+    }
+    if (ranges.includes("₹2000 - ₹3000")) {
+      minPrice = minPrice !== undefined ? Math.min(minPrice, 2000) : 2000;
+      maxPrice = maxPrice !== undefined ? Math.max(maxPrice, 3000) : 3000;
+    }
+    if (ranges.includes("Above ₹3000")) {
+      minPrice = minPrice !== undefined ? Math.min(minPrice, 3001) : 3001;
+    }
+  
+    const sortFieldMap: Record<string, string> = {
+      price_asc: "price",
+      price_desc: "price",
+      name_asc: "name",
+      name_desc: "name",
+      newest: "createdAt",
+      oldest: "createdAt",
+    };
+  
+    const sortOrderMap: Record<string, "asc" | "desc"> = {
+      price_asc: "asc",
+      price_desc: "desc",
+      name_asc: "asc",
+      name_desc: "desc",
+      newest: "desc",
+      oldest: "asc",
+    };
+  
+    const sortByField = sortFieldMap[sortBy];
+    const sortOrder = sortOrderMap[sortBy];
+  
     const response = await productApi.getProducts(
       pageParam,
       limit,
-      search,
-      "PUBLISHED"
+      "", // search term (can be extended later)
+      "PUBLISHED",
+      sortByField,
+      sortOrder,
+      undefined, // category
+      minPrice,
+      maxPrice
     );
-
+  
     return response;
   };
+  
 
   const {
     data: products,
