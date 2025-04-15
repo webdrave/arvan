@@ -263,6 +263,7 @@ const HorizontalScroll = () => {
                     alt={`Slide image ${index + 1}`}
                     width={800}
                     height={500}
+                    unoptimized
                     className={`${index > 0 && "pb-[10%]"}`}
                     priority={index === activeSlide}
                   />

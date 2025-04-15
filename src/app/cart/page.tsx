@@ -84,6 +84,7 @@ export default function CartPage() {
                           alt={item.name}
                           width={96}
                           height={96}
+                          unoptimized
                           loading="lazy"
                           className="w-full h-full object-contain"
                         />
@@ -144,6 +145,7 @@ export default function CartPage() {
                           src={item.asset || "/placeholder.svg"}
                           alt={item.name}
                           width={64}
+                          unoptimized
                           height={64}
                           loading="lazy"
                           className="w-full h-full object-contain"

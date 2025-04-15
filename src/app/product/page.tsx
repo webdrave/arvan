@@ -221,6 +221,7 @@ export default function ProductPage() {
             src={"/slides/2.png"}
             alt="Hero background"
             width={500}
+            unoptimized
             height={500}
             className="w-full h-full object-contain relative z-[15] -rotate-12"
           />

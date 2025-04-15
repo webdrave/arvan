@@ -542,6 +542,7 @@ export function EditProductForm({ productId }: { productId: string }) {
                   alt={`Product image ${index + 1}`}
                   width={200}
                   height={200}
+                  unoptimized
                   className="w-full h-24 sm:h-28 md:h-32 object-contain rounded-md border border-gray-200"
                 />
                 <button
@@ -782,6 +783,7 @@ export function EditProductForm({ productId }: { productId: string }) {
                                   src={image.url || "/logo.svg"}
                                   width={200}
                                   height={200}
+                                  unoptimized
                                   alt={`${variant.color} variant image ${
                                     index + 1
                                   }`}

@@ -82,6 +82,7 @@ export default function ProfilePage({ user }: { user: Session["user"] }) {
                     alt="Profile"
                     width={64}
                     height={64}
+                    unoptimized
                     className="rounded-full object-cover"
                   />
                 </div>
@@ -157,6 +158,7 @@ export default function ProfilePage({ user }: { user: Session["user"] }) {
                       <Image
                         src={profile.avatar}
                         alt="Profile"
+                        unoptimized
                         width={112}
                         height={112}
                         className="rounded-full object-cover"
