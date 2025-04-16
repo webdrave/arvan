@@ -38,6 +38,7 @@ const ReturnReasonModal: React.FC<ReturnReasonModalProps> = ({
       await onSubmit(selectedReason, additionalInfo);
       onClose();
     } catch (err) {
+        console.error("Failed to submit return request:", err);
       setError("Failed to submit return request. Please try again.");
     } finally {
       setIsSubmitting(false);

@@ -273,7 +273,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ orderId }) => {
               </div>
             </div>
           )}
-          {/* @ts-ignore */}
+          {/* @ts-expect-error:Many possible erros */}
           {order.fulfillment === "RETURNING" && (
             <div className="bg-yellow-900/20 border border-yellow-800 rounded-lg p-4 mt-4">
               <div className="flex items-center gap-2">
