@@ -406,7 +406,7 @@ const HorizontalScroll = () => {
   return (
     <>
       {/* Desktop/Laptop Version */}
-      <div className={`${isMobile ? "hidden" : "block"}`}>
+      <div className={`${isMobile ? "hidden" : "hidden"}`}>
         <div
           ref={wrapperRef}
           className="wrapper relative w-screen h-screen font-montserrat  overflow-hidden"
