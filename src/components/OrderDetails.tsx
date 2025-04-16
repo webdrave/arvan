@@ -3,13 +3,22 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  ArrowLeft, Package, Truck, CheckCircle, Clock, MapPin, CreditCard, XCircle, Loader2,
-  Link2
+  ArrowLeft,
+  Package,
+  Truck,
+  CheckCircle,
+  Clock,
+  MapPin,
+  CreditCard,
+  XCircle,
+  Loader2,
+  Link2,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { orderApi } from "@/lib/api/orders";
 import Loading from "@/app/loading";
 import { apiClient } from "@/lib/axiosClient";
+import ReturnReasonModal from "./ReturnReasonModal";
 
 interface OrderDetailsProps {
   orderId: string;
@@ -17,7 +26,9 @@ interface OrderDetailsProps {
 const Oldorder = {
   status: "Shipping",
   message: "Expected Delivery On 19 March 2025",
-  actions: ["Cancel Order"],
+  actions: ["Cancel Order", "Return Order"],
+  isReturned: false,
+  returnDate: null,
   awb: "987654321",
   products: [
     {
@@ -27,8 +38,8 @@ const Oldorder = {
       quantity: 1,
       productColor: "Red",
       price: 599,
-      image: "/images/shoe1.png"
-    }
+      image: "/images/shoe1.png",
+    },
   ],
   totalPrice: 599,
   orderDate: "5 March 2024",
@@ -40,7 +51,7 @@ const Oldorder = {
     city: "Bangalore",
     state: "Karnataka",
     pincode: "560001",
-    phone: "+91 9876543212"
+    phone: "+91 9876543212",
   },
   // timeline: [
   //   { status: "Order Placed", date: "5 March 2024, 10:30 AM", completed: true },
@@ -51,77 +62,105 @@ const Oldorder = {
   //   { status: "Delivered", date: "Expected 19 March 2024", completed: false }
   // ]
 };
-  // In a real app, you would fetch the order details using the orderId
-  // For this example, I'll use mock data
+// In a real app, you would fetch the order details using the orderId
+// For this example, I'll use mock data
 
-  const OrderDetails: React.FC<OrderDetailsProps> = ({ orderId }) => {
-    const [order, setOrder] = useState(Oldorder);
-    const [isCancelling, setIsCancelling] = useState(false);
-  
-    const { data, isLoading, isFetching, refetch } = useQuery({
-      queryKey: ["order", orderId],
-      queryFn: async () => {
-        const response = await orderApi.getOrderById(orderId);
-        return response;
-      },
-    });
-  
-    useEffect(() => {
-      if (data) {
-        //@ts-expect-error: data is not undefined
-        setOrder(data);
-      }
-    }, [data]);
-  
-    const handleCancelOrder = async () => {
-      const confirmed = confirm("Are you sure you want to cancel this order?");
-      if (!confirmed) return;
-  
-      try {
-        setIsCancelling(true);
-        await apiClient.post("/api/shiprocket/cancel", { orderId });
-        await refetch();
-      } catch (error) {
-        console.error("Failed to cancel order:", error);
-        alert("Failed to cancel the order. Please try again later.");
-      } finally {
-        setIsCancelling(false);
-      }
-    };
-  
-    const getStatusIcon = (status: string) => {
-      switch (status.toUpperCase()) {
-        case "DELIVERED":
-          return <CheckCircle className="w-5 h-5 text-green-500" />;
-        case "SHIPPING":
-          return <Truck className="w-5 h-5 text-yellow-500" />;
-        case "PENDING":
-          return <Package className="w-5 h-5 text-yellow-500" />;
-        case "CANCELED":
-          return <XCircle className="w-5 h-5 text-gray-400" />;
-        default:
-          return <Clock className="w-5 h-5 text-gray-400" />;
-      }
-    };
-  
-    if (isLoading) return <Loading />;
-  
-    if (!data)
-      return (
-        <div className="flex items-center flex-col justify-center h-screen font-montserrat text-white">
-          <h1 className="text-2xl">Invalid Order ID</h1>
-          <Link href="/track-order">
-            <button className="bg-[#C2E53A] text-black px-4 py-2 sm:px-6 sm:py-3 rounded-sm hover:bg-[#a8c72f] transition text-sm sm:text-base">
-              Go Back And Continue Shopping
-            </button>
-          </Link>
-        </div>
-      );
-  
+const OrderDetails: React.FC<OrderDetailsProps> = ({ orderId }) => {
+  const [order, setOrder] = useState(Oldorder);
+  const [isCancelling, setIsCancelling] = useState(false);
+  const [isReturning, setIsReturning] = useState(false);
+  const [showReturnModal, setShowReturnModal] = useState(false);
+
+  const { data, isLoading, isFetching, refetch } = useQuery({
+    queryKey: ["order", orderId],
+    queryFn: async () => {
+      const response = await orderApi.getOrderById(orderId);
+      return response;
+    },
+  });
+
+  useEffect(() => {
+    if (data) {
+      //@ts-expect-error: data is not undefined
+      setOrder(data);
+    }
+  }, [data]);
+
+  const handleCancelOrder = async () => {
+    const confirmed = confirm("Are you sure you want to cancel this order?");
+    if (!confirmed) return;
+
+    try {
+      setIsCancelling(true);
+      await apiClient.post("/api/shiprocket/cancel", { orderId });
+      await refetch();
+    } catch (error) {
+      console.error("Failed to cancel order:", error);
+      alert("Failed to cancel the order. Please try again later.");
+    } finally {
+      setIsCancelling(false);
+    }
+  };
+
+  const handleReturnOrder = () => {
+    setShowReturnModal(true);
+  };
+
+  const submitReturnRequest = async (
+    reason: string,
+    additionalInfo: string
+  ) => {
+    try {
+      setIsReturning(true);
+      await apiClient.post("/api/shiprocket/return", {
+        orderId,
+        reason,
+        additionalInfo,
+      });
+      await refetch();
+    } catch (error) {
+      console.error("Failed to return order:", error);
+      throw error;
+    } finally {
+      setIsReturning(false);
+    }
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status.toUpperCase()) {
+      case "DELIVERED":
+        return <CheckCircle className="w-5 h-5 text-green-500" />;
+      case "SHIPPING":
+        return <Truck className="w-5 h-5 text-yellow-500" />;
+      case "PENDING":
+        return <Package className="w-5 h-5 text-yellow-500" />;
+      case "CANCELED":
+        return <XCircle className="w-5 h-5 text-gray-400" />;
+      default:
+        return <Clock className="w-5 h-5 text-gray-400" />;
+    }
+  };
+
+  if (isLoading) return <Loading />;
+
+  if (!data)
+    return (
+      <div className="flex items-center flex-col justify-center h-screen font-montserrat text-white">
+        <h1 className="text-2xl">Invalid Order ID</h1>
+        <Link href="/track-order">
+          <button className="bg-[#C2E53A] text-black px-4 py-2 sm:px-6 sm:py-3 rounded-sm hover:bg-[#a8c72f] transition text-sm sm:text-base">
+            Go Back And Continue Shopping
+          </button>
+        </Link>
+      </div>
+    );
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-       <div className="mb-8 flex items-center justify-between">
-        <Link href="/track-order" className="inline-flex items-center text-gray-400 hover:text-white transition">
+      <div className="mb-8 flex items-center justify-between">
+        <Link
+          href="/track-order"
+          className="inline-flex items-center text-gray-400 hover:text-white transition">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Orders
         </Link>
@@ -143,7 +182,15 @@ const Oldorder = {
           {order.awb && (
             <p className="text-gray-400 font-montserrat">
               Order AWB: <span className="font-mono">{order.awb}</span>
-              <Link2  className="ml-2 w-4 h-4" onClick={() => window.open(`https://www.shiprocket.in/shipment-tracking`, "_blank")}/>
+              <Link2
+                className="ml-2 w-4 h-4"
+                onClick={() =>
+                  window.open(
+                    `https://www.shiprocket.in/shipment-tracking`,
+                    "_blank"
+                  )
+                }
+              />
             </p>
           )}
         </div>
@@ -157,8 +204,7 @@ const Oldorder = {
               href={`https://shiprocket.co/tracking/${order.awb}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-[#C2E53A] text-black px-4 py-2 rounded-sm text-sm hover:bg-[#a8c72f] transition"
-            >
+              className="bg-[#C2E53A] text-black px-4 py-2 rounded-sm text-sm hover:bg-[#a8c72f] transition">
               Track Package
             </a>
           )}
@@ -168,14 +214,93 @@ const Oldorder = {
               disabled={isCancelling}
               className={`flex items-center justify-center gap-2 bg-[#9C2918] hover:bg-[#7a1f12] px-4 py-2 rounded-sm text-sm transition ${
                 isCancelling ? "opacity-70 cursor-not-allowed" : ""
-              }`}
-            >
+              }`}>
               {isCancelling && <Loader2 className="w-4 h-4 animate-spin" />}
               {isCancelling ? "Cancelling..." : "Cancel Order"}
             </button>
           )}
+          {order.actions.includes("Return Order") && (
+            <button
+              onClick={handleReturnOrder}
+              disabled={isReturning}
+              className={`flex items-center justify-center gap-2 bg-[#9C2918] hover:bg-[#7a1f12] px-4 py-2 rounded-sm text-sm transition ${
+                isReturning ? "opacity-70 cursor-not-allowed" : ""
+              }`}>
+              {isReturning && <Loader2 className="w-4 h-4 animate-spin" />}
+              {isReturning ? "Returning..." : "Return Order"}
+            </button>
+          )}
+          {order.isReturned && (
+            <div className="bg-gray-900/20 border border-gray-800 rounded-lg p-6 mt-4">
+              <div className="flex items-center gap-2 mb-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3"
+                  />
+                </svg>
+                <p className="text-gray-400 font-medium text-lg">
+                  Order Returned
+                </p>
+              </div>
+              <div className="flex items-center gap-2 text-gray-400">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+                <p>
+                  Returned On{" "}
+                  <span className="font-mono font-medium">
+                    {order.returnDate}
+                  </span>
+                </p>
+              </div>
+            </div>
+          )}
+          {/* @ts-ignore */}
+          {order.fulfillment === "RETURNING" && (
+            <div className="bg-yellow-900/20 border border-yellow-800 rounded-lg p-4 mt-4">
+              <div className="flex items-center gap-2">
+                <span className="text-yellow-500 font-medium">
+                  Return in Progress
+                </span>
+              </div>
+              <div className="flex items-center gap-2 mt-2 text-sm text-gray-400">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <span>Your return request is being processed</span>
+              </div>
+            </div>
+          )}
         </div>
-      </div>     
+      </div>
 
       {/* Order Items */}
       <div className="border border-gray-700 rounded-lg overflow-hidden mb-8 bg-black/30 backdrop-blur-sm">
@@ -194,15 +319,17 @@ const Oldorder = {
                   className="w-full h-full object-cover"
                 />
               </div>
-              
+
               <div className="flex-grow">
-                <h3 className="text-lg font-medium mb-2">{product.productName}</h3>
+                <h3 className="text-lg font-medium mb-2">
+                  {product.productName}
+                </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2 text-sm text-gray-400">
                   <p>Size: {product.size}</p>
                   <p>Color: {product.productColor}</p>
                   <p>Qty: {product.quantity}</p>
                 </div>
-                
+
                 <div className="mt-4 flex justify-between items-center">
                   <span className="text-lg font-medium">₹{product.price}</span>
                   <Link href={`/product/${product.id}`}>
@@ -218,7 +345,9 @@ const Oldorder = {
         <div className="border-t border-gray-700 p-6 bg-black/20">
           <div className="flex justify-between items-center">
             <span className="text-lg">Order Total:</span>
-            <span className="text-2xl font-medium">₹{order.totalPrice.toFixed(2)}</span>
+            <span className="text-2xl font-medium">
+              ₹{order.totalPrice.toFixed(2)}
+            </span>
           </div>
         </div>
       </div>
@@ -232,9 +361,13 @@ const Oldorder = {
             <h2 className="text-xl font-medium">Shipping Information</h2>
           </div>
           <div className="text-gray-400 space-y-2">
-            <p className="text-white font-medium">{order.shippingAddress.name}</p>
+            <p className="text-white font-medium">
+              {order.shippingAddress.name}
+            </p>
             <p>{order.shippingAddress.street}</p>
-            <p>{order.shippingAddress.city}, {order.shippingAddress.state}</p>
+            <p>
+              {order.shippingAddress.city}, {order.shippingAddress.state}
+            </p>
             <p>{order.shippingAddress.pincode}</p>
             <p>{order.shippingAddress.phone}</p>
           </div>
@@ -270,7 +403,9 @@ const Oldorder = {
               </div>
               <div className="flex justify-between mt-4">
                 <p className="font-medium text-white">Total:</p>
-                <p className="font-medium text-white">₹{order.totalPrice.toFixed(2)}</p>
+                <p className="font-medium text-white">
+                  ₹{order.totalPrice.toFixed(2)}
+                </p>
               </div>
             </div>
           </div>
@@ -286,6 +421,13 @@ const Oldorder = {
           </button>
         </Link>
       </div>
+      {showReturnModal && (
+        <ReturnReasonModal
+          isOpen={showReturnModal}
+          onClose={() => setShowReturnModal(false)}
+          onSubmit={submitReturnRequest}
+        />
+      )}
     </div>
   );
 };

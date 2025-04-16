@@ -67,6 +67,7 @@ export default function ProductGrid({
           width={400}
           height={400}
           loading="lazy"
+          unoptimized
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
       </div>
