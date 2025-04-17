@@ -50,13 +50,18 @@ export default function Footer() {
           <div className="space-y-6">
             <h3 className="text-lg font-medium">Quick Links</h3>
             <ul className="space-y-4">
-              {["Home", "Products", "Track Order"].map((link) => (
-                <li key={link}>
+              {[
+                { name: "Home", link: "/" },
+                { name: "Products", link: "/product" },
+                { name: "Track Order", link: "/track-order" },
+                { name: "Privacy Policy", link: "/privacy-policy" }
+              ].map((item) => (
+                <li key={item.name}>
                   <Link
-                    href="#"
+                    href={item.link}
                     className="text-[#999999] hover:text-white transition-colors"
                   >
-                    {link}
+                    {item.name}
                   </Link>
                 </li>
               ))}
