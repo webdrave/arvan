@@ -248,7 +248,7 @@ export default function ContactForm() {
                     FOLLOW US ON
                   </h3>
                   <div className="flex space-x-4 mt-4">
-                    <Link href={"mailto:support@arvan.com"}>
+                    <Link href={"mailto:thearvan77@gmail.com"}>
                       <MailIcon className="text-white text-2xl sm:text-4xl md:text-3xl lg:text-4xl cursor-pointer" />
                     </Link>
                     <Link
