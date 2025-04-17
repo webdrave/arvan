@@ -30,7 +30,7 @@ const Section2 = () => {
         </div>
 
         <div className="relative overflow-x-hidden ">
-          <HorizontalScroll />
+          {/* <HorizontalScroll /> */}
         </div>
       </div>
     </div>

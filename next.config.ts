@@ -1,16 +1,21 @@
-import type { NextConfig } from "next";
+// next.config.js
 
-const nextConfig: NextConfig = {
-  images :  {
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  images: {
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'res.cloudinary.com',
-        pathname: '/**', // '**' is a glob pattern to match any path under /v/
+        pathname: '/**',
       },
-    ]
-  }
-  /* config options here */
+    ],
+  },
 };
 
-export default nextConfig;
+module.exports = withBundleAnalyzer(nextConfig);
