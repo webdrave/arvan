@@ -230,6 +230,7 @@ const TrackOrders = ({ user }: { user: Session["user"] }) => {
                               src={product.productImage}
                               alt={product.productName}
                               width={96}
+                              unoptimized
                               height={96}
                               className="w-full h-full object-cover"
                             />

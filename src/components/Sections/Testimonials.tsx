@@ -59,6 +59,7 @@ export default function Testimonials() {
             src="/Star.svg"
             width={40}
             height={40}
+            unoptimized
             alt="Star SVG"
             className="absolute -z-[10] -top-1/2 right-0 w-[1em] sm:w-[1.2em] animate-[spin_3s_linear_infinite]"
           />
@@ -144,6 +145,7 @@ export default function Testimonials() {
                     src={testimonial.image}
                     width={40}
                     height={40}
+                    unoptimized
                     alt={testimonial.username}
                     className="rounded-full border border-gray-500 w-10 h-10 object-cover"
                   />

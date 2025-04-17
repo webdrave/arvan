@@ -206,6 +206,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                         src={img || ""}
                         alt="Thumbnail"
                         height={200}
+                        unoptimized
                         width={200}
                         className={`h-12 w-14 cursor-pointer border-2 transition-all duration-200 ${
                           selectedImage === img
@@ -223,6 +224,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                       src={selectedImage}
                       height={500}
                       width={500}
+                      unoptimized
                       alt="Product"
                       className="w-full h-full object-cover "
                     />
@@ -240,6 +242,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                         src={img || ""}
                         alt="Thumbnail"
                         height={200}
+                        unoptimized
                         width={200}
                         className={`h-12 w-14 cursor-pointer border-2 transition-all duration-200 ${
                           selectedImage === img
@@ -267,6 +270,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                             src={img}
                             alt={`Slide ${index}`}
                             width={500}
+                            unoptimized
                             height={500}
                             className="w-full h-full object-cover"
                           />
@@ -347,6 +351,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                       {productData.data?.colors.map((color, index) => (
                         <Image
                           key={index}
+                          unoptimized
                           src={
                             color.assets[0].asset_url ||
                             productData.data.assets[0]?.asset_url
@@ -381,6 +386,7 @@ const ProductDetails: React.FC<{ productId: string }> = ({ productId }) => {
                             <Image
                               width={2000}
                               height={100}
+                              unoptimized
                               src={
                                 "https://res.cloudinary.com/dficko9l8/image/upload/v1743685602/size_chart_u9j5gs.png"
                               }

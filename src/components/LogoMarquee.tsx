@@ -43,6 +43,7 @@ const LogoMarquee = () => {
               <Image
                 alt="LOGO"
                 src={logo}
+                unoptimized
                 width={100}
                 height={100}
                 className={`object-cover  ${i === 2 ? "w-14" : ""} ${
