@@ -62,8 +62,8 @@ export default function ArvanPoliciesPage() {
                   </h2>
                   <p className="text-gray-600 mt-3">
                     At <strong>Arvan</strong>, your satisfaction means
-                    everything to us. If you're not completely happy with your
-                    purchase, we're here to make it right.
+                    everything to us. If you&apos;re not completely happy with your
+                    purchase, we&apos;re here to make it right.
                   </p>
                 </div>
 
@@ -83,7 +83,7 @@ export default function ArvanPoliciesPage() {
                   </h3>
                   <ul className="mt-3 space-y-2 pl-10 list-disc text-gray-700">
                     <li>
-                      Only <strong>men's sliders</strong> purchased directly
+                      Only <strong>men&apos;s sliders</strong> purchased directly
                       from Arvan are eligible.
                     </li>
                     <li>
@@ -136,7 +136,7 @@ export default function ArvanPoliciesPage() {
                       payment method.
                     </li>
                     <li>
-                      You'll receive a confirmation email once the refund has
+                      You&apos;ll receive a confirmation email once the refund has
                       been initiated.
                     </li>
                   </ul>
@@ -205,7 +205,7 @@ export default function ArvanPoliciesPage() {
                   </h2>
                   <p className="text-gray-600 mt-3">
                     Welcome to <strong>Arvan</strong> — your trusted destination
-                    for stylish and comfortable <strong>men's sliders</strong>{" "}
+                    for stylish and comfortable <strong>men&apos;s sliders</strong>{" "}
                     in India. Your privacy is important to us.
                   </p>
                 </div>
@@ -283,7 +283,7 @@ export default function ArvanPoliciesPage() {
                   </ul>
                   <p className="mt-4 text-gray-700">
                     You can disable cookies through your browser settings, but
-                    it may affect the website's functionality.
+                    it may affect the website&apos;s functionality.
                   </p>
                 </div>
 
