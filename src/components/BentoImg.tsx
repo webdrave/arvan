@@ -1,7 +1,7 @@
 import React from "react";
 
 const BentoImg = () => {
-  const imageUrl = "/bgslides/bg-1.png";
+  const imageUrl = "https://res.cloudinary.com/dficko9l8/image/upload/v1743685583/Desktop_tds6fg.png";
   return (
     <div className="relative w-full max-w-xl  hidden lg:grid grid-cols-2 gap-2">
       {/* Top-left large cell (spans 1 row, 1 column) */}

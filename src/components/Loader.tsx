@@ -8,7 +8,6 @@ const Loader = () => {
         src={"/logo.svg"}
         width={150}
         height={100}
-        unoptimized
         alt="Logo"
         className="will-change-transform pulse"
       />

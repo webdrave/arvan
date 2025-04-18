@@ -2,43 +2,41 @@
 import { forwardRef, useState } from "react";
 import { useOverlayContext } from "@/context/OverlayContext";
 import Image from "next/image";
-
+const slides = [
+  {
+    name: "red dragon",
+    image:
+      "https://res.cloudinary.com/dficko9l8/image/upload/v1743693176/RedDragon_wybpoi.png",
+  },
+  {
+    name: "monster",
+    image:
+      "https://res.cloudinary.com/dficko9l8/image/upload/v1743693176/Monster_yhqbgo.png",
+  },
+  {
+    name: "Cube",
+    image:
+      "https://res.cloudinary.com/dficko9l8/image/upload/v1743693176/Cube_vent5d.png",
+  },
+  {
+    name: "life is good",
+    image:
+      "https://res.cloudinary.com/dficko9l8/image/upload/v1743693176/Life_Is_good_pja00c.png",
+  },
+  {
+    name: "leo",
+    image:
+      "https://res.cloudinary.com/dficko9l8/image/upload/v1743693176/Leo_floo51.png",
+  },
+  {
+    name: "haunted skull",
+    image:
+      "https://res.cloudinary.com/dficko9l8/image/upload/v1743693175/Haunted_Skull_jtlmst.png",
+  },
+];
 const Landing_overlay = forwardRef<HTMLDivElement>((_, ref) => {
   const { animateOverlay } = useOverlayContext();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null); // Track hovered item
-
-  const slides = [
-    {
-      name: "red dragon",
-      image:
-        "https://res.cloudinary.com/dficko9l8/image/upload/v1743693176/RedDragon_wybpoi.png",
-    },
-    {
-      name: "monster",
-      image:
-        "https://res.cloudinary.com/dficko9l8/image/upload/v1743693176/Monster_yhqbgo.png",
-    },
-    {
-      name: "Cube",
-      image:
-        "https://res.cloudinary.com/dficko9l8/image/upload/v1743693176/Cube_vent5d.png",
-    },
-    {
-      name: "life is good",
-      image:
-        "https://res.cloudinary.com/dficko9l8/image/upload/v1743693176/Life_Is_good_pja00c.png",
-    },
-    {
-      name: "leo",
-      image:
-        "https://res.cloudinary.com/dficko9l8/image/upload/v1743693176/Leo_floo51.png",
-    },
-    {
-      name: "haunted skull",
-      image:
-        "https://res.cloudinary.com/dficko9l8/image/upload/v1743693175/Haunted_Skull_jtlmst.png",
-    },
-  ];
 
   return (
     <div
@@ -48,7 +46,9 @@ const Landing_overlay = forwardRef<HTMLDivElement>((_, ref) => {
     >
       <div className="w-full h-full flex flex-col gap-2 relative items-center justify-center">
         {/* Render all images but only show the hovered one */}
+
         {slides.map((slide, i) => (
+          <>
           <div
             key={`img-${i}`}
             className={`absolute w-full h-full top-0 left-0 z-10 transition-opacity duration-500 ease-in-out ${
@@ -63,9 +63,6 @@ const Landing_overlay = forwardRef<HTMLDivElement>((_, ref) => {
               className="w-full h-full object-cover"
             />
           </div>
-        ))}
-
-        {slides.map((slide, i) => (
           <div
             key={i}
             className="relative z-40"
@@ -84,6 +81,7 @@ const Landing_overlay = forwardRef<HTMLDivElement>((_, ref) => {
               {slide.name}
             </h3>
           </div>
+          </>
         ))}
 
         <button

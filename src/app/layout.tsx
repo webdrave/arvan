@@ -6,23 +6,9 @@ import { OverlayProvider } from "@/context/OverlayContext";
 import { Theme } from "@radix-ui/themes";
 import QueryProvider from "@/lib/queryclient";
 import { CartProvider } from "@/context/CartContext";
-import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "next-auth/react";
+import Providers from "./providers";
 
-import DelayedGTM from "@/components/DelayedGTM";
-import VercelAnalytics from "@/components/VercelAnalytic";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "The Arvan",
@@ -57,6 +43,19 @@ export const metadata: Metadata = {
   },
 };
 
+// Fonts
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+  display: "swap",
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -76,14 +75,12 @@ export default function RootLayout({
           <QueryProvider>
             <Theme>
               <AdminStyles />
-                <OverlayProvider>
-                  <CartProvider>{children}</CartProvider>
-                  <Toaster />
-                </OverlayProvider>
+              <OverlayProvider>
+                <CartProvider>{children}</CartProvider>
+              </OverlayProvider>
             </Theme>
           </QueryProvider>
-          <DelayedGTM />
-          <VercelAnalytics />
+          <Providers />
         </body>
       </html>
     </SessionProvider>

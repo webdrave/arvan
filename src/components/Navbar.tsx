@@ -8,64 +8,50 @@ import { useSession } from "next-auth/react";
 import { useCart } from "@/context/CartContext";
 import Image from "next/image";
 
+const navItems = [
+  { name: "Home", href: "/" },
+  { name: "Shop", href: "/shop" },
+  { name: "Track Order", href: "/track-order" },
+  { name: "About", href: "/about" },
+  { name: "Contact", href: "/contact" },
+];
+
 const Navbar = () => {
   const { data: session } = useSession();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { cart } = useCart();
 
-  const navItems = [
-    {
-      name: "Home",
-      href: "/",
-    },
-    {
-      name: "Shop",
-      href: "/shop",
-    },
-    {
-      name: "Track Order",
-      href: "/track-order",
-    },
-    {
-      name: "About",
-      href: "/about",
-    },
-    {
-      name: "Contact",
-      href: "/contact",
-    },
-  ];
-
   useEffect(() => {
+    let timeout: NodeJS.Timeout | null = null;
     const handleScroll = () => {
-      // Set isScrolled to true if scrolled more than 50 pixels
-      setIsScrolled(window.scrollY > 50);
+      if (timeout) return;
+      timeout = setTimeout(() => {
+        setIsScrolled(window.scrollY > 50);
+        timeout = null;
+      }, 100); // fires every 100ms
     };
 
-    // Add scroll event listener
     window.addEventListener("scroll", handleScroll);
-
-    // Cleanup event listener
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <>
       <nav
+        role="navigation"
+        aria-label="Main navigation"
         className={`
       fixed top-0 flex p-6 w-full z-50 
       transition-all duration-300 
       ${isScrolled ? "bg-black/30 backdrop-blur-md" : "bg-transparent"}
-    `}
-      >
+    `}>
         <div className="w-full hidden md:flex bg-transparent justify-between items-center uppercase z-30">
           <Image
             src={"/logo.svg"}
             width={20}
             height={80}
+            priority
             alt="logo"
             className={`${
               isScrolled ? "block" : "hidden"
@@ -79,8 +65,7 @@ const Navbar = () => {
                 className="relative font-montserrat  text-md xl:text-lg transition-colors duration-300
                after:content-[''] after:absolute after:left-0 after:bottom-0
                after:h-[2.5px] after:bg-[#CCFF00] after:transform-gpu after:w-0 hover:after:w-full
-               after:transition-all after:duration-300"
-              >
+               after:transition-all after:duration-300">
                 {item.name}
               </Link>
             ))}
@@ -92,8 +77,7 @@ const Navbar = () => {
             </Link>
             {session?.user ? (
               <Link
-                href={session.user?.role === "ADMIN" ? "/admin" : "/profile"}
-              >
+                href={session.user?.role === "ADMIN" ? "/admin" : "/profile"}>
                 <FiUser className="text-lg text-white cursor-pointer hover:text-[#CCFF00]" />
               </Link>
             ) : (
@@ -123,25 +107,19 @@ const Navbar = () => {
                   {cart.length > 0 ? cart.length : 0}
                 </div>
               </Link>
-              {session ? (
-                session.user.role === "ADMIN" ? (
-                  <Link href="/admin">
-                    <FiUser className="text-lg text-white cursor-pointer hover:text-[#CCFF00]" />
-                  </Link>
-                ) : (
-                  <Link href="/signin">
-                    <FiUser className="text-lg text-white cursor-pointer hover:text-[#CCFF00]" />
-                  </Link>
-                )
+              {session?.user ? (
+                <Link
+                  href={session.user.role === "ADMIN" ? "/admin" : "/profile"}>
+                  <FiUser className="..." />
+                </Link>
               ) : (
                 <Link href="/signin">
-                  <FiUser className="text-lg text-white cursor-pointer hover:text-[#CCFF00]" />
+                  <FiUser className="..." />
                 </Link>
               )}
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="text-white focus:outline-none ml-auto"
-              >
+                className="text-white focus:outline-none ml-auto">
                 <IoMenu className="text-lg text-white cursor-pointer hover:text-[#CCFF00]" />
               </button>
             </div>
@@ -157,8 +135,7 @@ const Navbar = () => {
                 key={idx}
                 href={navItem.href}
                 className="px-4 py-2 text-sm font-medium rounded-full transition-all text-white hover:text-[#CCFF00]"
-                onClick={() => setIsMenuOpen(false)}
-              >
+                onClick={() => setIsMenuOpen(false)}>
                 {navItem.name}
               </Link>
             ))}
