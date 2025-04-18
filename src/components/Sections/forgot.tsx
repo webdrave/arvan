@@ -19,6 +19,8 @@ import { useRouter } from "next/navigation";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { useState } from "react";
+import styles from "@/components/Sections/PhoneInput.module.css";
+
 
 // Define a simple schema for the mobile number field
 const ForgotPasswordSchema = z.object({
@@ -82,7 +84,7 @@ const ForgotPassword = () => {
             render={({ field: { onChange, ...field } }) => (
               <FormItem>
                 <FormControl>
-                  <div className="rounded-xl border-2 border-lime-400 bg-gradient-to-r from-[#2e470fb4] via-[#3a5b0bc9] to-[#3a5b0b49]">
+                  <div className={` ${styles.phoneContainer} rounded-xl border-2 border-lime-400 bg-gradient-to-r from-[#2e470fb4] via-[#3a5b0bc9] to-[#3a5b0b49] `}>
                     <PhoneInput
                       country={"in"}
                       value={field.value}

@@ -6,22 +6,9 @@ import { OverlayProvider } from "@/context/OverlayContext";
 import { Theme } from "@radix-ui/themes";
 import QueryProvider from "@/lib/queryclient";
 import { CartProvider } from "@/context/CartContext";
-
-import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "next-auth/react";
-import { GoogleTagManager } from "@next/third-parties/google";
+import Providers from "./providers";
 
-import { Analytics } from "@vercel/analytics/react";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "The Arvan",
@@ -56,6 +43,19 @@ export const metadata: Metadata = {
   },
 };
 
+// Fonts
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+  display: "swap",
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -66,6 +66,8 @@ export default function RootLayout({
       <html lang="en" className="dark">
         <head>
           <meta name="color-scheme" content="dark" />
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         </head>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
@@ -73,20 +75,12 @@ export default function RootLayout({
           <QueryProvider>
             <Theme>
               <AdminStyles />
-                  <OverlayProvider>
-                    <CartProvider>{children}</CartProvider>
-                    <Toaster />
-                    <Analytics />
-                  </OverlayProvider>
+              <OverlayProvider>
+                <CartProvider>{children}</CartProvider>
+              </OverlayProvider>
             </Theme>
           </QueryProvider>
-          <GoogleTagManager
-            gtmId={
-              process.env.NEXT_PUBLIC_GTM_ID
-                ? process.env.NEXT_PUBLIC_GTM_ID
-                : ""
-            }
-          />
+          <Providers />
         </body>
       </html>
     </SessionProvider>

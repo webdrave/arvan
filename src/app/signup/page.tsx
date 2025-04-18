@@ -20,6 +20,7 @@ import toast from "react-hot-toast";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { useState } from "react";
+import styles from "@/components/Sections/PhoneInput.module.css";
 // Define the form schema with Zod
 
 const SignUp = () => {
@@ -77,8 +78,7 @@ const SignUp = () => {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="bg-transparent space-y-4"
-          >
+            className="bg-transparent space-y-4">
             <FormField
               control={form.control}
               name="name"
@@ -104,7 +104,8 @@ const SignUp = () => {
               render={({ field: { onChange, ...field } }) => (
                 <FormItem>
                   <FormControl>
-                    <div className="rounded-xl border-2 border-lime-400 bg-gradient-to-r from-[#2e470fb4] via-[#3a5b0bc9] to-[#3a5b0b49]">
+                    <div
+                      className={`${styles.phoneContainer}rounded-xl border-2 border-lime-400 bg-gradient-to-r from-[#2e470fb4] via-[#3a5b0bc9] to-[#3a5b0b49]`}>
                       <PhoneInput
                         country={"in"}
                         value={field.value}
@@ -171,8 +172,7 @@ const SignUp = () => {
 
             <Button
               type="submit"
-              className="relative w-full p-3 text-black font-bold text-lg sm:text-xl rounded-xl bg-lime-400 shadow-[0_4px_20px_rgba(255,255,255,0.6)] hover:bg-lime-500 mt-4"
-            >
+              className="relative w-full p-3 text-black font-bold text-lg sm:text-xl rounded-xl bg-lime-400 shadow-[0_4px_20px_rgba(255,255,255,0.6)] hover:bg-lime-500 mt-4">
               Sign Up
             </Button>
           </form>
@@ -183,8 +183,7 @@ const SignUp = () => {
           <Button
             variant="link"
             className="text-gray-400 font-bold p-0"
-            onClick={() => router.push("/signin")}
-          >
+            onClick={() => router.push("/signin")}>
             Login
           </Button>
         </div>

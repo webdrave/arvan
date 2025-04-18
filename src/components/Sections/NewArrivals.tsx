@@ -10,9 +10,9 @@ import { useQuery } from "@tanstack/react-query";
 import { analyticApi } from "@/lib/api/analytic";
 
 const NewArrivals = () => {
-  const [autoplayDelay, setAutoplayDelay] = useState(3000); // Default delay
+  const [autoplayDelay, setAutoplayDelay] = useState(3000);
 
-  const { data: slides } = useQuery({
+  const { data: slides , isLoading } = useQuery({
     queryKey: ["new-products"],
     queryFn: async () => analyticApi.getNewArrivals(),
   });
@@ -34,6 +34,8 @@ const NewArrivals = () => {
       window.removeEventListener("resize", updateAutoplay);
     };
   }, []);
+
+  if(isLoading) return <div className="w-full min-h-[50dvh] mt-16 flex justify-center items-center">Loading New Arrivals...</div>
 
   return (
     <div className="w-full min-h-[500px] mt-24">

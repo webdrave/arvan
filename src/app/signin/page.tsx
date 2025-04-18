@@ -10,6 +10,7 @@ import * as z from "zod";
 import { useEffect, useState } from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import styles from "@/components/Sections/PhoneInput.module.css";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -97,7 +98,7 @@ const Signin = () => {
               render={({ field: { onChange, ...field } }) => (
                 <FormItem>
                   <FormControl>
-                    <div className="rounded-xl border-2 border-lime-400 bg-gradient-to-r from-[#2e470fb4] via-[#3a5b0bc9] to-[#3a5b0b49]">
+                    <div className={` ${styles.phoneContainer} rounded-xl border-2 border-lime-400 bg-gradient-to-r from-[#2e470fb4] via-[#3a5b0bc9] to-[#3a5b0b49] `}>
                       <PhoneInput
                         country={"in"}
                         value={field.value}

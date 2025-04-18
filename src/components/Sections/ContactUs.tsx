@@ -8,6 +8,8 @@ import "react-phone-input-2/lib/style.css";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import styles from "@/components/Sections/PhoneInput.module.css";
+
 import {
   FormControl,
   FormField,
@@ -16,11 +18,7 @@ import {
   Form,
 } from "../ui/form";
 import { Input } from "../ui/input";
-import {
-  Facebook,
-  InstagramIcon,
-  MailIcon,
-} from "lucide-react";
+import { Facebook, InstagramIcon, MailIcon } from "lucide-react";
 import Link from "next/link";
 
 // Define the type for the form data
@@ -130,8 +128,7 @@ export default function ContactForm() {
             <Form {...form}>
               <form
                 className="mt-6 space-y-4 sm:space-y-6"
-                onSubmit={form.handleSubmit(onSubmit)}
-              >
+                onSubmit={form.handleSubmit(onSubmit)}>
                 <FormField
                   control={form.control}
                   name="name"
@@ -173,20 +170,22 @@ export default function ContactForm() {
                   render={({ field: { onChange, ...field } }) => (
                     <FormItem>
                       <FormControl>
-                        <PhoneInput
-                          country={"in"}
-                          value={field.value}
-                          onChange={(phone) => onChange(phone)}
-                          inputClass="!w-full !p-5 !px-10 !sm:p-5 !border-b !text-white !bg-transparent !border-0  !outline-none !ring-0"
-                          containerClass="!bg-transparent"
-                          buttonClass="!bg-transparent !border-0"
-                          dropdownClass="!bg-[#1a1a1a] !text-white text-black"
-                          searchClass="!bg-[#1a1a1a] !text-white"
-                          inputProps={{
-                            required: true,
-                            placeholder: "Mobile Number",
-                          }}
-                        />
+                        <div className={styles.phoneContainer}>
+                          <PhoneInput
+                            country={"in"}
+                            value={field.value}
+                            onChange={(phone) => onChange(phone)}
+                            inputClass="!w-full !p-5 !px-10 !sm:p-5 !border-b !text-white !bg-transparent !border-0  !outline-none !ring-0"
+                            containerClass="!bg-transparent"
+                            buttonClass="!bg-transparent !border-0"
+                            dropdownClass="!bg-[#1a1a1a] !text-white text-black"
+                            searchClass="!bg-[#1a1a1a] !text-white"
+                            inputProps={{
+                              required: true,
+                              placeholder: "Mobile Number",
+                            }}
+                          />
+                        </div>
                       </FormControl>
                       <FormMessage className="text-red-400 text-xs mt-1" />
                     </FormItem>
@@ -213,8 +212,7 @@ export default function ContactForm() {
 
                 <button
                   type="submit"
-                  className="relative text-base sm:text-xl md:text-lg lg:text-xl font-light px-6 sm:px-8 py-2 sm:py-3 bg-gradient-to-r from-[#c3e53a8a] to-[#b3d2343e] text-white uppercase shadow-[0px_0px_2px_#c3e53a] hover:shadow-[0px_0px_5px_#c3e53a] transition-all duration-300 mt-4 sm:mt-5 md:ml-10 lg:ml-0"
-                >
+                  className="relative text-base sm:text-xl md:text-lg lg:text-xl font-light px-6 sm:px-8 py-2 sm:py-3 bg-gradient-to-r from-[#c3e53a8a] to-[#b3d2343e] text-white uppercase shadow-[0px_0px_2px_#c3e53a] hover:shadow-[0px_0px_5px_#c3e53a] transition-all duration-300 mt-4 sm:mt-5 md:ml-10 lg:ml-0">
                   Submit
                 </button>
               </form>
@@ -248,13 +246,12 @@ export default function ContactForm() {
                     FOLLOW US ON
                   </h3>
                   <div className="flex space-x-4 mt-4">
-                    <Link href={"mailto:support@arvan.com"}>
+                    <Link href={"mailto:thearvan77@gmail.com"}>
                       <MailIcon className="text-white text-2xl sm:text-4xl md:text-3xl lg:text-4xl cursor-pointer" />
                     </Link>
                     <Link
                       href="https://www.instagram.com/thearvan.official?igsh=ZmlndGt0NGZ1bXF6"
-                      target="_blank"
-                    >
+                      target="_blank">
                       <InstagramIcon className="text-white text-2xl sm:text-4xl md:text-3xl lg:text-4xl cursor-pointer" />
                     </Link>
                     <Link href={"https://www.facebook.com"} target="_blank">
