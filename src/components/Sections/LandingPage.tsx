@@ -117,13 +117,13 @@ const LandingPage = () => {
       </div>
 
       <div className="relative w-full h-full">
-        {/* <Image
+        <Image
           alt="/bgslides/bg-1.png"
           src={backgroundImages[0][0]}
           width={1000}
           height={1000}
           className="w-full h-full lg:hidden object-cover"
-        /> */}
+        />
         <Image
           alt="/bgslides/bg-1.png"
           src={backgroundImages[0][1]}
