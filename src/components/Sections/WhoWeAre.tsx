@@ -54,6 +54,7 @@ const WhoWeAre = () => {
             src="/logo.svg"
             alt="Chocolate"
             width={250}
+            unoptimized
             height={130}
             className="object-cover -translate-y-10 sm:-translate-y-16 md:translate-y-5 max-w-[40%] sm:max-w-[50%] md:max-w-[90%]"
           />
