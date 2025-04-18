@@ -117,13 +117,13 @@ const LandingPage = () => {
       </div>
 
       <div className="relative w-full h-full">
-        {/* <Image
+        <Image
           alt="/bgslides/bg-1.png"
           src={backgroundImages[0][0]}
           width={1000}
           height={1000}
           className="w-full h-full lg:hidden object-cover"
-        /> */}
+        />
         <Image
           alt="/bgslides/bg-1.png"
           src={backgroundImages[0][1]}
@@ -135,10 +135,6 @@ const LandingPage = () => {
       <main className=" absolute inset-0 z-10 min-h-screen h-screen w-full bg-black/30 pointer-events-auto">
         <div className="w-full h-full p-2 flex gap-y-80 items-center max-sm:pt-28 relative max-sm:flex-col max-sm:items-start">
           <h2
-            // onClick={(e) => {
-            //   e.stopPropagation();
-            //   animateOverlay(true);
-            // }}
             className="mainText absolute sm:left-28 md:left-10 text-[25vw] md:text-[20vw] lg:text-[12vw] leading-none font-normal md:font-bold font-coluna tracking-wide max-sm:relative max-sm:left-4"
           >
             THE <br />

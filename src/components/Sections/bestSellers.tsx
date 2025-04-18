@@ -12,7 +12,7 @@ import { analyticApi } from "@/lib/api/analytic";
 const BestSellers = () => {
   const [autoplayDelay, setAutoplayDelay] = useState(3000);
 
-  const { data: slides } = useQuery({
+  const { data: slides , isLoading } = useQuery({
     queryKey: ["top-products"],
     queryFn: async () => analyticApi.getBestSellers(),
   });
@@ -33,6 +33,9 @@ const BestSellers = () => {
       window.removeEventListener("resize", updateAutoplay);
     };
   }, []);
+
+  if(isLoading) return <div className="w-full min-h-[50dvh] mt-16 flex justify-center items-center">Loading BestSellers...</div>
+
   return (
     <div className="w-full min-h-[50dvh] mt-16">
       <div className="flex sm:flex-row gap-4 items-center justify-start w-full px-6">
